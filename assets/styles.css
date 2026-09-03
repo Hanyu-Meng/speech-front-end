@@ -257,7 +257,7 @@ tbody tr:last-child td { border-bottom: 0; }
 .year-column { width: 104px; }
 .rating-column { width: 82px; text-align: center; }
 .task-column { width: 130px; }
-.paradigm-column { width: 108px; }
+.paradigm-column { width: 132px; }
 .context-column { width: 146px; }
 .title-column { width: 272px; }
 .keywords-column { width: 148px; }
