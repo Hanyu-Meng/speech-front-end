@@ -1,0 +1,11 @@
+{
+  "name": "speech-front-end-literature",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-catalog.mjs",
+    "check": "node scripts/build-catalog.mjs --check",
+    "serve": "python3 -m http.server 4173 --directory site"
+  }
+}

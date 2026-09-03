@@ -1,0 +1,19 @@
+media:
+  input: site/assets/media
+  output: /assets/media
+  rename: safe
+
+settings:
+  commit:
+    identity: user
+    templates:
+      update: "catalog: update literature"
+
+content:
+  - name: literature
+    label: Speech front-end literature
+    type: file
+    path: data/literature.csv
+    format: datagrid
+    operations:
+      delete: false
