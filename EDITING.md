@@ -8,6 +8,7 @@
 2. 运行 `npm run build` 生成 README 与网站数据。
 3. 运行 `npm run check`，确认字段、枚举、链接格式和生成文件一致。
 4. 本地运行 `npm run serve`，在 `http://localhost:4173` 预览。
+5. 主分支提交后，将 `site/` 发布到远端 `gh-pages` 分支；仓库维护规则要求网站改动自动执行这一步。
 
 ## 字段规则
 
