@@ -1,4 +1,4 @@
-const DATA_URL = "./data/literature.json";
+const DATA_URL = "./data/literature.json?v=20260903-catalog";
 
 const TASK_LABELS = {
   "Speech Enhancement": "语音增强",
