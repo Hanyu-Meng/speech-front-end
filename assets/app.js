@@ -1,24 +1,24 @@
-const DATA_URL = "./data/literature.json?v=20260903-hanyu";
+const DATA_URL = "./data/literature.json?v=20260903-en";
 
 const TASK_LABELS = {
-  "Speech Enhancement": "语音增强",
-  "Target Speaker Extraction": "目标说话人",
-  Dereverberation: "去混响",
-  "Echo Cancellation": "回声消除"
+  "Speech Enhancement": "Speech Enhancement",
+  "Target Speaker Extraction": "Target Speaker Extraction",
+  Dereverberation: "Dereverberation",
+  "Echo Cancellation": "Echo Cancellation"
 };
 
 const PARADIGM_LABELS = {
-  Generative: "生成式",
-  Discriminative: "非生成式",
-  Hybrid: "混合式",
-  Benchmark: "基准"
+  Generative: "Generative",
+  Discriminative: "Discriminative",
+  Hybrid: "Hybrid",
+  Benchmark: "Benchmark"
 };
 
 const CHANNEL_LABELS = {
-  "Single-channel": "单通道",
-  "Multi-channel": "多通道",
-  Binaural: "双耳",
-  Flexible: "灵活通道"
+  "Single-channel": "Single-channel",
+  "Multi-channel": "Multi-channel",
+  Binaural: "Binaural",
+  Flexible: "Flexible"
 };
 
 const elements = {
@@ -69,7 +69,7 @@ const state = {
   direction: "desc"
 };
 
-const collator = new Intl.Collator(["zh-CN", "en"], { numeric: true, sensitivity: "base" });
+const collator = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
 
 function el(tagName, className, text) {
   const element = document.createElement(tagName);
@@ -236,7 +236,7 @@ function makeRow(record) {
   const contextCell = el("td", "context-list");
   for (const channel of record.channels_list) contextCell.append(el("span", "", CHANNEL_LABELS[channel] ?? channel));
   for (const scenario of record.scenarios_list.slice(0, 3)) contextCell.append(el("span", "", scenario));
-  if (record.realtime === "Yes") contextCell.append(el("span", "", "实时"));
+  if (record.realtime === "Yes") contextCell.append(el("span", "", "Real-time"));
 
   const titleCell = document.createElement("td");
   const titleButton = el("button", "title-button", record.title);
@@ -259,12 +259,12 @@ function makeRow(record) {
 }
 
 function renderActiveFilters() {
-  const labels = { search: "搜索", task: "任务", year: "年份", venue: "Venue", hanyu: "Hanyu", paradigm: "范式", channel: "通道", scenario: "场景" };
+  const labels = { search: "Search", task: "Task", year: "Year", venue: "Venue", hanyu: "Hanyu", paradigm: "Paradigm", channel: "Channel", scenario: "Scenario" };
   const valueLabels = { ...TASK_LABELS, ...PARADIGM_LABELS, ...CHANNEL_LABELS };
   elements.activeFilters.replaceChildren();
   for (const [key, value] of Object.entries(state.filters)) {
     if (!value) continue;
-    const chip = el("button", "filter-chip", `${labels[key]}：${valueLabels[value] ?? value} ×`);
+    const chip = el("button", "filter-chip", `${labels[key]}: ${valueLabels[value] ?? value} ×`);
     chip.type = "button";
     chip.addEventListener("click", () => {
       state.filters[key] = "";
@@ -289,9 +289,9 @@ function render() {
   state.filtered = state.catalog.filter(matchesFilters).sort(compareRecords);
   elements.body.replaceChildren(...state.filtered.map(makeRow));
   elements.tableState.hidden = state.filtered.length > 0;
-  if (state.filtered.length === 0) elements.tableState.textContent = "没有匹配的文献，请减少筛选条件";
+  if (state.filtered.length === 0) elements.tableState.textContent = "No matching papers. Try removing one or more filters.";
   const count2026 = state.filtered.filter((record) => record.year === "2026").length;
-  elements.resultCount.textContent = `显示 ${state.filtered.length} / ${state.catalog.length} 篇 · 其中 2026 年 ${count2026} 篇`;
+  elements.resultCount.textContent = `Showing ${state.filtered.length} of ${state.catalog.length} papers · ${count2026} from 2026`;
   renderActiveFilters();
   updateSortHeaders();
   updateUrl();
@@ -311,7 +311,7 @@ function openDetail(record) {
     ...record.tasks_list.map((task) => makeTag(TASK_LABELS[task] ?? task, "task")),
     makeTag(PARADIGM_LABELS[record.paradigm] ?? record.paradigm, record.paradigm.toLowerCase()),
     ...record.channels_list.map((channel) => makeTag(CHANNEL_LABELS[channel] ?? channel)),
-    ...(record.realtime === "Yes" ? [makeTag("实时")] : [])
+    ...(record.realtime === "Yes" ? [makeTag("Real-time")] : [])
   );
   elements.detailSummary.textContent = record.summary;
   elements.detailArchitecture.textContent = record.architecture;
@@ -343,7 +343,7 @@ function exportFilteredCsv() {
   anchor.download = "speech-front-end-literature.csv";
   anchor.click();
   URL.revokeObjectURL(url);
-  showToast(`已导出 ${state.filtered.length} 篇文献`);
+  showToast(`Exported ${state.filtered.length} papers`);
 }
 
 function resetFilters() {
@@ -378,8 +378,8 @@ function bindEvents() {
   }
   elements.clear.addEventListener("click", resetFilters);
   elements.copy.addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(window.location.href); showToast("筛选链接已复制"); }
-    catch { showToast("浏览器未允许复制，请手动复制地址栏"); }
+    try { await navigator.clipboard.writeText(window.location.href); showToast("Filtered view link copied"); }
+    catch { showToast("Clipboard access was blocked. Please copy the URL manually."); }
   });
   elements.export.addEventListener("click", exportFilteredCsv);
   document.querySelector("#open-method-guide").addEventListener("click", () => elements.methodDialog.showModal());
@@ -408,12 +408,12 @@ async function initialize() {
     renderStats();
     render();
     const count2026 = state.catalog.filter((record) => record.year === "2026").length;
-    elements.syncStatus.textContent = `${state.catalog.length} 篇 · 2026 年 ${count2026} 篇`;
+    elements.syncStatus.textContent = `${state.catalog.length} papers · ${count2026} from 2026`;
   } catch (error) {
-    elements.syncStatus.textContent = "目录载入失败";
-    elements.resultCount.textContent = "无法读取文献数据";
+    elements.syncStatus.textContent = "Catalog failed to load";
+    elements.resultCount.textContent = "Unable to load literature data";
     elements.tableState.hidden = false;
-    elements.tableState.textContent = `请通过本地服务器打开。${error.message}`;
+    elements.tableState.textContent = `Please open this site through a local server. ${error.message}`;
   }
 }
 

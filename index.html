@@ -1,19 +1,19 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f5f6f3" />
     <meta
       name="description"
-      content="2023—2026 年语音增强、目标说话人提取、去混响与声学回声消除文献数据库。"
+      content="A curated 2023–2026 literature database for speech enhancement, target speaker extraction, dereverberation, and acoustic echo cancellation."
     />
     <meta property="og:title" content="Speech Front-End Literature" />
-    <meta property="og:description" content="可筛选的现代语音前端文献索引与方法地图。" />
+    <meta property="og:description" content="A filterable index and method map for modern speech front-end research." />
     <title>Speech Front-End Literature</title>
-    <link rel="stylesheet" href="./assets/styles.css?v=20260903-hanyu" />
+    <link rel="stylesheet" href="./assets/styles.css?v=20260903-en" />
     <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-    <script type="module" src="./assets/app.js?v=20260903-hanyu"></script>
+    <script type="module" src="./assets/app.js?v=20260903-en"></script>
   </head>
   <body>
     <header class="app-header">
@@ -24,7 +24,7 @@
           <small>Enhancement · Extraction · Dereverb · AEC</small>
         </span>
       </a>
-      <nav class="header-actions" aria-label="站点入口">
+      <nav class="header-actions" aria-label="Site links">
         <a
           class="button button-secondary mobile-icon-button"
           href="https://github.com/Hanyu-Meng/speech-front-end"
@@ -39,7 +39,7 @@
           target="_blank"
           rel="noreferrer"
         >
-          <i data-lucide="pencil-line" aria-hidden="true"></i><span>编辑目录</span>
+          <i data-lucide="pencil-line" aria-hidden="true"></i><span>Edit catalog</span>
         </a>
       </nav>
     </header>
@@ -48,15 +48,15 @@
       <section class="catalog-heading" aria-labelledby="catalog-title">
         <div>
           <p class="eyebrow">CURATED RESEARCH INDEX · UPDATED 2026-09-03</p>
-          <h1 id="catalog-title">Speech Front-End 文献库</h1>
+          <h1 id="catalog-title">Speech Front-End Literature</h1>
         </div>
         <div class="catalog-status" aria-live="polite">
           <span class="status-dot" aria-hidden="true"></span>
-          <span id="sync-status">正在载入目录</span>
+          <span id="sync-status">Loading catalog</span>
         </div>
       </section>
 
-      <section class="quickbar" aria-label="目录概览与研究指南">
+      <section class="quickbar" aria-label="Catalog overview and research guides">
         <div class="quick-stats">
           <button type="button" data-task-shortcut="Speech Enhancement">
             <strong data-task-count="Speech Enhancement">—</strong><span>Speech enhancement</span>
@@ -73,63 +73,63 @@
         </div>
         <div class="guide-actions">
           <button class="button button-quiet" id="open-method-guide" type="button">
-            <i data-lucide="git-compare-arrows" aria-hidden="true"></i>方法对比
+            <i data-lucide="git-compare-arrows" aria-hidden="true"></i>Method guide
           </button>
           <button class="button button-quiet" id="open-metric-guide" type="button">
-            <i data-lucide="ruler" aria-hidden="true"></i>指标速查
+            <i data-lucide="ruler" aria-hidden="true"></i>Metric guide
           </button>
         </div>
       </section>
 
-      <section class="filters" aria-label="文献筛选">
+      <section class="filters" aria-label="Literature filters">
         <div class="filter-row filter-row-primary">
           <label class="search-control" for="search-input">
             <i data-lucide="search" aria-hidden="true"></i>
             <input
               id="search-input"
               type="search"
-              placeholder="搜索标题、架构、关键词、问题或指标"
+              placeholder="Search titles, architectures, keywords, issues, or metrics"
               autocomplete="off"
             />
             <kbd>/</kbd>
           </label>
 
           <label class="select-control">
-            <span>任务</span>
-            <select id="task-filter" aria-label="按任务筛选">
-              <option value="">全部任务</option>
+            <span>Task</span>
+            <select id="task-filter" aria-label="Filter by task">
+              <option value="">All tasks</option>
             </select>
           </label>
           <label class="select-control select-compact">
-            <span>年份</span>
-            <select id="year-filter" aria-label="按年份筛选">
-              <option value="">全部年份</option>
+            <span>Year</span>
+            <select id="year-filter" aria-label="Filter by year">
+              <option value="">All years</option>
             </select>
           </label>
           <label class="select-control">
             <span>Venue</span>
-            <select id="venue-filter" aria-label="按会议或期刊筛选">
-              <option value="">全部 Venue</option>
+            <select id="venue-filter" aria-label="Filter by venue">
+              <option value="">All venues</option>
             </select>
           </label>
         </div>
 
         <div class="filter-row filter-row-secondary">
           <div class="filter-group">
-            <span class="filter-label">方法范式</span>
-            <div class="segmented-control" id="paradigm-filter" role="group" aria-label="按方法范式筛选">
-              <button type="button" data-value="" aria-pressed="true">全部</button>
-              <button type="button" data-value="Generative" aria-pressed="false">生成式</button>
-              <button type="button" data-value="Discriminative" aria-pressed="false">非生成式</button>
-              <button type="button" data-value="Hybrid" aria-pressed="false">混合</button>
-              <button type="button" data-value="Benchmark" aria-pressed="false">基准</button>
+            <span class="filter-label">Paradigm</span>
+            <div class="segmented-control" id="paradigm-filter" role="group" aria-label="Filter by method paradigm">
+              <button type="button" data-value="" aria-pressed="true">All</button>
+              <button type="button" data-value="Generative" aria-pressed="false">Generative</button>
+              <button type="button" data-value="Discriminative" aria-pressed="false">Discriminative</button>
+              <button type="button" data-value="Hybrid" aria-pressed="false">Hybrid</button>
+              <button type="button" data-value="Benchmark" aria-pressed="false">Benchmark</button>
             </div>
           </div>
           <label class="select-control select-compact">
             <span>Hanyu</span>
-            <select id="hanyu-filter" aria-label="按 Hanyu 评分筛选">
-              <option value="">全部评分</option>
-              <option value="unrated">未评分</option>
+            <select id="hanyu-filter" aria-label="Filter by Hanyu rating">
+              <option value="">All ratings</option>
+              <option value="unrated">Unrated</option>
               <option value="5/5">5/5</option>
               <option value="4.5/5">4.5/5</option>
               <option value="4/5">4/5</option>
@@ -142,43 +142,43 @@
             </select>
           </label>
           <label class="select-control select-compact">
-            <span>通道</span>
-            <select id="channel-filter" aria-label="按通道筛选">
-              <option value="">全部通道</option>
+            <span>Channel</span>
+            <select id="channel-filter" aria-label="Filter by channel configuration">
+              <option value="">All channels</option>
             </select>
           </label>
           <label class="select-control">
-            <span>场景</span>
-            <select id="scenario-filter" aria-label="按场景筛选">
-              <option value="">全部场景</option>
+            <span>Scenario</span>
+            <select id="scenario-filter" aria-label="Filter by scenario">
+              <option value="">All scenarios</option>
             </select>
           </label>
           <div class="toolbar-actions">
-            <button class="icon-button" id="copy-view" type="button" title="复制当前筛选链接">
-              <i data-lucide="link" aria-hidden="true"></i><span class="sr-only">复制筛选链接</span>
+            <button class="icon-button" id="copy-view" type="button" title="Copy filtered view link">
+              <i data-lucide="link" aria-hidden="true"></i><span class="sr-only">Copy filtered view link</span>
             </button>
-            <button class="icon-button" id="export-csv" type="button" title="导出当前结果">
-              <i data-lucide="download" aria-hidden="true"></i><span class="sr-only">导出当前结果</span>
+            <button class="icon-button" id="export-csv" type="button" title="Export current results">
+              <i data-lucide="download" aria-hidden="true"></i><span class="sr-only">Export current results</span>
             </button>
             <button class="button button-quiet" id="clear-filters" type="button">
-              <i data-lucide="rotate-ccw" aria-hidden="true"></i>重置
+              <i data-lucide="rotate-ccw" aria-hidden="true"></i>Reset
             </button>
           </div>
         </div>
       </section>
 
       <section class="results-summary" aria-live="polite">
-        <p id="result-count">正在载入文献</p>
+        <p id="result-count">Loading papers</p>
         <div id="active-filters" class="active-filters"></div>
       </section>
 
-      <section class="table-shell" aria-label="文献结果" tabindex="0">
+      <section class="table-shell" aria-label="Literature results" tabindex="0">
         <table>
           <thead>
             <tr>
               <th class="year-column" scope="col">
                 <button class="sort-button" type="button" data-sort="year">
-                  年份 / Venue <i data-lucide="chevrons-up-down" aria-hidden="true"></i>
+                  Year / Venue <i data-lucide="chevrons-up-down" aria-hidden="true"></i>
                 </button>
               </th>
               <th class="rating-column" scope="col">
@@ -187,24 +187,24 @@
                 </button>
               </th>
               <th class="task-column" scope="col">
-                <button class="sort-button" type="button" data-sort="task">任务 <i data-lucide="chevrons-up-down" aria-hidden="true"></i></button>
+                <button class="sort-button" type="button" data-sort="task">Task <i data-lucide="chevrons-up-down" aria-hidden="true"></i></button>
               </th>
               <th class="paradigm-column" scope="col">
-                <button class="sort-button" type="button" data-sort="paradigm">范式 <i data-lucide="chevrons-up-down" aria-hidden="true"></i></button>
+                <button class="sort-button" type="button" data-sort="paradigm">Paradigm <i data-lucide="chevrons-up-down" aria-hidden="true"></i></button>
               </th>
-              <th class="context-column" scope="col">通道 / 场景</th>
+              <th class="context-column" scope="col">Channel / Scenario</th>
               <th class="title-column" scope="col">
-                <button class="sort-button" type="button" data-sort="title">文献 <i data-lucide="chevrons-up-down" aria-hidden="true"></i></button>
+                <button class="sort-button" type="button" data-sort="title">Paper <i data-lucide="chevrons-up-down" aria-hidden="true"></i></button>
               </th>
-              <th class="keywords-column optional-wide" scope="col">核心词</th>
-              <th class="links-column" scope="col">入口</th>
-              <th class="finding-column optional-wide" scope="col">结论与问题</th>
+              <th class="keywords-column optional-wide" scope="col">Keywords</th>
+              <th class="links-column" scope="col">Links</th>
+              <th class="finding-column optional-wide" scope="col">Findings &amp; Issues</th>
             </tr>
           </thead>
           <tbody id="catalog-body"></tbody>
         </table>
         <div class="table-state" id="table-state">
-          <i data-lucide="loader-circle" class="spin" aria-hidden="true"></i>正在读取文献数据
+          <i data-lucide="loader-circle" class="spin" aria-hidden="true"></i>Loading literature data
         </div>
       </section>
     </main>
@@ -215,52 +215,52 @@
           <p id="detail-meta" class="eyebrow"></p>
           <h2 id="detail-title"></h2>
         </div>
-        <button class="icon-button dialog-close" type="button" title="关闭">
-          <i data-lucide="x" aria-hidden="true"></i><span class="sr-only">关闭</span>
+        <button class="icon-button dialog-close" type="button" title="Close">
+          <i data-lucide="x" aria-hidden="true"></i><span class="sr-only">Close</span>
         </button>
       </div>
       <div class="dialog-body">
         <div class="dialog-labels" id="detail-labels"></div>
-        <section><h3>核心结论</h3><p id="detail-summary"></p></section>
-        <section><h3>结构</h3><p id="detail-architecture"></p></section>
-        <section class="warning"><h3>问题与边界</h3><p id="detail-limitations"></p></section>
-        <section><h3>常用评价</h3><div class="metric-list" id="detail-metrics"></div></section>
-        <nav id="detail-links" class="detail-links" aria-label="论文入口"></nav>
+        <section><h3>Core Finding</h3><p id="detail-summary"></p></section>
+        <section><h3>Architecture</h3><p id="detail-architecture"></p></section>
+        <section class="warning"><h3>Issues &amp; Boundaries</h3><p id="detail-limitations"></p></section>
+        <section><h3>Common Metrics</h3><div class="metric-list" id="detail-metrics"></div></section>
+        <nav id="detail-links" class="detail-links" aria-label="Paper links"></nav>
       </div>
     </dialog>
 
     <dialog id="method-dialog" class="guide-dialog" aria-labelledby="method-title">
       <div class="dialog-header">
-        <div><p class="eyebrow">ARCHITECTURE MAP</p><h2 id="method-title">不同任务的方法结构</h2></div>
-        <button class="icon-button dialog-close" type="button" title="关闭"><i data-lucide="x" aria-hidden="true"></i><span class="sr-only">关闭</span></button>
+        <div><p class="eyebrow">ARCHITECTURE MAP</p><h2 id="method-title">Architectures across tasks</h2></div>
+        <button class="icon-button dialog-close" type="button" title="Close"><i data-lucide="x" aria-hidden="true"></i><span class="sr-only">Close</span></button>
       </div>
       <div class="guide-intro">
-        <div><span class="guide-letter green">G</span><strong>生成式</strong><p>Diffusion、flow matching、codec/token LM。擅长恢复自然度，但必须防内容幻觉、音色漂移与采样延迟。</p></div>
-        <div><span class="guide-letter violet">D</span><strong>非生成式</strong><p>Mask、complex mapping、TasNet、beamforming。单次前向更可控，主要风险是过平滑与域外失配。</p></div>
-        <div><span class="guide-letter amber">H</span><strong>混合式</strong><p>先映射或波束形成，再用生成模型补细节；更平衡，也会带来级联误差与系统复杂度。</p></div>
+        <div><span class="guide-letter green">G</span><strong>Generative</strong><p>Diffusion, flow matching, and codec/token LMs can restore naturalness, but require careful control of content hallucination, speaker drift, and sampling latency.</p></div>
+        <div><span class="guide-letter violet">D</span><strong>Discriminative</strong><p>Masks, complex mapping, TasNet, and beamforming provide more controllable single-pass inference; their main risks are over-smoothing and out-of-domain mismatch.</p></div>
+        <div><span class="guide-letter amber">H</span><strong>Hybrid</strong><p>Mapping or beamforming first removes distortion, then a generative model restores detail. The balance is stronger, but cascaded errors and system complexity increase.</p></div>
       </div>
       <div class="comparison-table">
-        <div class="comparison-head"><span>任务</span><span>非生成式主线</span><span>生成式主线</span><span>关键问题</span></div>
-        <div><strong>语音增强</strong><p>复谱映射、时频网络、神经波束形成</p><p>扩散、Schrödinger bridge、codec LM、flow</p><p>感知分数变高但词错了；实时性与真实性冲突</p></div>
-        <div><strong>目标说话人</strong><p>Speaker embedding / 视觉 / DOA / HRTF 条件化提取</p><p>条件 flow、codec LM、生成式后训练</p><p>选错人、目标静音时泄漏、注册与场景失配</p></div>
-        <div><strong>去混响</strong><p>WPE / FCP、深度滤波、复谱映射</p><p>score prior 与生成式 refinement</p><p>直达声受损；模拟 RIR 到真实房间的落差</p></div>
-        <div><strong>回声消除</strong><p>LAEC + 神经后滤波、端到端对齐网络</p><p>远端条件 diffusion、生成式 VQE</p><p>双讲近端损伤、非线性设备、长时延漂移</p></div>
+        <div class="comparison-head"><span>Task</span><span>Discriminative track</span><span>Generative track</span><span>Key issues</span></div>
+        <div><strong>Speech Enhancement</strong><p>Complex spectral mapping, time-frequency networks, neural beamforming</p><p>Diffusion, Schrödinger bridges, codec LMs, flow models</p><p>Higher perceptual scores with incorrect words; tension between real time and realism</p></div>
+        <div><strong>Target Speaker Extraction</strong><p>Speaker embedding-, vision-, DOA-, or HRTF-conditioned extraction</p><p>Conditional flow, codec LMs, generative post-training</p><p>Wrong-speaker selection, leakage during target silence, enrollment and scene mismatch</p></div>
+        <div><strong>Dereverberation</strong><p>WPE / FCP, deep filtering, complex spectral mapping</p><p>Score priors and generative refinement</p><p>Direct-path damage; the gap between simulated RIRs and real rooms</p></div>
+        <div><strong>Echo Cancellation</strong><p>LAEC + neural post-filtering, end-to-end alignment networks</p><p>Far-end-conditioned diffusion, generative VQE</p><p>Near-end damage during double-talk, nonlinear devices, long-delay drift</p></div>
       </div>
     </dialog>
 
     <dialog id="metric-dialog" class="guide-dialog" aria-labelledby="metric-title">
       <div class="dialog-header">
-        <div><p class="eyebrow">METRIC CHEAT SHEET</p><h2 id="metric-title">评价指标不要单独看</h2></div>
-        <button class="icon-button dialog-close" type="button" title="关闭"><i data-lucide="x" aria-hidden="true"></i><span class="sr-only">关闭</span></button>
+        <div><p class="eyebrow">METRIC CHEAT SHEET</p><h2 id="metric-title">Never read a metric in isolation</h2></div>
+        <button class="icon-button dialog-close" type="button" title="Close"><i data-lucide="x" aria-hidden="true"></i><span class="sr-only">Close</span></button>
       </div>
-      <p class="metric-principle">建议最少同时报告：信号保真 + 感知质量 + 可懂度/下游 + 运行代价；生成式与 TSE 再加内容和身份一致性。</p>
+      <p class="metric-principle">At minimum, report signal fidelity + perceptual quality + intelligibility/downstream performance + runtime cost. Add content and speaker consistency for generative models and TSE.</p>
       <div class="metric-grid">
-        <article><span>SE</span><h3>语音增强</h3><p><b>保真</b> SI-SDR / SDR</p><p><b>感知</b> POLQA、DNSMOS P.835、MOS</p><p><b>可懂度</b> STOI / ESTOI、WER</p><p><b>部署</b> RTF、MACs、延迟</p></article>
-        <article><span>TSE</span><h3>目标说话人</h3><p><b>分离</b> SI-SDRi / SDRi</p><p><b>身份</b> SpkSim、混淆率</p><p><b>下游</b> WER / CER / TER</p><p><b>静音段</b> 泄漏、activity F1</p></article>
-        <article><span>DR</span><h3>去混响</h3><p><b>混响</b> SRMR、T60 / DRR</p><p><b>保真</b> SI-SDR、PESQ、STOI</p><p><b>真实场景</b> 远场 ASR WER</p><p><b>注意</b> SRMR 只是无参考代理</p></article>
-        <article><span>AEC</span><h3>回声消除</h3><p><b>远端单讲</b> ERLE、AECMOS Echo</p><p><b>双讲</b> 近端 POLQA / STOI</p><p><b>整体</b> AECMOS Other、WER</p><p><b>分桶</b> 时延、非线性、双讲</p></article>
+        <article><span>SE</span><h3>Speech Enhancement</h3><p><b>Fidelity</b> SI-SDR / SDR</p><p><b>Perception</b> POLQA, DNSMOS P.835, MOS</p><p><b>Intelligibility</b> STOI / ESTOI, WER</p><p><b>Deployment</b> RTF, MACs, latency</p></article>
+        <article><span>TSE</span><h3>Target Speaker Extraction</h3><p><b>Separation</b> SI-SDRi / SDRi</p><p><b>Identity</b> SpkSim, confusion rate</p><p><b>Downstream</b> WER / CER / TER</p><p><b>Target-absent</b> Leakage, activity F1</p></article>
+        <article><span>DR</span><h3>Dereverberation</h3><p><b>Reverberation</b> SRMR, T60 / DRR</p><p><b>Fidelity</b> SI-SDR, PESQ, STOI</p><p><b>Real-world</b> Far-field ASR WER</p><p><b>Caveat</b> SRMR is only a non-intrusive proxy</p></article>
+        <article><span>AEC</span><h3>Echo Cancellation</h3><p><b>Far-end single-talk</b> ERLE, AECMOS Echo</p><p><b>Double-talk</b> Near-end POLQA / STOI</p><p><b>Overall</b> AECMOS Other, WER</p><p><b>Stratify by</b> Delay, nonlinearity, double-talk</p></article>
       </div>
-      <p class="metric-note">PESQ 已被 ITU 标记为 superseded；它可以用于历史对比，但不应成为唯一结论。生成式系统尤其要同时检查 WER、说话人相似度和人工听测。</p>
+      <p class="metric-note">The ITU marks PESQ as superseded. It remains useful for historical comparison, but should not support a conclusion alone. Generative systems especially need WER, speaker similarity, and human listening tests.</p>
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
