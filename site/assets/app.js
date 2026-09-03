@@ -2,77 +2,90 @@ const DATA_URL = "./data/literature.json";
 
 const TASK_LABELS = {
   "Speech Enhancement": "语音增强",
-  "Target Speaker Extraction": "目标说话人提取",
+  "Target Speaker Extraction": "目标说话人",
   Dereverberation: "去混响",
   "Echo Cancellation": "回声消除"
 };
+
 const PARADIGM_LABELS = {
   Generative: "生成式",
   Discriminative: "非生成式",
   Hybrid: "混合式",
   Benchmark: "基准"
 };
+
 const CHANNEL_LABELS = {
   "Single-channel": "单通道",
   "Multi-channel": "多通道",
   Binaural: "双耳",
-  Flexible: "通道灵活"
+  Flexible: "灵活通道"
 };
 
 const elements = {
   search: document.querySelector("#search-input"),
   task: document.querySelector("#task-filter"),
+  year: document.querySelector("#year-filter"),
+  venue: document.querySelector("#venue-filter"),
   paradigm: document.querySelector("#paradigm-filter"),
   channel: document.querySelector("#channel-filter"),
   scenario: document.querySelector("#scenario-filter"),
-  year: document.querySelector("#year-filter"),
-  sort: document.querySelector("#sort-control"),
   clear: document.querySelector("#clear-filters"),
   copy: document.querySelector("#copy-view"),
   export: document.querySelector("#export-csv"),
-  grid: document.querySelector("#catalog-grid"),
-  empty: document.querySelector("#empty-state"),
+  body: document.querySelector("#catalog-body"),
+  tableState: document.querySelector("#table-state"),
   resultCount: document.querySelector("#result-count"),
   activeFilters: document.querySelector("#active-filters"),
   syncStatus: document.querySelector("#sync-status"),
-  dialog: document.querySelector("#detail-dialog"),
-  closeDialog: document.querySelector("#close-dialog"),
+  detailDialog: document.querySelector("#detail-dialog"),
   detailMeta: document.querySelector("#detail-meta"),
   detailTitle: document.querySelector("#detail-title"),
-  detailTags: document.querySelector("#detail-tags"),
+  detailLabels: document.querySelector("#detail-labels"),
   detailSummary: document.querySelector("#detail-summary"),
   detailArchitecture: document.querySelector("#detail-architecture"),
   detailLimitations: document.querySelector("#detail-limitations"),
   detailMetrics: document.querySelector("#detail-metrics"),
   detailLinks: document.querySelector("#detail-links"),
+  methodDialog: document.querySelector("#method-dialog"),
+  metricDialog: document.querySelector("#metric-dialog"),
   toast: document.querySelector("#toast")
 };
 
 const state = {
   catalog: [],
   filtered: [],
-  filters: { search: "", task: "", paradigm: "", channel: "", scenario: "", year: "" },
-  sort: "year:desc"
+  filters: {
+    search: "",
+    task: "",
+    year: "",
+    venue: "",
+    paradigm: "",
+    channel: "",
+    scenario: ""
+  },
+  sort: "year",
+  direction: "desc"
 };
-const collator = new Intl.Collator(["zh-CN", "en"], { numeric: true, sensitivity: "base" });
-let toastTimer;
 
-function node(tag, className, text) {
-  const element = document.createElement(tag);
+const collator = new Intl.Collator(["zh-CN", "en"], { numeric: true, sensitivity: "base" });
+
+function el(tagName, className, text) {
+  const element = document.createElement(tagName);
   if (className) element.className = className;
   if (text !== undefined) element.textContent = text;
   return element;
 }
 
-function uniqueList(listKey) {
-  return [...new Set(state.catalog.flatMap((record) => record[listKey] ?? []))].sort(collator.compare);
+function refreshIcons() {
+  if (window.lucide) window.lucide.createIcons();
 }
 
-function uniqueField(key, numeric = false) {
-  return [...new Set(state.catalog.map((record) => record[key]).filter(Boolean))].sort((a, b) => numeric ? Number(b) - Number(a) : collator.compare(a, b));
+function uniqueValues(key, listKey = false) {
+  const values = state.catalog.flatMap((record) => listKey ? record[key] : [record[key]]).filter(Boolean);
+  return [...new Set(values)];
 }
 
-function addOptions(select, values, labels = {}) {
+function populateSelect(select, values, labels = {}) {
   for (const value of values) {
     const option = document.createElement("option");
     option.value = value;
@@ -81,137 +94,194 @@ function addOptions(select, values, labels = {}) {
   }
 }
 
-function hydrateControls() {
-  addOptions(elements.task, uniqueList("tasks_list"), TASK_LABELS);
-  addOptions(elements.paradigm, uniqueField("paradigm"), PARADIGM_LABELS);
-  addOptions(elements.channel, uniqueList("channels_list"), CHANNEL_LABELS);
-  addOptions(elements.scenario, uniqueList("scenarios_list"));
-  addOptions(elements.year, uniqueField("year", true));
+function hydrateFilters() {
+  populateSelect(elements.task, uniqueValues("tasks_list", true).sort(collator.compare), TASK_LABELS);
+  populateSelect(elements.year, uniqueValues("year").sort((a, b) => Number(b) - Number(a)));
+  populateSelect(elements.venue, uniqueValues("venue").sort(collator.compare));
+  populateSelect(elements.channel, uniqueValues("channels_list", true).sort(collator.compare), CHANNEL_LABELS);
+  populateSelect(elements.scenario, uniqueValues("scenarios_list", true).sort(collator.compare));
 }
 
 function readUrlState() {
   const params = new URLSearchParams(window.location.search);
   for (const key of Object.keys(state.filters)) state.filters[key] = params.get(key) ?? "";
-  if ([...elements.sort.options].some((option) => option.value === params.get("sort"))) state.sort = params.get("sort");
+  state.sort = params.get("sort") || "year";
+  state.direction = params.get("dir") === "asc" ? "asc" : "desc";
 }
 
 function syncControls() {
-  for (const key of Object.keys(state.filters)) elements[key].value = state.filters[key];
-  elements.sort.value = state.sort;
+  elements.search.value = state.filters.search;
+  elements.task.value = state.filters.task;
+  elements.year.value = state.filters.year;
+  elements.venue.value = state.filters.venue;
+  elements.channel.value = state.filters.channel;
+  elements.scenario.value = state.filters.scenario;
+  for (const button of elements.paradigm.querySelectorAll("button")) {
+    button.setAttribute("aria-pressed", String(button.dataset.value === state.filters.paradigm));
+  }
 }
 
-function writeUrlState() {
+function updateUrl() {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(state.filters)) if (value) params.set(key, value);
-  if (state.sort !== "year:desc") params.set("sort", state.sort);
+  if (state.sort !== "year") params.set("sort", state.sort);
+  if (state.direction !== "desc") params.set("dir", state.direction);
   const query = params.toString();
-  history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`);
+  window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
 }
 
-function matches(record) {
-  const query = state.filters.search.trim().toLocaleLowerCase();
-  if (query) {
-    const haystack = [record.title, record.venue, record.tasks, record.paradigm, record.channels, record.scenarios, record.model_family, record.keywords, record.summary, record.architecture, record.limitations, record.metrics].join(" ").toLocaleLowerCase();
-    if (!haystack.includes(query)) return false;
-  }
-  if (state.filters.task && !record.tasks_list.includes(state.filters.task)) return false;
-  if (state.filters.paradigm && record.paradigm !== state.filters.paradigm) return false;
-  if (state.filters.channel && !record.channels_list.includes(state.filters.channel)) return false;
-  if (state.filters.scenario && !record.scenarios_list.includes(state.filters.scenario)) return false;
-  if (state.filters.year && record.year !== state.filters.year) return false;
+function recordSearchText(record) {
+  return [
+    record.title,
+    record.year,
+    record.venue,
+    record.tasks,
+    record.paradigm,
+    record.channels,
+    record.scenarios,
+    record.model_family,
+    record.keywords,
+    record.summary,
+    record.architecture,
+    record.limitations,
+    record.metrics
+  ].join(" ").toLocaleLowerCase();
+}
+
+function matchesFilters(record) {
+  const filter = state.filters;
+  const query = filter.search.trim().toLocaleLowerCase();
+  if (query && !recordSearchText(record).includes(query)) return false;
+  if (filter.task && !record.tasks_list.includes(filter.task)) return false;
+  if (filter.year && record.year !== filter.year) return false;
+  if (filter.venue && record.venue !== filter.venue) return false;
+  if (filter.paradigm && record.paradigm !== filter.paradigm) return false;
+  if (filter.channel && !record.channels_list.includes(filter.channel)) return false;
+  if (filter.scenario && !record.scenarios_list.includes(filter.scenario)) return false;
   return true;
 }
 
-function sorted(records) {
-  const [key, direction] = state.sort.split(":");
-  const multiplier = direction === "desc" ? -1 : 1;
-  return [...records].sort((a, b) => {
-    const result = key === "year" ? Number(a.year) - Number(b.year) : collator.compare(a[key], b[key]);
-    return result === 0 ? a.source_order - b.source_order : result * multiplier;
-  });
+function sortValue(record, key) {
+  if (key === "task") return record.tasks_list[0] ?? "";
+  return record[key] ?? "";
 }
 
-function tag(text, modifier = "") {
-  return node("span", `tag ${modifier}`.trim(), text);
+function compareRecords(left, right) {
+  const leftValue = sortValue(left, state.sort);
+  const rightValue = sortValue(right, state.sort);
+  let result = state.sort === "year"
+    ? Number(leftValue) - Number(rightValue)
+    : collator.compare(leftValue, rightValue);
+  if (result === 0) return left.source_order - right.source_order;
+  return state.direction === "asc" ? result : -result;
 }
 
-function paperLinks(record, compact = false) {
-  const wrapper = node("div", compact ? "paper-links compact" : "paper-links");
-  const definitions = [["paper_url", "论文"], ["code_url", "代码"], ["demo_url", "Demo"]];
-  for (const [key, label] of definitions) {
-    if (!record[key]) continue;
-    const link = node("a", "paper-link", `${label} ↗`);
-    link.href = record[key];
-    link.target = "_blank";
-    link.rel = "noreferrer";
-    link.addEventListener("click", (event) => event.stopPropagation());
-    wrapper.append(link);
-  }
-  return wrapper;
+function makeTag(value, type = "") {
+  const className = value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  return el("span", `tag ${type ? `tag-${type}` : `tag-${className}`}`, value);
 }
 
-function paperCard(record) {
-  const article = node("article", `paper-card paradigm-${record.paradigm.toLowerCase()}`);
-  article.tabIndex = 0;
-  article.setAttribute("aria-label", `查看 ${record.title} 详情`);
-  article.addEventListener("click", () => openDetail(record));
-  article.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openDetail(record); }
-  });
-
-  const meta = node("div", "paper-meta");
-  meta.append(node("span", "paper-year", record.year), node("span", "paper-venue", record.venue));
-  const paradigm = tag(PARADIGM_LABELS[record.paradigm] ?? record.paradigm, `paradigm ${record.paradigm.toLowerCase()}`);
-  const taskRow = node("div", "task-tags");
-  for (const taskName of record.tasks_list) taskRow.append(tag(TASK_LABELS[taskName] ?? taskName, "task-tag"));
-  const title = node("h3", "", record.title);
-  const family = node("p", "model-family", record.model_family);
-  const summary = node("p", "paper-summary", record.summary);
-  const context = node("div", "paper-context");
-  for (const channel of record.channels_list) context.append(tag(CHANNEL_LABELS[channel] ?? channel));
-  for (const scenario of record.scenarios_list.slice(0, 2)) context.append(tag(scenario));
-  if (record.realtime === "Yes") context.append(tag("实时", "realtime"));
-  const footer = node("div", "paper-footer");
-  footer.append(paperLinks(record, true), node("button", "detail-trigger", "结构与问题 →"));
-  article.append(meta, paradigm, taskRow, title, family, summary, context, footer);
-  return article;
+function resourceDefinitions(record) {
+  return [
+    ["paper_url", "Paper", "file-text"],
+    ["code_url", "Code", "github"],
+    ["demo_url", "Demo", "play"]
+  ].filter(([key]) => Boolean(record[key]));
 }
 
-function renderFilters() {
-  const labels = { search: "搜索", task: "任务", paradigm: "范式", channel: "通道", scenario: "场景", year: "年份" };
-  const maps = { task: TASK_LABELS, paradigm: PARADIGM_LABELS, channel: CHANNEL_LABELS };
-  const active = Object.entries(state.filters).filter(([, value]) => value);
+function resourceLink(record, [key, label, icon]) {
+  const link = el("a", "resource-link");
+  link.href = record[key];
+  link.target = "_blank";
+  link.rel = "noreferrer";
+  const iconElement = document.createElement("i");
+  iconElement.dataset.lucide = icon;
+  iconElement.setAttribute("aria-hidden", "true");
+  link.append(iconElement, document.createTextNode(label));
+  return link;
+}
+
+function makeRow(record) {
+  const row = document.createElement("tr");
+  row.dataset.id = record.id;
+
+  const yearCell = el("td", "year-venue");
+  yearCell.append(el("strong", "", record.year));
+  if (record.year === "2026") yearCell.append(makeTag("NEW", "2026"));
+  yearCell.append(el("span", "", record.venue));
+
+  const taskCell = el("td", "task-list");
+  for (const task of record.tasks_list) taskCell.append(makeTag(TASK_LABELS[task] ?? task, "task"));
+
+  const paradigmCell = document.createElement("td");
+  paradigmCell.append(makeTag(PARADIGM_LABELS[record.paradigm] ?? record.paradigm, record.paradigm.toLowerCase()));
+
+  const contextCell = el("td", "context-list");
+  for (const channel of record.channels_list) contextCell.append(el("span", "", CHANNEL_LABELS[channel] ?? channel));
+  for (const scenario of record.scenarios_list.slice(0, 3)) contextCell.append(el("span", "", scenario));
+  if (record.realtime === "Yes") contextCell.append(el("span", "", "实时"));
+
+  const titleCell = document.createElement("td");
+  const titleButton = el("button", "title-button", record.title);
+  titleButton.type = "button";
+  titleButton.addEventListener("click", () => openDetail(record));
+  titleCell.append(titleButton, el("span", "model-family", record.model_family));
+
+  const keywordsCell = el("td", "keywords optional-wide", record.keywords_list.join(" · "));
+
+  const linksCell = document.createElement("td");
+  const linkList = el("div", "link-list");
+  for (const definition of resourceDefinitions(record)) linkList.append(resourceLink(record, definition));
+  linksCell.append(linkList);
+
+  const findingCell = el("td", "finding optional-wide");
+  findingCell.append(el("strong", "", record.summary), el("span", "", record.limitations));
+
+  row.append(yearCell, taskCell, paradigmCell, contextCell, titleCell, keywordsCell, linksCell, findingCell);
+  return row;
+}
+
+function renderActiveFilters() {
+  const labels = { search: "搜索", task: "任务", year: "年份", venue: "Venue", paradigm: "范式", channel: "通道", scenario: "场景" };
+  const valueLabels = { ...TASK_LABELS, ...PARADIGM_LABELS, ...CHANNEL_LABELS };
   elements.activeFilters.replaceChildren();
-  if (active.length === 0) {
-    elements.activeFilters.append(node("span", "filter-hint", "当前显示全部文献"));
-    return;
+  for (const [key, value] of Object.entries(state.filters)) {
+    if (!value) continue;
+    const chip = el("button", "filter-chip", `${labels[key]}：${valueLabels[value] ?? value} ×`);
+    chip.type = "button";
+    chip.addEventListener("click", () => {
+      state.filters[key] = "";
+      syncControls();
+      render();
+    });
+    elements.activeFilters.append(chip);
   }
-  for (const [key, value] of active) {
-    const button = node("button", "filter-chip", `${labels[key]}：${maps[key]?.[value] ?? value} ×`);
-    button.type = "button";
-    button.addEventListener("click", () => { state.filters[key] = ""; syncControls(); applyState(); });
-    elements.activeFilters.append(button);
+}
+
+function updateSortHeaders() {
+  for (const button of document.querySelectorAll(".sort-button")) {
+    const active = button.dataset.sort === state.sort;
+    button.dataset.active = String(active);
+    button.closest("th").setAttribute("aria-sort", active ? (state.direction === "asc" ? "ascending" : "descending") : "none");
+    const icon = button.querySelector("i, svg");
+    if (icon) icon.setAttribute("data-lucide", active ? (state.direction === "asc" ? "arrow-up" : "arrow-down") : "chevrons-up-down");
   }
 }
 
 function render() {
-  elements.grid.replaceChildren(...state.filtered.map(paperCard));
-  elements.empty.hidden = state.filtered.length > 0;
-  elements.resultCount.textContent = `显示 ${state.filtered.length} / ${state.catalog.length} 篇`;
-  renderFilters();
-}
-
-function applyState() {
-  state.filtered = sorted(state.catalog.filter(matches));
-  writeUrlState();
-  render();
+  state.filtered = state.catalog.filter(matchesFilters).sort(compareRecords);
+  elements.body.replaceChildren(...state.filtered.map(makeRow));
+  elements.tableState.hidden = state.filtered.length > 0;
+  if (state.filtered.length === 0) elements.tableState.textContent = "没有匹配的文献，请减少筛选条件";
+  const count2026 = state.filtered.filter((record) => record.year === "2026").length;
+  elements.resultCount.textContent = `显示 ${state.filtered.length} / ${state.catalog.length} 篇 · 其中 2026 年 ${count2026} 篇`;
+  renderActiveFilters();
+  updateSortHeaders();
+  updateUrl();
+  refreshIcons();
 }
 
 function renderStats() {
-  elements.statTotal.textContent = String(state.catalog.length).padStart(2, "0");
-  elements.statGenerative.textContent = String(state.catalog.filter((record) => ["Generative", "Hybrid"].includes(record.paradigm)).length).padStart(2, "0");
-  elements.statRealtime.textContent = String(state.catalog.filter((record) => record.realtime === "Yes").length).padStart(2, "0");
-  elements.statScenarios.textContent = String(uniqueList("scenarios_list").length).padStart(2, "0");
   for (const counter of document.querySelectorAll("[data-task-count]")) {
     counter.textContent = state.catalog.filter((record) => record.tasks_list.includes(counter.dataset.taskCount)).length;
   }
@@ -220,74 +290,89 @@ function renderStats() {
 function openDetail(record) {
   elements.detailMeta.textContent = `${record.year} · ${record.venue} · ${record.model_family}`;
   elements.detailTitle.textContent = record.title;
+  elements.detailLabels.replaceChildren(
+    ...record.tasks_list.map((task) => makeTag(TASK_LABELS[task] ?? task, "task")),
+    makeTag(PARADIGM_LABELS[record.paradigm] ?? record.paradigm, record.paradigm.toLowerCase()),
+    ...record.channels_list.map((channel) => makeTag(CHANNEL_LABELS[channel] ?? channel)),
+    ...(record.realtime === "Yes" ? [makeTag("实时")] : [])
+  );
   elements.detailSummary.textContent = record.summary;
   elements.detailArchitecture.textContent = record.architecture;
   elements.detailLimitations.textContent = record.limitations;
-  elements.detailTags.replaceChildren(
-    tag(PARADIGM_LABELS[record.paradigm] ?? record.paradigm, `paradigm ${record.paradigm.toLowerCase()}`),
-    ...record.tasks_list.map((item) => tag(TASK_LABELS[item] ?? item, "task-tag")),
-    ...record.channels_list.map((item) => tag(CHANNEL_LABELS[item] ?? item)),
-    ...(record.realtime === "Yes" ? [tag("实时", "realtime")] : [])
-  );
-  elements.detailMetrics.replaceChildren(...record.metrics_list.map((item) => tag(item, "metric-pill")));
-  elements.detailLinks.replaceChildren(paperLinks(record));
-  elements.dialog.showModal();
+  elements.detailMetrics.replaceChildren(...record.metrics_list.map((metric) => el("span", "metric-pill", metric)));
+  elements.detailLinks.replaceChildren(...resourceDefinitions(record).map((definition) => resourceLink(record, definition)));
+  elements.detailDialog.showModal();
+  refreshIcons();
 }
 
 function showToast(message) {
-  clearTimeout(toastTimer);
   elements.toast.textContent = message;
-  elements.toast.classList.add("visible");
-  toastTimer = setTimeout(() => elements.toast.classList.remove("visible"), 2200);
+  elements.toast.dataset.visible = "true";
+  window.clearTimeout(showToast.timeout);
+  showToast.timeout = window.setTimeout(() => { elements.toast.dataset.visible = "false"; }, 2300);
 }
 
-function csvCell(value) {
-  const string = String(value ?? "");
-  return /[",\n]/.test(string) ? `"${string.replaceAll('"', '""')}"` : string;
+function csvEscape(value) {
+  return `"${String(value ?? "").replaceAll('"', '""')}"`;
 }
 
-function exportCsv() {
-  const headers = ["year", "venue", "tasks", "paradigm", "channels", "scenarios", "title", "paper_url", "code_url", "summary", "architecture", "limitations", "metrics"];
-  const content = [headers.join(","), ...state.filtered.map((record) => headers.map((header) => csvCell(record[header])).join(","))].join("\n");
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(new Blob([`\ufeff${content}`], { type: "text/csv;charset=utf-8" }));
-  link.download = "speech-front-end-view.csv";
-  link.click();
-  URL.revokeObjectURL(link.href);
+function exportFilteredCsv() {
+  const headers = ["year", "venue", "tasks", "paradigm", "channels", "scenarios", "model_family", "title", "paper_url", "code_url", "demo_url", "summary", "architecture", "limitations", "metrics"];
+  const rows = [headers, ...state.filtered.map((record) => headers.map((key) => record[key]))];
+  const csv = rows.map((row) => row.map(csvEscape).join(",")).join("\n");
+  const url = URL.createObjectURL(new Blob([`\ufeff${csv}`], { type: "text/csv;charset=utf-8" }));
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = "speech-front-end-literature.csv";
+  anchor.click();
+  URL.revokeObjectURL(url);
   showToast(`已导出 ${state.filtered.length} 篇文献`);
 }
 
+function resetFilters() {
+  for (const key of Object.keys(state.filters)) state.filters[key] = "";
+  state.sort = "year";
+  state.direction = "desc";
+  syncControls();
+  render();
+}
+
+function closeOnBackdrop(dialog) {
+  dialog.addEventListener("click", (event) => { if (event.target === dialog) dialog.close(); });
+}
+
 function bindEvents() {
-  elements.search.addEventListener("input", () => { state.filters.search = elements.search.value; applyState(); });
-  for (const key of ["task", "paradigm", "channel", "scenario", "year"]) {
-    elements[key].addEventListener("change", () => { state.filters[key] = elements[key].value; applyState(); });
+  elements.search.addEventListener("input", () => { state.filters.search = elements.search.value; render(); });
+  for (const key of ["task", "year", "venue", "channel", "scenario"]) {
+    elements[key].addEventListener("change", () => { state.filters[key] = elements[key].value; render(); });
   }
-  elements.sort.addEventListener("change", () => { state.sort = elements.sort.value; applyState(); });
-  elements.clear.addEventListener("click", () => {
-    for (const key of Object.keys(state.filters)) state.filters[key] = "";
-    state.sort = "year:desc";
-    syncControls();
-    applyState();
-  });
+  for (const button of elements.paradigm.querySelectorAll("button")) {
+    button.addEventListener("click", () => { state.filters.paradigm = button.dataset.value; syncControls(); render(); });
+  }
+  for (const button of document.querySelectorAll(".sort-button")) {
+    button.addEventListener("click", () => {
+      if (state.sort === button.dataset.sort) state.direction = state.direction === "asc" ? "desc" : "asc";
+      else { state.sort = button.dataset.sort; state.direction = button.dataset.sort === "year" ? "desc" : "asc"; }
+      render();
+    });
+  }
+  for (const button of document.querySelectorAll("[data-task-shortcut]")) {
+    button.addEventListener("click", () => { state.filters.task = button.dataset.taskShortcut; syncControls(); render(); document.querySelector(".filters").scrollIntoView({ behavior: "smooth" }); });
+  }
+  elements.clear.addEventListener("click", resetFilters);
   elements.copy.addEventListener("click", async () => {
     try { await navigator.clipboard.writeText(window.location.href); showToast("筛选链接已复制"); }
     catch { showToast("浏览器未允许复制，请手动复制地址栏"); }
   });
-  elements.export.addEventListener("click", exportCsv);
-  elements.closeDialog.addEventListener("click", () => elements.dialog.close());
-  elements.dialog.addEventListener("click", (event) => {
-    if (event.target === elements.dialog) elements.dialog.close();
-  });
-  for (const button of document.querySelectorAll("[data-task-jump]")) {
-    button.addEventListener("click", () => {
-      state.filters.task = button.dataset.taskJump;
-      syncControls();
-      applyState();
-      document.querySelector("#library").scrollIntoView({ behavior: "smooth" });
-    });
+  elements.export.addEventListener("click", exportFilteredCsv);
+  document.querySelector("#open-method-guide").addEventListener("click", () => elements.methodDialog.showModal());
+  document.querySelector("#open-metric-guide").addEventListener("click", () => elements.metricDialog.showModal());
+  for (const dialog of document.querySelectorAll("dialog")) {
+    dialog.querySelector(".dialog-close").addEventListener("click", () => dialog.close());
+    closeOnBackdrop(dialog);
   }
   document.addEventListener("keydown", (event) => {
-    if (event.key === "/" && !["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName) && !elements.dialog.open) {
+    if (event.key === "/" && !["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName) && !document.querySelector("dialog[open]")) {
       event.preventDefault();
       elements.search.focus();
     }
@@ -300,17 +385,18 @@ async function initialize() {
     const response = await fetch(DATA_URL);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     state.catalog = await response.json();
-    hydrateControls();
+    hydrateFilters();
     readUrlState();
     syncControls();
     renderStats();
-    applyState();
-    elements.syncStatus.innerHTML = "<span></span>目录已同步";
+    render();
+    const count2026 = state.catalog.filter((record) => record.year === "2026").length;
+    elements.syncStatus.textContent = `${state.catalog.length} 篇 · 2026 年 ${count2026} 篇`;
   } catch (error) {
-    elements.syncStatus.textContent = "载入失败";
+    elements.syncStatus.textContent = "目录载入失败";
     elements.resultCount.textContent = "无法读取文献数据";
-    elements.empty.hidden = false;
-    elements.empty.textContent = `请通过本地服务器打开网站。${error.message}`;
+    elements.tableState.hidden = false;
+    elements.tableState.textContent = `请通过本地服务器打开。${error.message}`;
   }
 }
 

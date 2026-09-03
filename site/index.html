@@ -3,153 +3,245 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f6faf5" />
-    <meta name="description" content="近年来语音增强、目标说话人提取、去混响与回声消除的研究地图，重点整理生成式方法、场景与评价指标。" />
-    <meta property="og:title" content="Speech Front-End · 研究地图" />
-    <meta property="og:description" content="任务、场景、方法、问题与指标，一页看清现代 speech front-end。" />
-    <title>Speech Front-End · 研究地图</title>
+    <meta name="theme-color" content="#f5f6f3" />
+    <meta
+      name="description"
+      content="2023—2026 年语音增强、目标说话人提取、去混响与声学回声消除文献数据库。"
+    />
+    <meta property="og:title" content="Speech Front-End Literature" />
+    <meta property="og:description" content="可筛选的现代语音前端文献索引与方法地图。" />
+    <title>Speech Front-End Literature</title>
     <link rel="stylesheet" href="./assets/styles.css" />
+    <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
     <script type="module" src="./assets/app.js"></script>
   </head>
   <body>
-    <header class="topbar">
-      <a class="brand" href="#top" aria-label="返回顶部">
-        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-        <span><strong>Speech Front-End</strong><small>research map · 2020—2025</small></span>
+    <header class="app-header">
+      <a class="brand" href="./" aria-label="Speech Front-End literature home">
+        <span class="brand-mark" aria-hidden="true">SF</span>
+        <span>
+          <strong>Speech Front-End Literature</strong>
+          <small>Enhancement · Extraction · Dereverb · AEC</small>
+        </span>
       </a>
-      <nav class="top-nav" aria-label="页面导航"><a href="#methods">方法</a><a href="#metrics">指标</a><a href="#library">文献</a></nav>
-      <a class="button subtle" href="https://github.com/Hanyu-Meng/speech-front-end" target="_blank" rel="noreferrer">GitHub ↗</a>
+      <nav class="header-actions" aria-label="站点入口">
+        <a
+          class="button button-secondary mobile-icon-button"
+          href="https://github.com/Hanyu-Meng/speech-front-end"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <i data-lucide="github" aria-hidden="true"></i><span>Repository</span>
+        </a>
+        <a
+          class="button button-primary mobile-icon-button"
+          href="https://github.com/Hanyu-Meng/speech-front-end/edit/main/data/literature.csv"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <i data-lucide="pencil-line" aria-hidden="true"></i><span>编辑目录</span>
+        </a>
+      </nav>
     </header>
 
-    <main id="top">
-      <section class="hero">
-        <div class="hero-copy">
-          <p class="kicker"><span></span> CURATED SPEECH RESEARCH MAP</p>
-          <h1>现代语音前端<br />研究地图</h1>
-          <p class="hero-lead">语音增强、目标说话人提取、去混响与回声消除。聚焦生成式方法，也保留可靠的非生成式基线。</p>
-          <div class="hero-actions">
-            <a class="button primary" href="#library">浏览文献</a>
-            <a class="text-link" href="#methods">先看方法脉络 <span>→</span></a>
+    <main>
+      <section class="catalog-heading" aria-labelledby="catalog-title">
+        <div>
+          <p class="eyebrow">CURATED RESEARCH INDEX · UPDATED 2026-09-03</p>
+          <h1 id="catalog-title">Speech Front-End 文献库</h1>
+        </div>
+        <div class="catalog-status" aria-live="polite">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="sync-status">正在载入目录</span>
+        </div>
+      </section>
+
+      <section class="quickbar" aria-label="目录概览与研究指南">
+        <div class="quick-stats">
+          <button type="button" data-task-shortcut="Speech Enhancement">
+            <strong data-task-count="Speech Enhancement">—</strong><span>Speech enhancement</span>
+          </button>
+          <button type="button" data-task-shortcut="Target Speaker Extraction">
+            <strong data-task-count="Target Speaker Extraction">—</strong><span>Target speaker</span>
+          </button>
+          <button type="button" data-task-shortcut="Dereverberation">
+            <strong data-task-count="Dereverberation">—</strong><span>Dereverberation</span>
+          </button>
+          <button type="button" data-task-shortcut="Echo Cancellation">
+            <strong data-task-count="Echo Cancellation">—</strong><span>Echo cancellation</span>
+          </button>
+        </div>
+        <div class="guide-actions">
+          <button class="button button-quiet" id="open-method-guide" type="button">
+            <i data-lucide="git-compare-arrows" aria-hidden="true"></i>方法对比
+          </button>
+          <button class="button button-quiet" id="open-metric-guide" type="button">
+            <i data-lucide="ruler" aria-hidden="true"></i>指标速查
+          </button>
+        </div>
+      </section>
+
+      <section class="filters" aria-label="文献筛选">
+        <div class="filter-row filter-row-primary">
+          <label class="search-control" for="search-input">
+            <i data-lucide="search" aria-hidden="true"></i>
+            <input
+              id="search-input"
+              type="search"
+              placeholder="搜索标题、架构、关键词、问题或指标"
+              autocomplete="off"
+            />
+            <kbd>/</kbd>
+          </label>
+
+          <label class="select-control">
+            <span>任务</span>
+            <select id="task-filter" aria-label="按任务筛选">
+              <option value="">全部任务</option>
+            </select>
+          </label>
+          <label class="select-control select-compact">
+            <span>年份</span>
+            <select id="year-filter" aria-label="按年份筛选">
+              <option value="">全部年份</option>
+            </select>
+          </label>
+          <label class="select-control">
+            <span>Venue</span>
+            <select id="venue-filter" aria-label="按会议或期刊筛选">
+              <option value="">全部 Venue</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="filter-row filter-row-secondary">
+          <div class="filter-group">
+            <span class="filter-label">方法范式</span>
+            <div class="segmented-control" id="paradigm-filter" role="group" aria-label="按方法范式筛选">
+              <button type="button" data-value="" aria-pressed="true">全部</button>
+              <button type="button" data-value="Generative" aria-pressed="false">生成式</button>
+              <button type="button" data-value="Discriminative" aria-pressed="false">非生成式</button>
+              <button type="button" data-value="Hybrid" aria-pressed="false">混合</button>
+              <button type="button" data-value="Benchmark" aria-pressed="false">基准</button>
+            </div>
           </div>
-          <div class="hero-facts" aria-label="文献库概览">
-            <span><b id="stat-total">—</b> 篇精选</span><span><b id="stat-generative">—</b> 篇生成 / 混合</span><span><b id="stat-realtime">—</b> 篇实时</span><span><b id="stat-scenarios">—</b> 类场景</span>
+          <label class="select-control select-compact">
+            <span>通道</span>
+            <select id="channel-filter" aria-label="按通道筛选">
+              <option value="">全部通道</option>
+            </select>
+          </label>
+          <label class="select-control">
+            <span>场景</span>
+            <select id="scenario-filter" aria-label="按场景筛选">
+              <option value="">全部场景</option>
+            </select>
+          </label>
+          <div class="toolbar-actions">
+            <button class="icon-button" id="copy-view" type="button" title="复制当前筛选链接">
+              <i data-lucide="link" aria-hidden="true"></i><span class="sr-only">复制筛选链接</span>
+            </button>
+            <button class="icon-button" id="export-csv" type="button" title="导出当前结果">
+              <i data-lucide="download" aria-hidden="true"></i><span class="sr-only">导出当前结果</span>
+            </button>
+            <button class="button button-quiet" id="clear-filters" type="button">
+              <i data-lucide="rotate-ccw" aria-hidden="true"></i>重置
+            </button>
           </div>
         </div>
       </section>
 
-      <section class="section" id="tasks">
-        <div class="section-intro">
-          <p class="kicker">01 · TASKS</p>
-          <h2>四个核心任务</h2>
-          <p>定义不同，指标和失败方式也不同。点击即可筛选。</p>
-        </div>
-        <div class="task-grid">
-          <button class="task-card mint" data-task-jump="Speech Enhancement">
-            <span class="task-index">01</span><h3>语音增强</h3><p>抑噪与语音失真的平衡。</p><small><b data-task-count="Speech Enhancement">—</b> 篇</small>
-          </button>
-          <button class="task-card lilac" data-task-jump="Target Speaker Extraction">
-            <span class="task-index">02</span><h3>目标说话人提取</h3><p>指定“谁”，避免选错人。</p><small><b data-task-count="Target Speaker Extraction">—</b> 篇</small>
-          </button>
-          <button class="task-card peach" data-task-jump="Dereverberation">
-            <span class="task-index">03</span><h3>去混响</h3><p>抑制晚期反射，保留直达声。</p><small><b data-task-count="Dereverberation">—</b> 篇</small>
-          </button>
-          <button class="task-card blue" data-task-jump="Echo Cancellation">
-            <span class="task-index">04</span><h3>回声消除</h3><p>处理双讲、时延与设备非线性。</p><small><b data-task-count="Echo Cancellation">—</b> 篇</small>
-          </button>
-        </div>
-
-        <div class="scenario-strip" aria-label="场景分类"><span>◌ 单通道</span><span>⌁ 多通道</span><span>↝ 移动说话人</span><span>◉ 双耳 / 助听器</span></div>
+      <section class="results-summary" aria-live="polite">
+        <p id="result-count">正在载入文献</p>
+        <div id="active-filters" class="active-filters"></div>
       </section>
 
-      <section class="section method-section" id="methods">
-        <div class="section-intro split-intro">
-          <div><p class="kicker">02 · METHOD LANDSCAPE</p><h2>生成，还是映射？</h2></div>
-          <p>两条路线不是简单的新旧替代。生成式模型更会“补全”，判别式模型更擅长“忠实映射”；混合式方法正在把二者组合。</p>
+      <section class="table-shell" aria-label="文献结果" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th class="year-column" scope="col">
+                <button class="sort-button" type="button" data-sort="year">
+                  年份 / Venue <i data-lucide="chevrons-up-down" aria-hidden="true"></i>
+                </button>
+              </th>
+              <th class="task-column" scope="col">
+                <button class="sort-button" type="button" data-sort="task">任务 <i data-lucide="chevrons-up-down" aria-hidden="true"></i></button>
+              </th>
+              <th class="paradigm-column" scope="col">
+                <button class="sort-button" type="button" data-sort="paradigm">范式 <i data-lucide="chevrons-up-down" aria-hidden="true"></i></button>
+              </th>
+              <th class="context-column" scope="col">通道 / 场景</th>
+              <th class="title-column" scope="col">
+                <button class="sort-button" type="button" data-sort="title">文献 <i data-lucide="chevrons-up-down" aria-hidden="true"></i></button>
+              </th>
+              <th class="keywords-column optional-wide" scope="col">核心词</th>
+              <th class="links-column" scope="col">入口</th>
+              <th class="finding-column optional-wide" scope="col">结论与问题</th>
+            </tr>
+          </thead>
+          <tbody id="catalog-body"></tbody>
+        </table>
+        <div class="table-state" id="table-state">
+          <i data-lucide="loader-circle" class="spin" aria-hidden="true"></i>正在读取文献数据
         </div>
-
-        <div class="paradigm-grid">
-          <article class="paradigm-card generative">
-            <div class="card-label"><span>G</span> GENERATIVE</div>
-            <h3>学习干净语音的分布</h3>
-            <div class="pipeline-diagram"><span>退化语音 + 条件</span><b>→</b><span>扩散 / LM / Flow</span><b>→</b><span>采样或再生</span></div>
-            <p>扩散与 score-based 方法以多步去噪求高自然度；离散 token LM 借语义上下文“重说”内容；flow matching 和一致性模型尝试把生成路径压短。</p>
-            <dl><div><dt>优势</dt><dd>强语音先验、主观自然度、未见噪声泛化潜力</dd></div><div><dt>问题</dt><dd>幻觉或内容改写、音色漂移、采样延迟、随机不稳定</dd></div></dl>
-          </article>
-          <article class="paradigm-card discriminative">
-            <div class="card-label"><span>D</span> DISCRIMINATIVE</div>
-            <h3>学习退化到目标的映射</h3>
-            <div class="pipeline-diagram"><span>波形 / 复谱</span><b>→</b><span>Mask / Mapping / Beam</span><b>→</b><span>确定性输出</span></div>
-            <p>时域 TasNet、复数谱映射、时频 Transformer 和神经波束形成仍是实时与多通道系统的主力，输出可重复且容易控制算力。</p>
-            <dl><div><dt>优势</dt><dd>单次前向、内容更可控、因果实现成熟、部署成本低</dd></div><div><dt>问题</dt><dd>过平滑、配对数据依赖、域外退化、对未见声学条件脆弱</dd></div></dl>
-          </article>
-        </div>
-
-        <div class="hybrid-note"><span>H</span><p><strong>更值得关注的交汇点：</strong> predict-then-diffuse、神经网络 + FCP/WPE/MVDR、任务解耦级联。它们用物理或判别式锚点约束生成自由度，但会引入级联误差和系统复杂度。</p></div>
-
-        <details class="fold">
-          <summary>按任务展开详细方法与问题</summary>
-          <div class="matrix-shell"><table class="method-matrix">
-            <thead><tr><th>任务</th><th>非生成式主线</th><th>生成式主线</th><th>最需要警惕</th></tr></thead>
-            <tbody>
-              <tr><th>语音增强</th><td>CRN / Conformer；复数谱映射；全带 + 子带；神经波束形成</td><td>条件扩散、score-SDE、一致性模型、语音 token LM、flow matching</td><td>感知分数提高却伤害 WER；生成内容与原话不一致</td></tr>
-              <tr><th>目标说话人提取</th><td>SpeakerBeam / SpEx；TasNet；视觉、方向、HRTF 条件；多通道 beamforming</td><td>说话人条件扩散、ensemble sampling、个性化 score model</td><td>错人比残余噪声更严重；目标不活跃时的虚假输出</td></tr>
-              <tr><th>去混响</th><td>WPE / FCP；DNN + 线性预测；复谱映射；多通道空间网络</td><td>score-based regeneration 与增强联合建模</td><td>直达声被削弱；仿真 RIR 与真实房间失配；移动时滤波器失效</td></tr>
-              <tr><th>回声消除</th><td>自适应滤波 + 神经后滤波；端到端 TCN/RNN；cross-attention 对齐</td><td>远端条件 score model；快速单步 diffusion</td><td>双讲近端损伤、参考时延漂移、扬声器非线性；生成式证据仍少</td></tr>
-            </tbody>
-          </table></div>
-        </details>
-      </section>
-
-      <section class="section" id="metrics">
-        <div class="section-intro">
-          <p class="kicker">03 · METRIC ATLAS</p>
-          <h2>不要让一个分数决定一切</h2>
-          <p>建议每个系统至少同时报告：保真 + 感知 + 可懂度/下游 + 运行代价；生成式系统再加身份与内容一致性。</p>
-        </div>
-        <div class="metric-grid">
-          <details open><summary><span class="metric-task mint-dot">SE</span><b>语音增强</b><small>SI-SDR · DNSMOS · STOI · WER</small></summary><ul><li><b>保真</b> SI-SDR / SDR</li><li><b>质量</b> POLQA、DNSMOS P.835、MOS</li><li><b>可懂度</b> STOI / ESTOI、WER / WAcc</li><li><b>部署</b> RTF、MACs、参数量、算法延迟</li></ul><p>PESQ 已被 ITU 标为过时；不能只报 PESQ。</p></details>
-          <details><summary><span class="metric-task lilac-dot">TSE</span><b>目标说话人提取</b><small>SI-SDRi · 身份 · 混淆率</small></summary><ul><li><b>分离</b> SI-SDRi / SDRi、PESQ、STOI</li><li><b>身份</b> speaker similarity、target confusion</li><li><b>下游</b> WER / CER、说话人验证</li><li><b>空目标</b> 泄漏能量、false extraction</li></ul><p>平均 SI-SDR 会掩盖“选错人”，应单报目标混淆率。</p></details>
-          <details><summary><span class="metric-task peach-dot">DR</span><b>去混响</b><small>SRMR · T60 · DRR · WER</small></summary><ul><li><b>保真</b> SI-SDR、PESQ、STOI / ESTOI</li><li><b>混响</b> SRMR、晚期混响能量</li><li><b>房间</b> T60 / DRR 估计误差</li><li><b>下游</b> 远场 ASR WER</li></ul><p>SRMR 是无参考代理，最好配合真实房间 ASR。</p></details>
-          <details><summary><span class="metric-task blue-dot">AEC</span><b>回声消除</b><small>ERLE · AECMOS · 双讲</small></summary><ul><li><b>回声</b> ERLE、AECMOS Echo</li><li><b>近端</b> POLQA、STOI、AECMOS Other</li><li><b>通信</b> MOS、WAcc / WER</li><li><b>场景</b> 单讲 / 双讲、时延与非线性分桶</li></ul><p>ERLE 只适合远端单讲；双讲应优先看近端保真。</p></details>
-        </div>
-        <div class="metric-sources">指标依据：<a href="https://arxiv.org/abs/1811.02508" target="_blank" rel="noreferrer">SI-SDR ↗</a><a href="https://arxiv.org/abs/2110.01763" target="_blank" rel="noreferrer">DNSMOS P.835 ↗</a><a href="https://arxiv.org/abs/2110.03010" target="_blank" rel="noreferrer">AECMOS ↗</a><a href="https://www.itu.int/rec/T-REC-P.862/" target="_blank" rel="noreferrer">ITU PESQ 状态 ↗</a><a href="https://claritychallenge.org/docs/icassp2023/icassp2023_intro" target="_blank" rel="noreferrer">HASPI / HASQI ↗</a></div>
-      </section>
-
-      <section class="section library" id="library">
-        <div class="section-intro split-intro">
-          <div><p class="kicker">04 · LITERATURE</p><h2>精选文献</h2></div>
-          <p>每篇都给出任务、场景、结构和局限；一篇可以同时属于多个分类。默认按年份从新到旧。</p>
-        </div>
-        <div class="filter-panel">
-          <label class="search-box"><span>⌕</span><input id="search-input" type="search" autocomplete="off" placeholder="搜索标题、模型、问题或指标…" /><kbd>/</kbd></label>
-          <div class="filter-grid">
-            <label><span>任务</span><select id="task-filter"><option value="">全部任务</option></select></label>
-            <label><span>范式</span><select id="paradigm-filter"><option value="">全部范式</option></select></label>
-            <label><span>通道</span><select id="channel-filter"><option value="">全部通道</option></select></label>
-            <label><span>场景</span><select id="scenario-filter"><option value="">全部场景</option></select></label>
-            <label><span>年份</span><select id="year-filter"><option value="">全部年份</option></select></label>
-            <label><span>排序</span><select id="sort-control"><option value="year:desc">最新优先</option><option value="year:asc">最早优先</option><option value="title:asc">标题 A—Z</option></select></label>
-          </div>
-          <div class="filter-foot"><div id="active-filters" class="active-filters" aria-live="polite"></div><div class="filter-actions"><button id="copy-view" type="button">复制筛选链接</button><button id="export-csv" type="button">导出结果</button><button id="clear-filters" type="button">重置</button></div></div>
-        </div>
-        <div class="results-head"><p id="result-count">正在载入目录…</p><p id="sync-status"><span></span>读取数据</p></div>
-        <div class="paper-grid" id="catalog-grid"></div>
-        <div class="empty-state" id="empty-state" hidden>没有匹配的文献，试试减少筛选条件。</div>
       </section>
     </main>
 
-    <footer><div><strong>Speech Front-End</strong><p>少而清晰，持续更新。</p></div><p>主数据源 <code>data/literature.csv</code> · 最近系统调研：2026-09</p></footer>
-
     <dialog id="detail-dialog" aria-labelledby="detail-title">
-      <button id="close-dialog" class="close-dialog" type="button" aria-label="关闭">×</button>
-      <p id="detail-meta" class="kicker"></p><h2 id="detail-title"></h2>
-      <div id="detail-tags" class="dialog-tags"></div>
-      <div class="detail-section"><h3>为什么值得读</h3><p id="detail-summary"></p></div>
-      <div class="detail-section"><h3>架构结构</h3><p id="detail-architecture"></p></div>
-      <div class="detail-section warning"><h3>局限与问题</h3><p id="detail-limitations"></p></div>
-      <div class="detail-section"><h3>论文使用的指标</h3><div id="detail-metrics" class="metric-pills"></div></div>
-      <nav id="detail-links" class="detail-links" aria-label="论文入口"></nav>
+      <div class="dialog-header">
+        <div>
+          <p id="detail-meta" class="eyebrow"></p>
+          <h2 id="detail-title"></h2>
+        </div>
+        <button class="icon-button dialog-close" type="button" title="关闭">
+          <i data-lucide="x" aria-hidden="true"></i><span class="sr-only">关闭</span>
+        </button>
+      </div>
+      <div class="dialog-body">
+        <div class="dialog-labels" id="detail-labels"></div>
+        <section><h3>核心结论</h3><p id="detail-summary"></p></section>
+        <section><h3>结构</h3><p id="detail-architecture"></p></section>
+        <section class="warning"><h3>问题与边界</h3><p id="detail-limitations"></p></section>
+        <section><h3>常用评价</h3><div class="metric-list" id="detail-metrics"></div></section>
+        <nav id="detail-links" class="detail-links" aria-label="论文入口"></nav>
+      </div>
     </dialog>
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <dialog id="method-dialog" class="guide-dialog" aria-labelledby="method-title">
+      <div class="dialog-header">
+        <div><p class="eyebrow">ARCHITECTURE MAP</p><h2 id="method-title">不同任务的方法结构</h2></div>
+        <button class="icon-button dialog-close" type="button" title="关闭"><i data-lucide="x" aria-hidden="true"></i><span class="sr-only">关闭</span></button>
+      </div>
+      <div class="guide-intro">
+        <div><span class="guide-letter green">G</span><strong>生成式</strong><p>Diffusion、flow matching、codec/token LM。擅长恢复自然度，但必须防内容幻觉、音色漂移与采样延迟。</p></div>
+        <div><span class="guide-letter violet">D</span><strong>非生成式</strong><p>Mask、complex mapping、TasNet、beamforming。单次前向更可控，主要风险是过平滑与域外失配。</p></div>
+        <div><span class="guide-letter amber">H</span><strong>混合式</strong><p>先映射或波束形成，再用生成模型补细节；更平衡，也会带来级联误差与系统复杂度。</p></div>
+      </div>
+      <div class="comparison-table">
+        <div class="comparison-head"><span>任务</span><span>非生成式主线</span><span>生成式主线</span><span>关键问题</span></div>
+        <div><strong>语音增强</strong><p>复谱映射、时频网络、神经波束形成</p><p>扩散、Schrödinger bridge、codec LM、flow</p><p>感知分数变高但词错了；实时性与真实性冲突</p></div>
+        <div><strong>目标说话人</strong><p>Speaker embedding / 视觉 / DOA / HRTF 条件化提取</p><p>条件 flow、codec LM、生成式后训练</p><p>选错人、目标静音时泄漏、注册与场景失配</p></div>
+        <div><strong>去混响</strong><p>WPE / FCP、深度滤波、复谱映射</p><p>score prior 与生成式 refinement</p><p>直达声受损；模拟 RIR 到真实房间的落差</p></div>
+        <div><strong>回声消除</strong><p>LAEC + 神经后滤波、端到端对齐网络</p><p>远端条件 diffusion、生成式 VQE</p><p>双讲近端损伤、非线性设备、长时延漂移</p></div>
+      </div>
+    </dialog>
+
+    <dialog id="metric-dialog" class="guide-dialog" aria-labelledby="metric-title">
+      <div class="dialog-header">
+        <div><p class="eyebrow">METRIC CHEAT SHEET</p><h2 id="metric-title">评价指标不要单独看</h2></div>
+        <button class="icon-button dialog-close" type="button" title="关闭"><i data-lucide="x" aria-hidden="true"></i><span class="sr-only">关闭</span></button>
+      </div>
+      <p class="metric-principle">建议最少同时报告：信号保真 + 感知质量 + 可懂度/下游 + 运行代价；生成式与 TSE 再加内容和身份一致性。</p>
+      <div class="metric-grid">
+        <article><span>SE</span><h3>语音增强</h3><p><b>保真</b> SI-SDR / SDR</p><p><b>感知</b> POLQA、DNSMOS P.835、MOS</p><p><b>可懂度</b> STOI / ESTOI、WER</p><p><b>部署</b> RTF、MACs、延迟</p></article>
+        <article><span>TSE</span><h3>目标说话人</h3><p><b>分离</b> SI-SDRi / SDRi</p><p><b>身份</b> SpkSim、混淆率</p><p><b>下游</b> WER / CER / TER</p><p><b>静音段</b> 泄漏、activity F1</p></article>
+        <article><span>DR</span><h3>去混响</h3><p><b>混响</b> SRMR、T60 / DRR</p><p><b>保真</b> SI-SDR、PESQ、STOI</p><p><b>真实场景</b> 远场 ASR WER</p><p><b>注意</b> SRMR 只是无参考代理</p></article>
+        <article><span>AEC</span><h3>回声消除</h3><p><b>远端单讲</b> ERLE、AECMOS Echo</p><p><b>双讲</b> 近端 POLQA / STOI</p><p><b>整体</b> AECMOS Other、WER</p><p><b>分桶</b> 时延、非线性、双讲</p></article>
+      </div>
+      <p class="metric-note">PESQ 已被 ITU 标记为 superseded；它可以用于历史对比，但不应成为唯一结论。生成式系统尤其要同时检查 WER、说话人相似度和人工听测。</p>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </body>
 </html>
