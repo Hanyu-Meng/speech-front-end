@@ -17,9 +17,7 @@
         <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
         <span><strong>Speech Front-End</strong><small>research map · 2020—2025</small></span>
       </a>
-      <nav class="top-nav" aria-label="页面导航">
-        <a href="#tasks">任务</a><a href="#methods">方法</a><a href="#metrics">指标</a><a href="#library">文献</a>
-      </nav>
+      <nav class="top-nav" aria-label="页面导航"><a href="#methods">方法</a><a href="#metrics">指标</a><a href="#library">文献</a></nav>
       <a class="button subtle" href="https://github.com/Hanyu-Meng/speech-front-end" target="_blank" rel="noreferrer">GitHub ↗</a>
     </header>
 
@@ -27,59 +25,40 @@
       <section class="hero">
         <div class="hero-copy">
           <p class="kicker"><span></span> CURATED SPEECH RESEARCH MAP</p>
-          <h1>让复杂声场，<br />变成一张清晰的地图。</h1>
-          <p class="hero-lead">聚焦语音增强、目标说话人提取、去混响与回声消除。按单通道、多通道、双耳、移动说话人等真实场景组织，并重点追踪扩散、语音语言模型与流匹配。</p>
+          <h1>现代语音前端<br />研究地图</h1>
+          <p class="hero-lead">语音增强、目标说话人提取、去混响与回声消除。聚焦生成式方法，也保留可靠的非生成式基线。</p>
           <div class="hero-actions">
             <a class="button primary" href="#library">浏览文献</a>
             <a class="text-link" href="#methods">先看方法脉络 <span>→</span></a>
           </div>
-        </div>
-        <div class="hero-map" aria-label="从混合语音到任务输出的方法示意">
-          <div class="map-head"><span>acoustic scene</span><span class="live"><i></i> curated</span></div>
-          <div class="wave" aria-hidden="true">
-            <i style="--h:26%"></i><i style="--h:55%"></i><i style="--h:34%"></i><i style="--h:82%"></i><i style="--h:48%"></i><i style="--h:92%"></i><i style="--h:58%"></i><i style="--h:30%"></i><i style="--h:70%"></i><i style="--h:44%"></i><i style="--h:86%"></i><i style="--h:38%"></i><i style="--h:62%"></i><i style="--h:24%"></i><i style="--h:76%"></i><i style="--h:46%"></i><i style="--h:90%"></i><i style="--h:52%"></i><i style="--h:32%"></i><i style="--h:68%"></i><i style="--h:40%"></i><i style="--h:78%"></i><i style="--h:28%"></i><i style="--h:58%"></i>
-          </div>
-          <div class="route-row"><span>noise</span><b>→</b><span>speech</span><b>→</b><span>meaning</span></div>
-          <div class="mini-grid">
-            <span><i>01</i> Enhancement</span><span><i>02</i> Extraction</span><span><i>03</i> Dereverb</span><span><i>04</i> Echo control</span>
+          <div class="hero-facts" aria-label="文献库概览">
+            <span><b id="stat-total">—</b> 篇精选</span><span><b id="stat-generative">—</b> 篇生成 / 混合</span><span><b id="stat-realtime">—</b> 篇实时</span><span><b id="stat-scenarios">—</b> 类场景</span>
           </div>
         </div>
-      </section>
-
-      <section class="stats" aria-label="文献库概览">
-        <article><strong id="stat-total">—</strong><span>篇精选资料</span></article>
-        <article><strong id="stat-generative">—</strong><span>篇生成式 / 混合式</span></article>
-        <article><strong id="stat-realtime">—</strong><span>篇实时方案</span></article>
-        <article><strong id="stat-scenarios">—</strong><span>类应用场景</span></article>
       </section>
 
       <section class="section" id="tasks">
         <div class="section-intro">
           <p class="kicker">01 · TASKS</p>
-          <h2>四个任务，四种“干净”的定义</h2>
-          <p>它们常被一个系统联合处理，但监督目标、失败方式和可信评价并不相同。</p>
+          <h2>四个核心任务</h2>
+          <p>定义不同，指标和失败方式也不同。点击即可筛选。</p>
         </div>
         <div class="task-grid">
           <button class="task-card mint" data-task-jump="Speech Enhancement">
-            <span class="task-index">01</span><h3>语音增强</h3><p>从噪声中恢复可懂、自然、保真的语音；核心矛盾是抑噪与语音失真。</p><small><b data-task-count="Speech Enhancement">—</b> 篇 · 点此筛选</small>
+            <span class="task-index">01</span><h3>语音增强</h3><p>抑噪与语音失真的平衡。</p><small><b data-task-count="Speech Enhancement">—</b> 篇</small>
           </button>
           <button class="task-card lilac" data-task-jump="Target Speaker Extraction">
-            <span class="task-index">02</span><h3>目标说话人提取</h3><p>用注册语音、方向、视觉或 HRTF 指定“谁”，并避免把干扰者当成目标。</p><small><b data-task-count="Target Speaker Extraction">—</b> 篇 · 点此筛选</small>
+            <span class="task-index">02</span><h3>目标说话人提取</h3><p>指定“谁”，避免选错人。</p><small><b data-task-count="Target Speaker Extraction">—</b> 篇</small>
           </button>
           <button class="task-card peach" data-task-jump="Dereverberation">
-            <span class="task-index">03</span><h3>去混响</h3><p>抑制晚期反射、保留直达声；既是逆卷积问题，也是语音先验问题。</p><small><b data-task-count="Dereverberation">—</b> 篇 · 点此筛选</small>
+            <span class="task-index">03</span><h3>去混响</h3><p>抑制晚期反射，保留直达声。</p><small><b data-task-count="Dereverberation">—</b> 篇</small>
           </button>
           <button class="task-card blue" data-task-jump="Echo Cancellation">
-            <span class="task-index">04</span><h3>回声消除</h3><p>利用远端播放参考去除扬声器回声，双讲、时延漂移和设备非线性最难。</p><small><b data-task-count="Echo Cancellation">—</b> 篇 · 点此筛选</small>
+            <span class="task-index">04</span><h3>回声消除</h3><p>处理双讲、时延与设备非线性。</p><small><b data-task-count="Echo Cancellation">—</b> 篇</small>
           </button>
         </div>
 
-        <div class="scenario-strip" aria-label="场景分类">
-          <div><span>◌</span><h3>单通道</h3><p>依赖谱与语音先验，部署简单但问题更欠定。</p></div>
-          <div><span>⌁</span><h3>多通道</h3><p>使用相位差、空间协方差与波束形成，受阵列失配影响。</p></div>
-          <div><span>↝</span><h3>移动说话人</h3><p>空间特征时变，需要因果跟踪与长期稳定记忆。</p></div>
-          <div><span>◉</span><h3>双耳 / 助听器</h3><p>除了增强，还必须保存 ILD、ITD 与听者相关线索。</p></div>
-        </div>
+        <div class="scenario-strip" aria-label="场景分类"><span>◌ 单通道</span><span>⌁ 多通道</span><span>↝ 移动说话人</span><span>◉ 双耳 / 助听器</span></div>
       </section>
 
       <section class="section method-section" id="methods">
@@ -107,8 +86,9 @@
 
         <div class="hybrid-note"><span>H</span><p><strong>更值得关注的交汇点：</strong> predict-then-diffuse、神经网络 + FCP/WPE/MVDR、任务解耦级联。它们用物理或判别式锚点约束生成自由度，但会引入级联误差和系统复杂度。</p></div>
 
-        <div class="matrix-shell">
-          <table class="method-matrix">
+        <details class="fold">
+          <summary>按任务展开详细方法与问题</summary>
+          <div class="matrix-shell"><table class="method-matrix">
             <thead><tr><th>任务</th><th>非生成式主线</th><th>生成式主线</th><th>最需要警惕</th></tr></thead>
             <tbody>
               <tr><th>语音增强</th><td>CRN / Conformer；复数谱映射；全带 + 子带；神经波束形成</td><td>条件扩散、score-SDE、一致性模型、语音 token LM、flow matching</td><td>感知分数提高却伤害 WER；生成内容与原话不一致</td></tr>
@@ -116,8 +96,8 @@
               <tr><th>去混响</th><td>WPE / FCP；DNN + 线性预测；复谱映射；多通道空间网络</td><td>score-based regeneration 与增强联合建模</td><td>直达声被削弱；仿真 RIR 与真实房间失配；移动时滤波器失效</td></tr>
               <tr><th>回声消除</th><td>自适应滤波 + 神经后滤波；端到端 TCN/RNN；cross-attention 对齐</td><td>远端条件 score model；快速单步 diffusion</td><td>双讲近端损伤、参考时延漂移、扬声器非线性；生成式证据仍少</td></tr>
             </tbody>
-          </table>
-        </div>
+          </table></div>
+        </details>
       </section>
 
       <section class="section" id="metrics">
@@ -127,10 +107,10 @@
           <p>建议每个系统至少同时报告：保真 + 感知 + 可懂度/下游 + 运行代价；生成式系统再加身份与内容一致性。</p>
         </div>
         <div class="metric-grid">
-          <article><span class="metric-task mint-dot">SE</span><h3>语音增强</h3><ul><li><b>保真</b> SI-SDR / SDR</li><li><b>质量</b> PESQ 或 POLQA、DNSMOS P.835、MOS</li><li><b>可懂度</b> STOI / ESTOI、WER / WAcc</li><li><b>部署</b> RTF、MACs、参数量、算法延迟</li></ul><p>PESQ 已被 ITU 标为过时；新系统应同时给 POLQA 或听测，不能只报 PESQ。</p></article>
-          <article><span class="metric-task lilac-dot">TSE</span><h3>目标说话人提取</h3><ul><li><b>分离</b> SI-SDRi / SDRi、PESQ、STOI</li><li><b>身份</b> speaker similarity、target confusion / extraction error</li><li><b>下游</b> WER / CER、说话人验证</li><li><b>空目标</b> 泄漏能量、false extraction / reject</li></ul><p>平均 SI-SDR 会掩盖“选错人”这种灾难性失败，必须单独统计目标混淆率。</p></article>
-          <article><span class="metric-task peach-dot">DR</span><h3>去混响</h3><ul><li><b>保真</b> SI-SDR、PESQ、STOI / ESTOI</li><li><b>混响</b> SRMR、晚期混响能量</li><li><b>房间</b> T60 / DRR 估计误差</li><li><b>下游</b> 远场 ASR WER</li></ul><p>SRMR 是无参考代理，不能单独说明内容保真；最好配合有参考指标和真实房间 ASR。</p></article>
-          <article><span class="metric-task blue-dot">AEC</span><h3>回声消除</h3><ul><li><b>回声</b> ERLE、AECMOS Echo</li><li><b>近端</b> PESQ / POLQA、STOI、AECMOS Other</li><li><b>通信</b> MOS、WAcc / WER</li><li><b>场景</b> 单讲 / 双讲分开，延迟漂移与非线性分桶</li></ul><p>ERLE 只适合远端单讲段；双讲期间应优先看近端保真和主观回声残留。</p></article>
+          <details open><summary><span class="metric-task mint-dot">SE</span><b>语音增强</b><small>SI-SDR · DNSMOS · STOI · WER</small></summary><ul><li><b>保真</b> SI-SDR / SDR</li><li><b>质量</b> POLQA、DNSMOS P.835、MOS</li><li><b>可懂度</b> STOI / ESTOI、WER / WAcc</li><li><b>部署</b> RTF、MACs、参数量、算法延迟</li></ul><p>PESQ 已被 ITU 标为过时；不能只报 PESQ。</p></details>
+          <details><summary><span class="metric-task lilac-dot">TSE</span><b>目标说话人提取</b><small>SI-SDRi · 身份 · 混淆率</small></summary><ul><li><b>分离</b> SI-SDRi / SDRi、PESQ、STOI</li><li><b>身份</b> speaker similarity、target confusion</li><li><b>下游</b> WER / CER、说话人验证</li><li><b>空目标</b> 泄漏能量、false extraction</li></ul><p>平均 SI-SDR 会掩盖“选错人”，应单报目标混淆率。</p></details>
+          <details><summary><span class="metric-task peach-dot">DR</span><b>去混响</b><small>SRMR · T60 · DRR · WER</small></summary><ul><li><b>保真</b> SI-SDR、PESQ、STOI / ESTOI</li><li><b>混响</b> SRMR、晚期混响能量</li><li><b>房间</b> T60 / DRR 估计误差</li><li><b>下游</b> 远场 ASR WER</li></ul><p>SRMR 是无参考代理，最好配合真实房间 ASR。</p></details>
+          <details><summary><span class="metric-task blue-dot">AEC</span><b>回声消除</b><small>ERLE · AECMOS · 双讲</small></summary><ul><li><b>回声</b> ERLE、AECMOS Echo</li><li><b>近端</b> POLQA、STOI、AECMOS Other</li><li><b>通信</b> MOS、WAcc / WER</li><li><b>场景</b> 单讲 / 双讲、时延与非线性分桶</li></ul><p>ERLE 只适合远端单讲；双讲应优先看近端保真。</p></details>
         </div>
         <div class="metric-sources">指标依据：<a href="https://arxiv.org/abs/1811.02508" target="_blank" rel="noreferrer">SI-SDR ↗</a><a href="https://arxiv.org/abs/2110.01763" target="_blank" rel="noreferrer">DNSMOS P.835 ↗</a><a href="https://arxiv.org/abs/2110.03010" target="_blank" rel="noreferrer">AECMOS ↗</a><a href="https://www.itu.int/rec/T-REC-P.862/" target="_blank" rel="noreferrer">ITU PESQ 状态 ↗</a><a href="https://claritychallenge.org/docs/icassp2023/icassp2023_intro" target="_blank" rel="noreferrer">HASPI / HASQI ↗</a></div>
       </section>
