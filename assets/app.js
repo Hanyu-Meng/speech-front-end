@@ -1,65 +1,49 @@
 const DATA_URL = "./data/literature.json";
 
-const DOMAIN_LABELS = {
-  ClassicFeatures: "经典特征",
-  RobustFeatures: "鲁棒特征",
-  LearnableFrontend: "可学习前端",
-  SpeechEnhancement: "语音增强",
+const TASK_LABELS = {
+  "Speech Enhancement": "语音增强",
+  "Target Speaker Extraction": "目标说话人提取",
   Dereverberation: "去混响",
-  Beamforming: "波束形成",
-  SpeechSeparation: "语音分离",
-  SSLRepresentation: "自监督表示",
-  Streaming: "流式部署",
-  Benchmark: "评测基准",
-  Other: "其他"
+  "Echo Cancellation": "回声消除"
 };
-
-const STAGE_LABELS = {
-  Preprocess: "预处理",
-  Feature: "特征提取",
-  Spatial: "空间处理",
-  Enhancement: "增强",
-  Separation: "分离",
-  Representation: "表示学习",
-  Evaluation: "评测",
-  System: "系统集成"
+const PARADIGM_LABELS = {
+  Generative: "生成式",
+  Discriminative: "非生成式",
+  Hybrid: "混合式",
+  Benchmark: "基准"
 };
-
-const STATUS_LABELS = {
-  "To read": "待读",
-  Reading: "在读",
-  Read: "已读",
-  Revisit: "重读"
+const CHANNEL_LABELS = {
+  "Single-channel": "单通道",
+  "Multi-channel": "多通道",
+  Binaural: "双耳",
+  Flexible: "通道灵活"
 };
 
 const elements = {
   search: document.querySelector("#search-input"),
-  domain: document.querySelector("#domain-filter"),
-  stage: document.querySelector("#stage-filter"),
+  task: document.querySelector("#task-filter"),
+  paradigm: document.querySelector("#paradigm-filter"),
+  channel: document.querySelector("#channel-filter"),
+  scenario: document.querySelector("#scenario-filter"),
   year: document.querySelector("#year-filter"),
-  status: document.querySelector("#status-filter"),
-  rating: document.querySelector("#rating-filter"),
   sort: document.querySelector("#sort-control"),
   clear: document.querySelector("#clear-filters"),
   copy: document.querySelector("#copy-view"),
   export: document.querySelector("#export-csv"),
-  body: document.querySelector("#catalog-body"),
-  tableState: document.querySelector("#table-state"),
+  grid: document.querySelector("#catalog-grid"),
+  empty: document.querySelector("#empty-state"),
   resultCount: document.querySelector("#result-count"),
   activeFilters: document.querySelector("#active-filters"),
   syncStatus: document.querySelector("#sync-status"),
-  statTotal: document.querySelector("#stat-total"),
-  statDomains: document.querySelector("#stat-domains"),
-  statYears: document.querySelector("#stat-years"),
-  statRead: document.querySelector("#stat-read"),
   dialog: document.querySelector("#detail-dialog"),
   closeDialog: document.querySelector("#close-dialog"),
   detailMeta: document.querySelector("#detail-meta"),
   detailTitle: document.querySelector("#detail-title"),
-  detailLabels: document.querySelector("#detail-labels"),
+  detailTags: document.querySelector("#detail-tags"),
   detailSummary: document.querySelector("#detail-summary"),
-  detailValue: document.querySelector("#detail-value"),
-  detailKeywords: document.querySelector("#detail-keywords"),
+  detailArchitecture: document.querySelector("#detail-architecture"),
+  detailLimitations: document.querySelector("#detail-limitations"),
+  detailMetrics: document.querySelector("#detail-metrics"),
   detailLinks: document.querySelector("#detail-links"),
   toast: document.querySelector("#toast")
 };
@@ -67,29 +51,25 @@ const elements = {
 const state = {
   catalog: [],
   filtered: [],
-  filters: { search: "", domain: "", stage: "", year: "", status: "", rating: "" },
+  filters: { search: "", task: "", paradigm: "", channel: "", scenario: "", year: "" },
   sort: "year:desc"
 };
-
 const collator = new Intl.Collator(["zh-CN", "en"], { numeric: true, sensitivity: "base" });
 let toastTimer;
 
-function createElement(tag, className, text) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
+function node(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = text;
+  return element;
 }
 
-function ratingValue(value) {
-  return value ? Number.parseFloat(value) : -1;
+function uniqueList(listKey) {
+  return [...new Set(state.catalog.flatMap((record) => record[listKey] ?? []))].sort(collator.compare);
 }
 
-function uniqueValues(key, numeric = false) {
-  const values = [...new Set(state.catalog.map((record) => record[key]).filter(Boolean))];
-  return values.sort((left, right) => numeric
-    ? Number(right) - Number(left)
-    : collator.compare(left, right));
+function uniqueField(key, numeric = false) {
+  return [...new Set(state.catalog.map((record) => record[key]).filter(Boolean))].sort((a, b) => numeric ? Number(b) - Number(a) : collator.compare(a, b));
 }
 
 function addOptions(select, values, labels = {}) {
@@ -102,99 +82,65 @@ function addOptions(select, values, labels = {}) {
 }
 
 function hydrateControls() {
-  addOptions(elements.domain, uniqueValues("domain"), DOMAIN_LABELS);
-  addOptions(elements.stage, uniqueValues("stage"), STAGE_LABELS);
-  addOptions(elements.year, uniqueValues("year", true));
-  addOptions(elements.status, uniqueValues("status"), STATUS_LABELS);
-  addOptions(
-    elements.rating,
-    [...new Set(state.catalog.map((record) => record.rating).filter(Boolean))]
-      .sort((left, right) => ratingValue(right) - ratingValue(left))
-  );
+  addOptions(elements.task, uniqueList("tasks_list"), TASK_LABELS);
+  addOptions(elements.paradigm, uniqueField("paradigm"), PARADIGM_LABELS);
+  addOptions(elements.channel, uniqueList("channels_list"), CHANNEL_LABELS);
+  addOptions(elements.scenario, uniqueList("scenarios_list"));
+  addOptions(elements.year, uniqueField("year", true));
 }
 
 function readUrlState() {
   const params = new URLSearchParams(window.location.search);
   for (const key of Object.keys(state.filters)) state.filters[key] = params.get(key) ?? "";
-  const requestedSort = params.get("sort");
-  if ([...elements.sort.options].some((option) => option.value === requestedSort)) {
-    state.sort = requestedSort;
-  }
+  if ([...elements.sort.options].some((option) => option.value === params.get("sort"))) state.sort = params.get("sort");
 }
 
 function syncControls() {
-  for (const key of ["search", "domain", "stage", "year", "status", "rating"]) {
-    elements[key].value = state.filters[key];
-  }
+  for (const key of Object.keys(state.filters)) elements[key].value = state.filters[key];
   elements.sort.value = state.sort;
 }
 
 function writeUrlState() {
   const params = new URLSearchParams();
-  for (const [key, value] of Object.entries(state.filters)) {
-    if (value) params.set(key, value);
-  }
+  for (const [key, value] of Object.entries(state.filters)) if (value) params.set(key, value);
   if (state.sort !== "year:desc") params.set("sort", state.sort);
   const query = params.toString();
-  history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
+  history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`);
 }
 
 function matches(record) {
-  const search = state.filters.search.trim().toLocaleLowerCase();
-  if (search) {
-    const haystack = [
-      record.title,
-      record.venue,
-      record.keywords,
-      record.summary,
-      record.why_it_matters,
-      DOMAIN_LABELS[record.domain],
-      STAGE_LABELS[record.stage]
-    ].join(" ").toLocaleLowerCase();
-    if (!haystack.includes(search)) return false;
+  const query = state.filters.search.trim().toLocaleLowerCase();
+  if (query) {
+    const haystack = [record.title, record.venue, record.tasks, record.paradigm, record.channels, record.scenarios, record.model_family, record.keywords, record.summary, record.architecture, record.limitations, record.metrics].join(" ").toLocaleLowerCase();
+    if (!haystack.includes(query)) return false;
   }
-
-  for (const key of ["domain", "stage", "year", "status"]) {
-    if (state.filters[key] && record[key] !== state.filters[key]) return false;
-  }
-  if (state.filters.rating === "unrated" && record.rating) return false;
-  if (state.filters.rating && state.filters.rating !== "unrated" && record.rating !== state.filters.rating) return false;
+  if (state.filters.task && !record.tasks_list.includes(state.filters.task)) return false;
+  if (state.filters.paradigm && record.paradigm !== state.filters.paradigm) return false;
+  if (state.filters.channel && !record.channels_list.includes(state.filters.channel)) return false;
+  if (state.filters.scenario && !record.scenarios_list.includes(state.filters.scenario)) return false;
+  if (state.filters.year && record.year !== state.filters.year) return false;
   return true;
 }
 
-function sortRecords(records) {
+function sorted(records) {
   const [key, direction] = state.sort.split(":");
   const multiplier = direction === "desc" ? -1 : 1;
-  return [...records].sort((left, right) => {
-    if (key === "rating") {
-      const difference = ratingValue(left.rating) - ratingValue(right.rating);
-      if (difference !== 0) return difference * multiplier;
-    } else if (key === "year") {
-      const difference = Number(left.year) - Number(right.year);
-      if (difference !== 0) return difference * multiplier;
-    } else {
-      const difference = collator.compare(left[key] ?? "", right[key] ?? "");
-      if (difference !== 0) return difference * multiplier;
-    }
-    return left.source_order - right.source_order;
+  return [...records].sort((a, b) => {
+    const result = key === "year" ? Number(a.year) - Number(b.year) : collator.compare(a[key], b[key]);
+    return result === 0 ? a.source_order - b.source_order : result * multiplier;
   });
 }
 
-function badge(text, modifier = "") {
-  return createElement("span", `badge ${modifier}`.trim(), text);
+function tag(text, modifier = "") {
+  return node("span", `tag ${modifier}`.trim(), text);
 }
 
-function createLinks(record, compact = false) {
-  const definitions = [
-    ["paper_url", "Paper"],
-    ["github_url", "Code"],
-    ["demo_url", "Demo"],
-    ["web_url", "Web"]
-  ];
-  const wrapper = createElement("div", compact ? "row-links compact" : "row-links");
+function paperLinks(record, compact = false) {
+  const wrapper = node("div", compact ? "paper-links compact" : "paper-links");
+  const definitions = [["paper_url", "论文"], ["code_url", "代码"], ["demo_url", "Demo"]];
   for (const [key, label] of definitions) {
     if (!record[key]) continue;
-    const link = createElement("a", "paper-link", `${label} ↗`);
+    const link = node("a", "paper-link", `${label} ↗`);
     link.href = record[key];
     link.target = "_blank";
     link.rel = "noreferrer";
@@ -204,207 +150,152 @@ function createLinks(record, compact = false) {
   return wrapper;
 }
 
-function renderRow(record) {
-  const row = document.createElement("tr");
-  row.tabIndex = 0;
-  row.setAttribute("aria-label", `查看 ${record.title}`);
-  row.addEventListener("click", () => openDetail(record));
-  row.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      openDetail(record);
-    }
+function paperCard(record) {
+  const article = node("article", `paper-card paradigm-${record.paradigm.toLowerCase()}`);
+  article.tabIndex = 0;
+  article.setAttribute("aria-label", `查看 ${record.title} 详情`);
+  article.addEventListener("click", () => openDetail(record));
+  article.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openDetail(record); }
   });
 
-  const dateCell = document.createElement("td");
-  dateCell.dataset.label = "年份 / Venue";
-  dateCell.append(createElement("strong", "year", record.year), createElement("span", "venue", record.venue));
-
-  const domainCell = document.createElement("td");
-  domainCell.dataset.label = "领域 / 阶段";
-  domainCell.append(
-    badge(DOMAIN_LABELS[record.domain] ?? record.domain, `domain domain-${record.domain}`),
-    badge(STAGE_LABELS[record.stage] ?? record.stage, "stage")
-  );
-
-  const titleCell = document.createElement("td");
-  titleCell.dataset.label = "文献";
-  titleCell.append(createElement("button", "paper-title", record.title));
-
-  const keywordCell = document.createElement("td");
-  keywordCell.dataset.label = "关键词";
-  const keywordList = createElement("div", "keyword-list");
-  for (const keyword of record.keywords_list) keywordList.append(badge(keyword, "keyword"));
-  keywordCell.append(keywordList);
-
-  const statusCell = document.createElement("td");
-  statusCell.dataset.label = "状态";
-  statusCell.append(badge(STATUS_LABELS[record.status] ?? record.status, `status status-${record.status.toLowerCase().replaceAll(" ", "-")}`));
-
-  const ratingCell = document.createElement("td");
-  ratingCell.dataset.label = "星级";
-  ratingCell.append(createElement("span", record.rating ? "rating" : "rating empty", record.rating || "—"));
-
-  const linksCell = document.createElement("td");
-  linksCell.dataset.label = "入口";
-  linksCell.append(createLinks(record, true));
-
-  row.append(dateCell, domainCell, titleCell, keywordCell, statusCell, ratingCell, linksCell);
-  return row;
+  const meta = node("div", "paper-meta");
+  meta.append(node("span", "paper-year", record.year), node("span", "paper-venue", record.venue));
+  const paradigm = tag(PARADIGM_LABELS[record.paradigm] ?? record.paradigm, `paradigm ${record.paradigm.toLowerCase()}`);
+  const taskRow = node("div", "task-tags");
+  for (const taskName of record.tasks_list) taskRow.append(tag(TASK_LABELS[taskName] ?? taskName, "task-tag"));
+  const title = node("h3", "", record.title);
+  const family = node("p", "model-family", record.model_family);
+  const summary = node("p", "paper-summary", record.summary);
+  const context = node("div", "paper-context");
+  for (const channel of record.channels_list) context.append(tag(CHANNEL_LABELS[channel] ?? channel));
+  for (const scenario of record.scenarios_list.slice(0, 2)) context.append(tag(scenario));
+  if (record.realtime === "Yes") context.append(tag("实时", "realtime"));
+  const footer = node("div", "paper-footer");
+  footer.append(paperLinks(record, true), node("button", "detail-trigger", "结构与问题 →"));
+  article.append(meta, paradigm, taskRow, title, family, summary, context, footer);
+  return article;
 }
 
-function renderActiveFilters() {
-  const labels = {
-    search: "搜索",
-    domain: "领域",
-    stage: "阶段",
-    year: "年份",
-    status: "状态",
-    rating: "星级"
-  };
-  const values = {
-    domain: DOMAIN_LABELS,
-    stage: STAGE_LABELS,
-    status: STATUS_LABELS
-  };
-  const chips = Object.entries(state.filters).filter(([, value]) => value);
+function renderFilters() {
+  const labels = { search: "搜索", task: "任务", paradigm: "范式", channel: "通道", scenario: "场景", year: "年份" };
+  const maps = { task: TASK_LABELS, paradigm: PARADIGM_LABELS, channel: CHANNEL_LABELS };
+  const active = Object.entries(state.filters).filter(([, value]) => value);
   elements.activeFilters.replaceChildren();
-
-  if (chips.length === 0) {
-    elements.activeFilters.append(createElement("span", "filter-placeholder", "当前显示全部文献"));
+  if (active.length === 0) {
+    elements.activeFilters.append(node("span", "filter-hint", "当前显示全部文献"));
     return;
   }
-
-  for (const [key, value] of chips) {
-    const displayValue = value === "unrated" ? "未评分" : (values[key]?.[value] ?? value);
-    const button = createElement("button", "filter-chip", `${labels[key]}：${displayValue} ×`);
+  for (const [key, value] of active) {
+    const button = node("button", "filter-chip", `${labels[key]}：${maps[key]?.[value] ?? value} ×`);
     button.type = "button";
-    button.addEventListener("click", () => {
-      state.filters[key] = "";
-      syncControls();
-      applyState();
-    });
+    button.addEventListener("click", () => { state.filters[key] = ""; syncControls(); applyState(); });
     elements.activeFilters.append(button);
   }
 }
 
 function render() {
-  elements.body.replaceChildren();
-  for (const record of state.filtered) elements.body.append(renderRow(record));
-  elements.tableState.hidden = state.filtered.length > 0;
-  if (state.filtered.length === 0) elements.tableState.textContent = "没有匹配的文献，试试减少筛选条件。";
-  elements.resultCount.textContent = `显示 ${state.filtered.length} / ${state.catalog.length} 篇文献`;
-  renderActiveFilters();
+  elements.grid.replaceChildren(...state.filtered.map(paperCard));
+  elements.empty.hidden = state.filtered.length > 0;
+  elements.resultCount.textContent = `显示 ${state.filtered.length} / ${state.catalog.length} 篇`;
+  renderFilters();
 }
 
 function applyState() {
-  state.filtered = sortRecords(state.catalog.filter(matches));
+  state.filtered = sorted(state.catalog.filter(matches));
   writeUrlState();
   render();
 }
 
 function renderStats() {
-  const years = state.catalog.map((record) => Number(record.year));
   elements.statTotal.textContent = String(state.catalog.length).padStart(2, "0");
-  elements.statDomains.textContent = String(new Set(state.catalog.map((record) => record.domain)).size).padStart(2, "0");
-  elements.statYears.textContent = String(Math.max(...years) - Math.min(...years) + 1);
-  elements.statRead.textContent = String(state.catalog.filter((record) => ["Read", "Reading"].includes(record.status)).length).padStart(2, "0");
+  elements.statGenerative.textContent = String(state.catalog.filter((record) => ["Generative", "Hybrid"].includes(record.paradigm)).length).padStart(2, "0");
+  elements.statRealtime.textContent = String(state.catalog.filter((record) => record.realtime === "Yes").length).padStart(2, "0");
+  elements.statScenarios.textContent = String(uniqueList("scenarios_list").length).padStart(2, "0");
+  for (const counter of document.querySelectorAll("[data-task-count]")) {
+    counter.textContent = state.catalog.filter((record) => record.tasks_list.includes(counter.dataset.taskCount)).length;
+  }
 }
 
 function openDetail(record) {
-  elements.detailMeta.textContent = `${record.year} / ${record.venue}`;
+  elements.detailMeta.textContent = `${record.year} · ${record.venue} · ${record.model_family}`;
   elements.detailTitle.textContent = record.title;
   elements.detailSummary.textContent = record.summary;
-  elements.detailValue.textContent = record.why_it_matters;
-  elements.detailKeywords.textContent = record.keywords_list.join(" · ");
-  elements.detailLabels.replaceChildren(
-    badge(DOMAIN_LABELS[record.domain] ?? record.domain, `domain domain-${record.domain}`),
-    badge(STAGE_LABELS[record.stage] ?? record.stage, "stage"),
-    badge(STATUS_LABELS[record.status] ?? record.status, "status"),
-    badge(record.rating || "未评分", record.rating ? "rating" : "rating empty")
+  elements.detailArchitecture.textContent = record.architecture;
+  elements.detailLimitations.textContent = record.limitations;
+  elements.detailTags.replaceChildren(
+    tag(PARADIGM_LABELS[record.paradigm] ?? record.paradigm, `paradigm ${record.paradigm.toLowerCase()}`),
+    ...record.tasks_list.map((item) => tag(TASK_LABELS[item] ?? item, "task-tag")),
+    ...record.channels_list.map((item) => tag(CHANNEL_LABELS[item] ?? item)),
+    ...(record.realtime === "Yes" ? [tag("实时", "realtime")] : [])
   );
-  elements.detailLinks.replaceChildren(createLinks(record));
+  elements.detailMetrics.replaceChildren(...record.metrics_list.map((item) => tag(item, "metric-pill")));
+  elements.detailLinks.replaceChildren(paperLinks(record));
   elements.dialog.showModal();
 }
 
 function showToast(message) {
-  window.clearTimeout(toastTimer);
+  clearTimeout(toastTimer);
   elements.toast.textContent = message;
   elements.toast.classList.add("visible");
-  toastTimer = window.setTimeout(() => elements.toast.classList.remove("visible"), 2200);
+  toastTimer = setTimeout(() => elements.toast.classList.remove("visible"), 2200);
 }
 
-function csvEscape(value) {
+function csvCell(value) {
   const string = String(value ?? "");
   return /[",\n]/.test(string) ? `"${string.replaceAll('"', '""')}"` : string;
 }
 
 function exportCsv() {
-  const headers = ["year", "venue", "rating", "domain", "stage", "status", "title", "keywords", "paper_url", "github_url", "summary", "why_it_matters"];
-  const rows = [headers, ...state.filtered.map((record) => headers.map((key) => record[key]))];
-  const csv = rows.map((row) => row.map(csvEscape).join(",")).join("\n");
-  const blob = new Blob([`\ufeff${csv}`], { type: "text/csv;charset=utf-8" });
+  const headers = ["year", "venue", "tasks", "paradigm", "channels", "scenarios", "title", "paper_url", "code_url", "summary", "architecture", "limitations", "metrics"];
+  const content = [headers.join(","), ...state.filtered.map((record) => headers.map((header) => csvCell(record[header])).join(","))].join("\n");
   const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "speech-front-end-literature.csv";
+  link.href = URL.createObjectURL(new Blob([`\ufeff${content}`], { type: "text/csv;charset=utf-8" }));
+  link.download = "speech-front-end-view.csv";
   link.click();
   URL.revokeObjectURL(link.href);
   showToast(`已导出 ${state.filtered.length} 篇文献`);
 }
 
 function bindEvents() {
-  let searchTimer;
-  elements.search.addEventListener("input", () => {
-    window.clearTimeout(searchTimer);
-    searchTimer = window.setTimeout(() => {
-      state.filters.search = elements.search.value;
-      applyState();
-    }, 120);
-  });
-
-  for (const key of ["domain", "stage", "year", "status", "rating"]) {
-    elements[key].addEventListener("change", () => {
-      state.filters[key] = elements[key].value;
-      applyState();
-    });
+  elements.search.addEventListener("input", () => { state.filters.search = elements.search.value; applyState(); });
+  for (const key of ["task", "paradigm", "channel", "scenario", "year"]) {
+    elements[key].addEventListener("change", () => { state.filters[key] = elements[key].value; applyState(); });
   }
-
-  elements.sort.addEventListener("change", () => {
-    state.sort = elements.sort.value;
-    applyState();
-  });
-
+  elements.sort.addEventListener("change", () => { state.sort = elements.sort.value; applyState(); });
   elements.clear.addEventListener("click", () => {
     for (const key of Object.keys(state.filters)) state.filters[key] = "";
     state.sort = "year:desc";
     syncControls();
     applyState();
   });
-
   elements.copy.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      showToast("筛选链接已复制");
-    } catch {
-      showToast("复制失败，请从地址栏复制");
-    }
+    try { await navigator.clipboard.writeText(window.location.href); showToast("筛选链接已复制"); }
+    catch { showToast("浏览器未允许复制，请手动复制地址栏"); }
   });
-
   elements.export.addEventListener("click", exportCsv);
   elements.closeDialog.addEventListener("click", () => elements.dialog.close());
   elements.dialog.addEventListener("click", (event) => {
     if (event.target === elements.dialog) elements.dialog.close();
   });
-
+  for (const button of document.querySelectorAll("[data-task-jump]")) {
+    button.addEventListener("click", () => {
+      state.filters.task = button.dataset.taskJump;
+      syncControls();
+      applyState();
+      document.querySelector("#library").scrollIntoView({ behavior: "smooth" });
+    });
+  }
   document.addEventListener("keydown", (event) => {
-    if (event.key === "/" && document.activeElement?.tagName !== "INPUT") {
+    if (event.key === "/" && !["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName) && !elements.dialog.open) {
       event.preventDefault();
       elements.search.focus();
     }
   });
 }
 
-async function init() {
+async function initialize() {
+  bindEvents();
   try {
     const response = await fetch(DATA_URL);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -413,16 +304,14 @@ async function init() {
     readUrlState();
     syncControls();
     renderStats();
-    bindEvents();
     applyState();
-    elements.syncStatus.textContent = `${state.catalog.length} 条记录已同步`;
+    elements.syncStatus.innerHTML = "<span></span>目录已同步";
   } catch (error) {
-    elements.tableState.hidden = false;
-    elements.tableState.textContent = "目录载入失败，请确认已先运行 npm run build。";
-    elements.resultCount.textContent = "数据不可用";
-    elements.syncStatus.textContent = "同步失败";
-    console.error(error);
+    elements.syncStatus.textContent = "载入失败";
+    elements.resultCount.textContent = "无法读取文献数据";
+    elements.empty.hidden = false;
+    elements.empty.textContent = `请通过本地服务器打开网站。${error.message}`;
   }
 }
 
-init();
+initialize();

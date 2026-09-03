@@ -1,577 +1,1547 @@
 [
   {
-    "id": "1980-TASSP-MFCC",
-    "year": "1980",
-    "venue": "IEEE TASSP",
-    "rating": "",
-    "domain": "ClassicFeatures",
-    "stage": "Feature",
-    "status": "To read",
-    "title": "Comparison of Parametric Representations for Monosyllabic Word Recognition in Continuously Spoken Sentences",
-    "keywords": "MFCC；mel scale；cepstrum",
-    "paper_url": "https://doi.org/10.1109/TASSP.1980.1163420",
-    "github_url": "",
+    "id": "cdiffuse",
+    "year": "2022",
+    "venue": "ICASSP 2022",
+    "tasks": "Speech Enhancement",
+    "paradigm": "Generative",
+    "channels": "Single-channel",
+    "scenarios": "General",
+    "model_family": "Conditional diffusion",
+    "realtime": "No",
+    "title": "Conditional Diffusion Probabilistic Model for Speech Enhancement",
+    "keywords": "diffusion;unseen noise;waveform",
+    "paper_url": "https://arxiv.org/abs/2202.05256",
+    "code_url": "",
     "demo_url": "",
-    "web_url": "",
-    "summary": "系统比较多种语音参数表示，并奠定 MFCC 作为经典声学前端的实践基础。",
-    "why_it_matters": "建立手工特征基线；后续可从感知尺度、去相关和动态特征三个维度理解神经前端的改进。",
-    "source_order": 0,
+    "summary": "将真实噪声作为条件而不是假设为高斯退化，是早期把条件扩散系统化用于语音增强的代表工作。",
+    "architecture": "前向过程把干净语音逐步推向以噪声观测为条件的分布，反向网络迭代恢复语音。",
+    "limitations": "多步采样慢；分布外条件仍可能生成不忠实的语音细节；实时部署困难。",
+    "metrics": "PESQ;STOI;CSIG;CBAK;COVL",
+    "tasks_list": [
+      "Speech Enhancement"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "General"
+    ],
     "keywords_list": [
-      "MFCC",
-      "mel scale",
-      "cepstrum"
-    ]
-  },
-  {
-    "id": "1990-JASA-PLP",
-    "year": "1990",
-    "venue": "JASA",
-    "rating": "",
-    "domain": "ClassicFeatures",
-    "stage": "Feature",
-    "status": "To read",
-    "title": "Perceptual Linear Predictive (PLP) Analysis of Speech",
-    "keywords": "PLP；critical bands；equal loudness",
-    "paper_url": "https://doi.org/10.1121/1.399423",
-    "github_url": "",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "把听觉频谱、等响曲线与响度压缩纳入线性预测分析。",
-    "why_it_matters": "提供与 MFCC 不同的感知建模路径，适合分析传统 front-end 在噪声与信道变化下的归纳偏置。",
-    "source_order": 1,
-    "keywords_list": [
-      "PLP",
-      "critical bands",
-      "equal loudness"
-    ]
-  },
-  {
-    "id": "1994-TSAP-RASTA",
-    "year": "1994",
-    "venue": "IEEE TSAP",
-    "rating": "",
-    "domain": "RobustFeatures",
-    "stage": "Preprocess",
-    "status": "To read",
-    "title": "RASTA Processing of Speech",
-    "keywords": "RASTA；channel robustness；temporal filtering",
-    "paper_url": "https://doi.org/10.1109/89.326616",
-    "github_url": "",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "在特征轨迹上做带通式时间滤波，以削弱慢变信道影响和不相关的快速变化。",
-    "why_it_matters": "是鲁棒特征处理中“对时间调制谱施加先验”的经典起点，可与现代可学习归一化和增强模块对照。",
-    "source_order": 2,
-    "keywords_list": [
-      "RASTA",
-      "channel robustness",
-      "temporal filtering"
-    ]
-  },
-  {
-    "id": "2010-TASLP-WPE",
-    "year": "2010",
-    "venue": "IEEE TASLP",
-    "rating": "",
-    "domain": "Dereverberation",
-    "stage": "Preprocess",
-    "status": "To read",
-    "title": "Speech Dereverberation Based on Variance-Normalized Delayed Linear Prediction",
-    "keywords": "WPE；late reverberation；linear prediction",
-    "paper_url": "https://doi.org/10.1109/TASL.2010.2052251",
-    "github_url": "https://github.com/fgnt/nara_wpe",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "用时变方差归一化的延迟线性预测估计并消除晚期混响。",
-    "why_it_matters": "WPE 仍是多通道远场前端的重要模块；理解其统计假设有助于判断神经去混响应替代还是补充它。",
-    "source_order": 3,
-    "keywords_list": [
-      "WPE",
-      "late reverberation",
-      "linear prediction"
-    ]
-  },
-  {
-    "id": "2015-TASLP-PNCC",
-    "year": "2015",
-    "venue": "IEEE/ACM TASLP",
-    "rating": "",
-    "domain": "RobustFeatures",
-    "stage": "Feature",
-    "status": "To read",
-    "title": "Power-Normalized Cepstral Coefficients (PNCC) for Robust Speech Recognition",
-    "keywords": "PNCC；medium-time power；noise robustness",
-    "paper_url": "https://doi.org/10.1109/TASLP.2015.2461931",
-    "github_url": "",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "利用中时功率估计、非对称噪声抑制和幂律非线性构造鲁棒倒谱特征。",
-    "why_it_matters": "为低算力或小数据条件提供强传统基线，也能启发可解释的神经特征归一化设计。",
-    "source_order": 4,
-    "keywords_list": [
-      "PNCC",
-      "medium-time power",
-      "noise robustness"
-    ]
-  },
-  {
-    "id": "2016-ICASSP-Neural-Beamforming",
-    "year": "2016",
-    "venue": "ICASSP",
-    "rating": "",
-    "domain": "Beamforming",
-    "stage": "Spatial",
-    "status": "To read",
-    "title": "Neural Network Based Spectral Mask Estimation for Acoustic Beamforming",
-    "keywords": "spectral mask；spatial covariance；beamforming",
-    "paper_url": "https://doi.org/10.1109/ICASSP.2016.7471664",
-    "github_url": "",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "用神经网络估计时频掩码，再由掩码计算语音与噪声空间协方差并求解波束形成器。",
-    "why_it_matters": "清晰展示“神经估计 + 可解释空间滤波”的混合范式，是多麦克风前端的核心参考。",
-    "source_order": 5,
-    "keywords_list": [
-      "spectral mask",
-      "spatial covariance",
-      "beamforming"
-    ]
-  },
-  {
-    "id": "2018-SLT-SincNet",
-    "year": "2018",
-    "venue": "SLT",
-    "rating": "",
-    "domain": "LearnableFrontend",
-    "stage": "Feature",
-    "status": "To read",
-    "title": "Speaker Recognition from Raw Waveform with SincNet",
-    "keywords": "SincNet；band-pass filters；raw waveform",
-    "paper_url": "https://arxiv.org/abs/1808.00158",
-    "github_url": "https://github.com/mravanelli/SincNet",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "以参数化 sinc 带通滤波器替代首层普通卷积，直接从波形学习可解释滤波器组。",
-    "why_it_matters": "是研究可学习前端时最简洁的可解释基线，便于比较固定 mel、自由卷积和受约束滤波器。",
-    "source_order": 6,
-    "keywords_list": [
-      "SincNet",
-      "band-pass filters",
-      "raw waveform"
-    ]
-  },
-  {
-    "id": "2019-TASLP-ConvTasNet",
-    "year": "2019",
-    "venue": "IEEE/ACM TASLP",
-    "rating": "",
-    "domain": "SpeechSeparation",
-    "stage": "Separation",
-    "status": "To read",
-    "title": "Conv-TasNet: Surpassing Ideal Time-Frequency Magnitude Masking for Speech Separation",
-    "keywords": "time-domain；TCN；learned encoder",
-    "paper_url": "https://arxiv.org/abs/1809.07454",
-    "github_url": "",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "在时域学习编码器、分离掩码和解码器，绕开固定 STFT 表示与显式相位重建。",
-    "why_it_matters": "代表从手工时频前端转向端到端可学习分析/合成滤波器组的关键节点。",
-    "source_order": 7,
-    "keywords_list": [
-      "time-domain",
-      "TCN",
-      "learned encoder"
-    ]
-  },
-  {
-    "id": "2020-INTERSPEECH-DCCRN",
-    "year": "2020",
-    "venue": "Interspeech",
-    "rating": "",
-    "domain": "SpeechEnhancement",
-    "stage": "Enhancement",
-    "status": "To read",
-    "title": "DCCRN: Deep Complex Convolution Recurrent Network for Phase-Aware Speech Enhancement",
-    "keywords": "complex network；phase-aware；real-time",
-    "paper_url": "https://arxiv.org/abs/2008.00264",
-    "github_url": "https://github.com/huyanxin/DeepComplexCRN",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "以复数卷积与复数循环结构联合估计幅度和相位，并面向实时降噪约束设计。",
-    "why_it_matters": "是复数谱建模与实时工程结合的代表作，可作为频域增强系统的强基线。",
-    "source_order": 8,
-    "keywords_list": [
-      "complex network",
-      "phase-aware",
-      "real-time"
-    ]
-  },
-  {
-    "id": "2020-INTERSPEECH-DNS-Challenge",
-    "year": "2020",
-    "venue": "Interspeech",
-    "rating": "",
-    "domain": "Benchmark",
-    "stage": "Evaluation",
-    "status": "To read",
-    "title": "The INTERSPEECH 2020 Deep Noise Suppression Challenge: Datasets, Subjective Testing Framework, and Challenge Results",
-    "keywords": "DNS Challenge；P.808；real-world noise",
-    "paper_url": "https://arxiv.org/abs/2005.13981",
-    "github_url": "https://github.com/microsoft/DNS-Challenge",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "建立面向真实噪声、实时单通道增强和可扩展主观评价的公开挑战体系。",
-    "why_it_matters": "提醒前端研究不能只看合成测试集与单一客观指标；数据失配、主观质量和实时性应同时报告。",
-    "source_order": 9,
-    "keywords_list": [
-      "DNS Challenge",
-      "P.808",
-      "real-world noise"
-    ]
-  },
-  {
-    "id": "2020-NEURIPS-wav2vec2",
-    "year": "2020",
-    "venue": "NeurIPS",
-    "rating": "",
-    "domain": "SSLRepresentation",
-    "stage": "Representation",
-    "status": "To read",
-    "title": "wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations",
-    "keywords": "contrastive learning；quantization；masked latent",
-    "paper_url": "https://arxiv.org/abs/2006.11477",
-    "github_url": "https://github.com/facebookresearch/fairseq/tree/main/examples/wav2vec",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "在连续潜表示上做掩码，并用量化目标进行对比学习，显著降低 ASR 对标注数据的需求。",
-    "why_it_matters": "将 front-end 从固定特征推进到大规模自监督表示；适合作为内容导向表示学习的主干基线。",
-    "source_order": 10,
-    "keywords_list": [
-      "contrastive learning",
-      "quantization",
-      "masked latent"
-    ]
-  },
-  {
-    "id": "2020-INTERSPEECH-VoiceFilter-Lite",
-    "year": "2020",
-    "venue": "Interspeech",
-    "rating": "",
-    "domain": "Streaming",
-    "stage": "Separation",
-    "status": "To read",
-    "title": "VoiceFilter-Lite: Streaming Targeted Voice Separation for On-Device Speech Recognition",
-    "keywords": "target speaker；streaming；on-device",
-    "paper_url": "https://arxiv.org/abs/2009.04323",
-    "github_url": "",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "用目标说话人条件做流式单通道语音分离，并针对设备端算力、延迟与非重叠场景退化进行设计。",
-    "why_it_matters": "把算法指标与真实部署约束放在同一问题中，适合作为流式个性化前端的设计样板。",
-    "source_order": 11,
-    "keywords_list": [
-      "target speaker",
-      "streaming",
-      "on-device"
-    ]
-  },
-  {
-    "id": "2021-ICASSP-FullSubNet",
-    "year": "2021",
-    "venue": "ICASSP",
-    "rating": "",
-    "domain": "SpeechEnhancement",
-    "stage": "Enhancement",
-    "status": "To read",
-    "title": "FullSubNet: A Full-Band and Sub-Band Fusion Model for Real-Time Single-Channel Speech Enhancement",
-    "keywords": "full-band；sub-band；real-time",
-    "paper_url": "https://arxiv.org/abs/2010.15508",
-    "github_url": "https://github.com/Audio-WestlakeU/FullSubNet",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "串联全频带与子带模型，同时利用全局跨频依赖和局部谱模式。",
-    "why_it_matters": "提供了清晰的多尺度频谱建模范式，也便于研究性能、延迟和复杂度之间的折中。",
-    "source_order": 12,
-    "keywords_list": [
-      "full-band",
-      "sub-band",
-      "real-time"
-    ]
-  },
-  {
-    "id": "2021-ICASSP-SepFormer",
-    "year": "2021",
-    "venue": "ICASSP",
-    "rating": "",
-    "domain": "SpeechSeparation",
-    "stage": "Separation",
-    "status": "To read",
-    "title": "Attention is All You Need in Speech Separation",
-    "keywords": "SepFormer；dual-path；transformer",
-    "paper_url": "https://arxiv.org/abs/2010.13154",
-    "github_url": "https://github.com/speechbrain/speechbrain/tree/develop/recipes/WSJ0Mix/separation",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "用多尺度 Transformer 建模片段内与片段间依赖，构成无 RNN 的时域分离器。",
-    "why_it_matters": "是 dual-path 分离架构的重要代表，适合与 Conv-TasNet 对比长程建模收益及计算代价。",
-    "source_order": 13,
-    "keywords_list": [
-      "SepFormer",
-      "dual-path",
-      "transformer"
-    ]
-  },
-  {
-    "id": "2021-INTERSPEECH-MetricGANPlus",
-    "year": "2021",
-    "venue": "Interspeech",
-    "rating": "",
-    "domain": "SpeechEnhancement",
-    "stage": "Enhancement",
-    "status": "To read",
-    "title": "MetricGAN+: An Improved Version of MetricGAN for Speech Enhancement",
-    "keywords": "metric learning；PESQ；perceptual quality",
-    "paper_url": "https://arxiv.org/abs/2104.03538",
-    "github_url": "https://github.com/speechbrain/speechbrain/tree/develop/recipes/Voicebank/enhance/MetricGAN",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "通过学习不可微评价指标的代理判别器，让增强模型更直接地优化感知质量。",
-    "why_it_matters": "适合研究训练目标与感知评价的错位，同时也提示必须检查代理指标过拟合和域外泛化。",
-    "source_order": 14,
-    "keywords_list": [
-      "metric learning",
+      "diffusion",
+      "unseen noise",
+      "waveform"
+    ],
+    "metrics_list": [
       "PESQ",
-      "perceptual quality"
-    ]
+      "STOI",
+      "CSIG",
+      "CBAK",
+      "COVL"
+    ],
+    "source_order": 0
   },
   {
-    "id": "2021-TASLP-HuBERT",
-    "year": "2021",
-    "venue": "IEEE/ACM TASLP",
-    "rating": "",
-    "domain": "SSLRepresentation",
-    "stage": "Representation",
-    "status": "To read",
-    "title": "HuBERT: Self-Supervised Speech Representation Learning by Masked Prediction of Hidden Units",
-    "keywords": "masked prediction；offline clustering；hidden units",
-    "paper_url": "https://arxiv.org/abs/2106.07447",
-    "github_url": "https://github.com/facebookresearch/fairseq/tree/main/examples/hubert",
+    "id": "sgmse-plus",
+    "year": "2023",
+    "venue": "IEEE/ACM TASLP 2023",
+    "tasks": "Speech Enhancement;Dereverberation",
+    "paradigm": "Generative",
+    "channels": "Single-channel",
+    "scenarios": "General;Noisy-reverberant",
+    "model_family": "Score-based diffusion",
+    "realtime": "No",
+    "title": "Speech Enhancement and Dereverberation with Diffusion-based Generative Models",
+    "keywords": "diffusion;SDE;complex STFT;dereverberation",
+    "paper_url": "https://arxiv.org/abs/2208.05830",
+    "code_url": "https://github.com/sp-uhh/sgmse",
     "demo_url": "",
-    "web_url": "",
-    "summary": "用离线聚类生成隐藏单元目标，并仅在掩码区域预测这些离散目标。",
-    "why_it_matters": "提供不同于对比学习的伪标签路线，是分析层级语音表示和下游迁移能力的核心文献。",
-    "source_order": 15,
+    "summary": "统一处理降噪与去混响的经典 score-based 基线，强调跨数据集泛化与感知质量。",
+    "architecture": "在复数 STFT 域学习时间相关 score，反向 SDE 从带噪观测附近逐步采样干净语音。",
+    "limitations": "典型设置需要约 30 次网络评估；结果依赖噪声调度，且强退化下有再生偏差。",
+    "metrics": "PESQ;ESTOI;SI-SDR;DNSMOS;MOS",
+    "tasks_list": [
+      "Speech Enhancement",
+      "Dereverberation"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "General",
+      "Noisy-reverberant"
+    ],
     "keywords_list": [
-      "masked prediction",
-      "offline clustering",
-      "hidden units"
-    ]
+      "diffusion",
+      "SDE",
+      "complex STFT",
+      "dereverberation"
+    ],
+    "metrics_list": [
+      "PESQ",
+      "ESTOI",
+      "SI-SDR",
+      "DNSMOS",
+      "MOS"
+    ],
+    "source_order": 1
   },
   {
-    "id": "2021-ICLR-LEAF",
-    "year": "2021",
-    "venue": "ICLR",
-    "rating": "",
-    "domain": "LearnableFrontend",
-    "stage": "Feature",
-    "status": "To read",
-    "title": "LEAF: A Learnable Frontend for Audio Classification",
-    "keywords": "Gabor filters；PCEN；learnable pooling",
-    "paper_url": "https://arxiv.org/abs/2101.08596",
-    "github_url": "https://github.com/google-research/leaf-audio",
+    "id": "storm",
+    "year": "2023",
+    "venue": "IEEE/ACM TASLP 2023",
+    "tasks": "Speech Enhancement;Dereverberation",
+    "paradigm": "Hybrid",
+    "channels": "Single-channel",
+    "scenarios": "General;Noisy-reverberant",
+    "model_family": "Predict-then-diffuse",
+    "realtime": "No",
+    "title": "StoRM: A Diffusion-based Stochastic Regeneration Model for Speech Enhancement and Dereverberation",
+    "keywords": "diffusion;predictive estimate;regeneration",
+    "paper_url": "https://arxiv.org/abs/2212.11851",
+    "code_url": "",
+    "demo_url": "https://uhh.de/inf-sp-storm",
+    "summary": "用判别式预测先给出锚点，再由扩散细化，代表生成式与判别式融合路线。",
+    "architecture": "预测网络产生初始增强结果，score model 以该结果和混合语音为条件进行随机再生。",
+    "limitations": "仍需迭代采样；预测器偏差会传给生成器；低 SNR 下需警惕说话内容幻觉。",
+    "metrics": "PESQ;ESTOI;SI-SDR;DNSMOS;MOS",
+    "tasks_list": [
+      "Speech Enhancement",
+      "Dereverberation"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "General",
+      "Noisy-reverberant"
+    ],
+    "keywords_list": [
+      "diffusion",
+      "predictive estimate",
+      "regeneration"
+    ],
+    "metrics_list": [
+      "PESQ",
+      "ESTOI",
+      "SI-SDR",
+      "DNSMOS",
+      "MOS"
+    ],
+    "source_order": 2
+  },
+  {
+    "id": "se-bridge",
+    "year": "2023",
+    "venue": "arXiv 2023",
+    "tasks": "Speech Enhancement",
+    "paradigm": "Generative",
+    "channels": "Single-channel",
+    "scenarios": "General;Downstream ASR",
+    "model_family": "Consistency / Brownian bridge",
+    "realtime": "No",
+    "title": "SE-Bridge: Speech Enhancement with Consistent Brownian Bridge",
+    "keywords": "consistency model;Brownian bridge;fast sampling",
+    "paper_url": "https://arxiv.org/abs/2305.13796",
+    "code_url": "",
     "demo_url": "",
-    "web_url": "",
-    "summary": "把滤波、池化、压缩和归一化组成轻量、可微、可替换 mel 滤波器组的前端。",
-    "why_it_matters": "适合直接检验学习型前端是否在不同语音任务和噪声条件下真正优于固定特征。",
-    "source_order": 16,
+    "summary": "把 Brownian Bridge 与一致性模型结合，显著减少扩散采样成本，并测试 ASR 与说话人验证。",
+    "architecture": "学习概率流 ODE 同一轨迹上状态到干净语音的一致映射，可少步甚至单步恢复。",
+    "limitations": "加速并未消除生成式保真风险；跨语言和真实设备的稳健性仍需独立验证。",
+    "metrics": "PESQ;STOI;DNSMOS;WER;Speaker verification",
+    "tasks_list": [
+      "Speech Enhancement"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "General",
+      "Downstream ASR"
+    ],
     "keywords_list": [
-      "Gabor filters",
-      "PCEN",
-      "learnable pooling"
-    ]
+      "consistency model",
+      "Brownian bridge",
+      "fast sampling"
+    ],
+    "metrics_list": [
+      "PESQ",
+      "STOI",
+      "DNSMOS",
+      "WER",
+      "Speaker verification"
+    ],
+    "source_order": 3
   },
   {
-    "id": "2021-SLT-SUPERB",
-    "year": "2021",
-    "venue": "SLT",
-    "rating": "",
-    "domain": "Benchmark",
-    "stage": "Evaluation",
-    "status": "To read",
-    "title": "SUPERB: Speech processing Universal PERformance Benchmark",
-    "keywords": "SUPERB；frozen encoder；transfer learning",
-    "paper_url": "https://arxiv.org/abs/2105.01051",
-    "github_url": "https://github.com/s3prl/s3prl",
+    "id": "extract-diffuse",
+    "year": "2024",
+    "venue": "arXiv 2024",
+    "tasks": "Speech Enhancement",
+    "paradigm": "Hybrid",
+    "channels": "Single-channel",
+    "scenarios": "General",
+    "model_family": "Predictive latent + diffusion",
+    "realtime": "No",
+    "title": "Extract and Diffuse: Latent Integration for Improved Diffusion-based Speech and Vocal Enhancement",
+    "keywords": "latent conditioning;diffusion;fidelity",
+    "paper_url": "https://arxiv.org/abs/2409.09642",
+    "code_url": "",
     "demo_url": "",
-    "web_url": "https://superbbenchmark.org/",
-    "summary": "以冻结的共享语音表示和轻量任务头，系统评估模型跨多类语音任务的迁移能力。",
-    "why_it_matters": "为通用 speech front-end 提供比单一 ASR WER 更完整的评价框架。",
-    "source_order": 17,
+    "summary": "先提取判别式潜表示再扩散，直接针对生成式模型自然度高但内容保真不足的问题。",
+    "architecture": "判别式增强器提供内容潜变量，条件 score network 在生成阶段恢复细节。",
+    "limitations": "双模型带来训练与推理复杂度；上游潜表示错误可能限制生成结果。",
+    "metrics": "PESQ;STOI;SI-SDR;DNSMOS;NISQA",
+    "tasks_list": [
+      "Speech Enhancement"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "General"
+    ],
     "keywords_list": [
-      "SUPERB",
-      "frozen encoder",
-      "transfer learning"
-    ]
+      "latent conditioning",
+      "diffusion",
+      "fidelity"
+    ],
+    "metrics_list": [
+      "PESQ",
+      "STOI",
+      "SI-SDR",
+      "DNSMOS",
+      "NISQA"
+    ],
+    "source_order": 4
   },
   {
-    "id": "2022-JSTSP-WavLM",
+    "id": "selm",
+    "year": "2024",
+    "venue": "ICASSP 2024",
+    "tasks": "Speech Enhancement",
+    "paradigm": "Generative",
+    "channels": "Single-channel",
+    "scenarios": "General;Offline",
+    "model_family": "Speech language model",
+    "realtime": "No",
+    "title": "SELM: Speech Enhancement Using Discrete Tokens and Language Models",
+    "keywords": "discrete tokens;language model;HiFi-GAN",
+    "paper_url": "https://arxiv.org/abs/2312.09747",
+    "code_url": "",
+    "demo_url": "https://honee-w.github.io/SELM/",
+    "summary": "把增强改写为离散语音 token 的语言建模，展示语义先验对主观自然度的帮助。",
+    "architecture": "SSL 特征经 k-means 离散化，Transformer 预测干净 token，再由 detokenizer 与 HiFi-GAN 合成波形。",
+    "limitations": "量化会损失音色和细粒度声学信息；自回归解码慢，并可能改写内容。",
+    "metrics": "PESQ;STOI;DNSMOS;MOS;WER",
+    "tasks_list": [
+      "Speech Enhancement"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "General",
+      "Offline"
+    ],
+    "keywords_list": [
+      "discrete tokens",
+      "language model",
+      "HiFi-GAN"
+    ],
+    "metrics_list": [
+      "PESQ",
+      "STOI",
+      "DNSMOS",
+      "MOS",
+      "WER"
+    ],
+    "source_order": 5
+  },
+  {
+    "id": "speechflow",
+    "year": "2023",
+    "venue": "arXiv 2023",
+    "tasks": "Speech Enhancement",
+    "paradigm": "Generative",
+    "channels": "Single-channel",
+    "scenarios": "General;Large-scale pretraining",
+    "model_family": "Flow matching",
+    "realtime": "No",
+    "title": "Generative Pre-training for Speech with Flow Matching",
+    "keywords": "flow matching;pretraining;foundation model",
+    "paper_url": "https://arxiv.org/abs/2310.16338",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "以 6 万小时无标注语音预训练同一生成模型，再适配增强与分离，是通用生成式前端的重要方向。",
+    "architecture": "在掩蔽条件下学习连续流，将简单分布运输到语音分布，再对增强任务微调。",
+    "limitations": "预训练与适配成本高；通用能力不等于低延迟；任务输出保真仍需专项约束。",
+    "metrics": "PESQ;STOI;SI-SDR;MOS",
+    "tasks_list": [
+      "Speech Enhancement"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "General",
+      "Large-scale pretraining"
+    ],
+    "keywords_list": [
+      "flow matching",
+      "pretraining",
+      "foundation model"
+    ],
+    "metrics_list": [
+      "PESQ",
+      "STOI",
+      "SI-SDR",
+      "MOS"
+    ],
+    "source_order": 6
+  },
+  {
+    "id": "flowse",
+    "year": "2025",
+    "venue": "Interspeech 2025",
+    "tasks": "Speech Enhancement",
+    "paradigm": "Generative",
+    "channels": "Single-channel",
+    "scenarios": "General;Optional text",
+    "model_family": "Flow matching",
+    "realtime": "No",
+    "title": "FlowSE: Efficient and High-Quality Speech Enhancement via Flow Matching",
+    "keywords": "flow matching;text conditioning;mel spectrogram",
+    "paper_url": "https://arxiv.org/abs/2505.19476",
+    "code_url": "https://github.com/Honee-W/FlowSE",
+    "demo_url": "",
+    "summary": "用条件 flow matching 缩短生成路径，并可选用转写文本来约束内容。",
+    "architecture": "从噪声 mel 到干净 mel 学习连续速度场，随后由声码器重建；文本条件可加强语义一致性。",
+    "limitations": "依赖声码器且可能改变说话人细节；文本条件需要 ASR 或标注；尚非严格实时证据。",
+    "metrics": "PESQ;STOI;DNSMOS;NISQA;Speaker similarity",
+    "tasks_list": [
+      "Speech Enhancement"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "General",
+      "Optional text"
+    ],
+    "keywords_list": [
+      "flow matching",
+      "text conditioning",
+      "mel spectrogram"
+    ],
+    "metrics_list": [
+      "PESQ",
+      "STOI",
+      "DNSMOS",
+      "NISQA",
+      "Speaker similarity"
+    ],
+    "source_order": 7
+  },
+  {
+    "id": "cmgan",
     "year": "2022",
-    "venue": "IEEE JSTSP",
-    "rating": "",
-    "domain": "SSLRepresentation",
-    "stage": "Representation",
-    "status": "To read",
-    "title": "WavLM: Large-Scale Self-Supervised Pre-Training for Full Stack Speech Processing",
-    "keywords": "masked prediction；denoising；94k hours",
-    "paper_url": "https://arxiv.org/abs/2110.13900",
-    "github_url": "https://github.com/microsoft/unilm/tree/master/wavlm",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "把掩码语音预测与去噪联合起来，并扩展预训练数据以覆盖更广的语音处理任务。",
-    "why_it_matters": "相比偏内容建模的 SSL 路线，WavLM 更直接面向说话人、分离与副语言等全栈前端需求。",
-    "source_order": 18,
-    "keywords_list": [
-      "masked prediction",
-      "denoising",
-      "94k hours"
-    ]
-  },
-  {
-    "id": "2022-IWAENC-DeepFilterNet2",
-    "year": "2022",
-    "venue": "IWAENC",
-    "rating": "",
-    "domain": "Streaming",
-    "stage": "Enhancement",
-    "status": "To read",
-    "title": "DeepFilterNet2: Towards Real-Time Speech Enhancement on Embedded Devices for Full-Band Audio",
-    "keywords": "deep filtering；48 kHz；embedded",
-    "paper_url": "https://arxiv.org/abs/2205.05474",
-    "github_url": "https://github.com/Rikorose/DeepFilterNet",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "利用语音谐波结构与深度滤波，在 48 kHz 全频带音频上实现低复杂度实时增强。",
-    "why_it_matters": "是评价嵌入式前端时很好的工程参照：除质量外还应记录实时因子、缓存、参数量与平台。",
-    "source_order": 19,
-    "keywords_list": [
-      "deep filtering",
-      "48 kHz",
-      "embedded"
-    ]
-  },
-  {
-    "id": "2022-INTERSPEECH-CMGAN",
-    "year": "2022",
-    "venue": "Interspeech",
-    "rating": "",
-    "domain": "SpeechEnhancement",
-    "stage": "Enhancement",
-    "status": "To read",
+    "venue": "Interspeech 2022",
+    "tasks": "Speech Enhancement",
+    "paradigm": "Generative",
+    "channels": "Single-channel",
+    "scenarios": "General",
+    "model_family": "Metric-guided GAN",
+    "realtime": "Yes",
     "title": "CMGAN: Conformer-based Metric GAN for Speech Enhancement",
-    "keywords": "Conformer；metric GAN；complex spectrum",
+    "keywords": "Conformer;GAN;complex spectrum;metric learning",
     "paper_url": "https://arxiv.org/abs/2203.15149",
-    "github_url": "https://github.com/ruizhecao96/CMGAN",
+    "code_url": "https://github.com/ruizhecao96/CMGAN",
     "demo_url": "",
-    "web_url": "",
-    "summary": "用两阶段 Conformer 聚合时频信息，并联合幅度与复数谱解码以及指标判别器。",
-    "why_it_matters": "适合观察长程时频建模与感知指标优化的组合收益，也应与更轻量的实时模型公平比较。",
-    "source_order": 20,
+    "summary": "用 Conformer 和度量判别器兼顾局部频谱与长程依赖，是单次前向生成式增强的重要基线。",
+    "architecture": "两阶段 Conformer 生成器估计幅度掩码和复数残差，判别器逼近不可微感知指标。",
+    "limitations": "度量代理可能被模型利用；固定代理分数不等于真实听感；域外泛化有限。",
+    "metrics": "PESQ;STOI;CSIG;CBAK;COVL",
+    "tasks_list": [
+      "Speech Enhancement"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "General"
+    ],
     "keywords_list": [
       "Conformer",
-      "metric GAN",
-      "complex spectrum"
-    ]
+      "GAN",
+      "complex spectrum",
+      "metric learning"
+    ],
+    "metrics_list": [
+      "PESQ",
+      "STOI",
+      "CSIG",
+      "CBAK",
+      "COVL"
+    ],
+    "source_order": 8
   },
   {
-    "id": "2023-TASLP-TF-GridNet",
+    "id": "mp-senet",
     "year": "2023",
-    "venue": "IEEE/ACM TASLP",
-    "rating": "",
-    "domain": "SpeechSeparation",
-    "stage": "Separation",
-    "status": "To read",
-    "title": "TF-GridNet: Integrating Full- and Sub-Band Modeling for Speech Separation",
-    "keywords": "full-band；sub-band；complex mapping",
-    "paper_url": "https://arxiv.org/abs/2211.12433",
-    "github_url": "",
-    "demo_url": "",
-    "web_url": "",
-    "summary": "在时频域交替建模帧内全频带、子带时间上下文与跨帧依赖，并预测复数谱。",
-    "why_it_matters": "重新证明时频域在强结构设计下仍具竞争力，适合与 Conv-TasNet、SepFormer 比较表示域和长程建模选择。",
-    "source_order": 21,
-    "keywords_list": [
-      "full-band",
-      "sub-band",
-      "complex mapping"
-    ]
-  },
-  {
-    "id": "2023-INTERSPEECH-MP-SENet",
-    "year": "2023",
-    "venue": "Interspeech",
-    "rating": "",
-    "domain": "SpeechEnhancement",
-    "stage": "Enhancement",
-    "status": "To read",
+    "venue": "Interspeech 2023",
+    "tasks": "Speech Enhancement",
+    "paradigm": "Discriminative",
+    "channels": "Single-channel",
+    "scenarios": "General",
+    "model_family": "Magnitude-phase parallel mapping",
+    "realtime": "Yes",
     "title": "MP-SENet: A Speech Enhancement Model with Parallel Denoising of Magnitude and Phase Spectra",
-    "keywords": "magnitude；phase；parallel denoising",
+    "keywords": "magnitude;phase;Transformer;complex STFT",
     "paper_url": "https://arxiv.org/abs/2305.13686",
-    "github_url": "https://github.com/yxlu-0102/MP-SENet",
+    "code_url": "https://github.com/yxlu-0102/MP-SENet",
     "demo_url": "",
-    "web_url": "",
-    "summary": "以并行解码器显式恢复幅度与包裹相位，并在多个谱域和时域目标上联合训练。",
-    "why_it_matters": "为“相位应隐式恢复还是显式建模”提供直接实验对象，可与 DCCRN、CMGAN 组成连续比较。",
-    "source_order": 22,
+    "summary": "显式并行估计幅度与相位，代表高性能确定性复谱映射路线。",
+    "architecture": "卷积编码后用时频 Transformer 建模，共享表示送入幅度掩码与相位解码器。",
+    "limitations": "监督映射容易过平滑且依赖配对数据；相位分支难训练，跨域性能会下降。",
+    "metrics": "PESQ;STOI;CSIG;CBAK;COVL",
+    "tasks_list": [
+      "Speech Enhancement"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "General"
+    ],
     "keywords_list": [
       "magnitude",
       "phase",
-      "parallel denoising"
-    ]
+      "Transformer",
+      "complex STFT"
+    ],
+    "metrics_list": [
+      "PESQ",
+      "STOI",
+      "CSIG",
+      "CBAK",
+      "COVL"
+    ],
+    "source_order": 9
   },
   {
-    "id": "2024-TASLP-SpatialNet",
+    "id": "tf-gridnet",
+    "year": "2023",
+    "venue": "IEEE/ACM TASLP 2023",
+    "tasks": "Speech Enhancement;Dereverberation",
+    "paradigm": "Discriminative",
+    "channels": "Flexible",
+    "scenarios": "Single-channel;Multi-channel;Noisy-reverberant",
+    "model_family": "Time-frequency GridNet",
+    "realtime": "No",
+    "title": "TF-GridNet: Integrating Full- and Sub-Band Modeling for Speech Separation",
+    "keywords": "full-band;sub-band;complex mapping;attention",
+    "paper_url": "https://arxiv.org/abs/2211.12433",
+    "code_url": "https://github.com/espnet/espnet",
+    "demo_url": "",
+    "summary": "用网格块交替建模帧内频率结构和跨帧时间结构，成为分离与增强的强骨干。",
+    "architecture": "复数 STFT 特征经过频率 BLSTM、时间 BLSTM 与全频注意力反复交互后直接映射目标谱。",
+    "limitations": "模型较重且非因果版本延迟高；长序列注意力耗费显存；任务迁移仍需训练。",
+    "metrics": "SI-SDR;SDR;PESQ;STOI;WER",
+    "tasks_list": [
+      "Speech Enhancement",
+      "Dereverberation"
+    ],
+    "channels_list": [
+      "Flexible"
+    ],
+    "scenarios_list": [
+      "Single-channel",
+      "Multi-channel",
+      "Noisy-reverberant"
+    ],
+    "keywords_list": [
+      "full-band",
+      "sub-band",
+      "complex mapping",
+      "attention"
+    ],
+    "metrics_list": [
+      "SI-SDR",
+      "SDR",
+      "PESQ",
+      "STOI",
+      "WER"
+    ],
+    "source_order": 10
+  },
+  {
+    "id": "spatialnet",
     "year": "2024",
-    "venue": "IEEE/ACM TASLP",
-    "rating": "",
-    "domain": "Beamforming",
-    "stage": "Spatial",
-    "status": "To read",
+    "venue": "IEEE/ACM TASLP 2024",
+    "tasks": "Speech Enhancement;Dereverberation",
+    "paradigm": "Discriminative",
+    "channels": "Multi-channel",
+    "scenarios": "Static;Noisy-reverberant",
+    "model_family": "Spatial-spectral neural network",
+    "realtime": "No",
     "title": "SpatialNet: Extensively Learning Spatial Information for Multichannel Joint Speech Separation, Denoising and Dereverberation",
-    "keywords": "narrow-band；cross-band；spatial cues",
+    "keywords": "multichannel;spatial cues;narrow-band;cross-band",
     "paper_url": "https://arxiv.org/abs/2307.16516",
-    "github_url": "https://github.com/Audio-WestlakeU/NBSS",
+    "code_url": "https://github.com/Audio-WestlakeU/NBSS",
     "demo_url": "",
-    "web_url": "https://audio.westlake.edu.cn/Research/SpatialNet.htm",
-    "summary": "交替使用窄带与跨带模块，在 STFT 域联合完成多通道分离、降噪和去混响。",
-    "why_it_matters": "代表从显式掩码波束形成走向端到端空间建模的路线，适合检查阵列泛化和长时流式能力。",
-    "source_order": 23,
+    "summary": "把空间向量的窄带动态与跨频谱结构分开建模，是多通道联合前端的代表工作。",
+    "architecture": "交替堆叠窄带空间建模和跨带谱建模模块，在复数频谱上联合分离、降噪与去混响。",
+    "limitations": "离线模型计算量较高；阵列几何与仿真到实录的失配会削弱空间线索。",
+    "metrics": "SI-SDR;PESQ;STOI;WER;RTF",
+    "tasks_list": [
+      "Speech Enhancement",
+      "Dereverberation"
+    ],
+    "channels_list": [
+      "Multi-channel"
+    ],
+    "scenarios_list": [
+      "Static",
+      "Noisy-reverberant"
+    ],
     "keywords_list": [
+      "multichannel",
+      "spatial cues",
       "narrow-band",
-      "cross-band",
-      "spatial cues"
-    ]
+      "cross-band"
+    ],
+    "metrics_list": [
+      "SI-SDR",
+      "PESQ",
+      "STOI",
+      "WER",
+      "RTF"
+    ],
+    "source_order": 11
   },
   {
-    "id": "2025-INTERSPEECH-ClearerVoice-Studio",
-    "year": "2025",
-    "venue": "Interspeech",
-    "rating": "",
-    "domain": "SpeechEnhancement",
-    "stage": "System",
-    "status": "To read",
-    "title": "ClearerVoice-Studio: Bridging Advanced Speech Processing Research and Practical Deployment",
-    "keywords": "toolkit；pretrained models；deployment",
-    "paper_url": "https://arxiv.org/abs/2506.19398",
-    "github_url": "https://github.com/modelscope/ClearerVoice-Studio",
+    "id": "online-spatialnet",
+    "year": "2024",
+    "venue": "IEEE SPL 2024",
+    "tasks": "Speech Enhancement",
+    "paradigm": "Discriminative",
+    "channels": "Multi-channel",
+    "scenarios": "Streaming;Moving speaker;Static",
+    "model_family": "Streaming spatial network",
+    "realtime": "Yes",
+    "title": "Multichannel Long-Term Streaming Neural Speech Enhancement for Static and Moving Speakers",
+    "keywords": "moving speaker;streaming;Mamba;retention",
+    "paper_url": "https://arxiv.org/abs/2403.07675",
+    "code_url": "https://github.com/Audio-WestlakeU/NBSS",
     "demo_url": "",
-    "web_url": "",
-    "summary": "把增强、分离、超分辨率、目标说话人提取、评价与部署工具整合进统一开源工具箱。",
-    "why_it_matters": "提供从论文模型走向可用系统的工程参照，也便于快速建立复现、推理和主观试听基线。",
-    "source_order": 24,
+    "summary": "少数明确评测长音频和移动说话人的多通道流式工作，比较注意力、Retention 与 Mamba。",
+    "architecture": "以因果注意力、Retention 或状态空间模块替换离线 SpatialNet 的时间建模，并做长序列微调。",
+    "limitations": "移动轨迹和真实阵列覆盖仍有限；状态记忆可能随超长会话漂移；空间失配敏感。",
+    "metrics": "SI-SDR;PESQ;STOI;RTF;Latency",
+    "tasks_list": [
+      "Speech Enhancement"
+    ],
+    "channels_list": [
+      "Multi-channel"
+    ],
+    "scenarios_list": [
+      "Streaming",
+      "Moving speaker",
+      "Static"
+    ],
     "keywords_list": [
-      "toolkit",
-      "pretrained models",
-      "deployment"
-    ]
+      "moving speaker",
+      "streaming",
+      "Mamba",
+      "retention"
+    ],
+    "metrics_list": [
+      "SI-SDR",
+      "PESQ",
+      "STOI",
+      "RTF",
+      "Latency"
+    ],
+    "source_order": 12
+  },
+  {
+    "id": "clearervoice-studio",
+    "year": "2025",
+    "venue": "Interspeech 2025",
+    "tasks": "Speech Enhancement;Target Speaker Extraction",
+    "paradigm": "Discriminative",
+    "channels": "Flexible",
+    "scenarios": "General;Deployment;Streaming",
+    "model_family": "Unified speech restoration system",
+    "realtime": "Yes",
+    "title": "ClearerVoice-Studio: Bridging Advanced Speech Processing Research and Practical Deployment",
+    "keywords": "deployment;unified toolkit;pretrained models",
+    "paper_url": "https://arxiv.org/abs/2506.19398",
+    "code_url": "https://github.com/modelscope/ClearerVoice-Studio",
+    "demo_url": "",
+    "summary": "把增强、分离和目标说话人提取做成可复用开源系统，适合作为实验与部署入口。",
+    "architecture": "用统一接口封装多种预训练时域和频域网络，并提供离线与流式推理链路。",
+    "limitations": "系统论文覆盖面广但不代表单一架构创新；模型间数据和指标未必可直接横比。",
+    "metrics": "PESQ;STOI;SI-SDR;DNSMOS;RTF",
+    "tasks_list": [
+      "Speech Enhancement",
+      "Target Speaker Extraction"
+    ],
+    "channels_list": [
+      "Flexible"
+    ],
+    "scenarios_list": [
+      "General",
+      "Deployment",
+      "Streaming"
+    ],
+    "keywords_list": [
+      "deployment",
+      "unified toolkit",
+      "pretrained models"
+    ],
+    "metrics_list": [
+      "PESQ",
+      "STOI",
+      "SI-SDR",
+      "DNSMOS",
+      "RTF"
+    ],
+    "source_order": 13
+  },
+  {
+    "id": "spex-plus",
+    "year": "2020",
+    "venue": "ICASSP 2020",
+    "tasks": "Target Speaker Extraction",
+    "paradigm": "Discriminative",
+    "channels": "Single-channel",
+    "scenarios": "Static;Enrollment utterance",
+    "model_family": "Time-domain speaker extraction",
+    "realtime": "No",
+    "title": "SpEx+: A Complete Time Domain Speaker Extraction Network",
+    "keywords": "time domain;speaker encoder;multi-scale",
+    "paper_url": "https://arxiv.org/abs/2005.04686",
+    "code_url": "https://github.com/xuchenglin28/speaker_extraction_SpEx",
+    "demo_url": "",
+    "summary": "完整时域 TSE 的经典强基线，把注册语音编码和多尺度波形提取统一起来。",
+    "architecture": "共享时域编码器提取混合语音与注册语音，目标嵌入调制多尺度 separator 后解码。",
+    "limitations": "依赖干净且匹配的注册语音；同音色说话人易混淆；非流式且单通道。",
+    "metrics": "SI-SDR;SDR;PESQ;Speaker classification",
+    "tasks_list": [
+      "Target Speaker Extraction"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Static",
+      "Enrollment utterance"
+    ],
+    "keywords_list": [
+      "time domain",
+      "speaker encoder",
+      "multi-scale"
+    ],
+    "metrics_list": [
+      "SI-SDR",
+      "SDR",
+      "PESQ",
+      "Speaker classification"
+    ],
+    "source_order": 14
+  },
+  {
+    "id": "voicefilter-lite",
+    "year": "2020",
+    "venue": "Interspeech 2020",
+    "tasks": "Target Speaker Extraction",
+    "paradigm": "Discriminative",
+    "channels": "Single-channel",
+    "scenarios": "Streaming;On-device;Personalized",
+    "model_family": "Lightweight spectral masking",
+    "realtime": "Yes",
+    "title": "VoiceFilter-Lite: Streaming Targeted Voice Separation for On-Device Speech Recognition",
+    "keywords": "on-device;streaming;quantization;ASR",
+    "paper_url": "https://arxiv.org/abs/2009.04323",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "以不伤害无重叠语音的 ASR 为目标设计轻量流式 TSE，是端侧约束的重要参照。",
+    "architecture": "说话人嵌入调制因果频谱掩码网络，并用非对称损失和自适应抑制强度控制失真。",
+    "limitations": "极小模型牺牲分离上限；依赖用户注册；主要面向 ASR 而非高保真聆听。",
+    "metrics": "WER;False reject;Latency;Model size;RTF",
+    "tasks_list": [
+      "Target Speaker Extraction"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Streaming",
+      "On-device",
+      "Personalized"
+    ],
+    "keywords_list": [
+      "on-device",
+      "streaming",
+      "quantization",
+      "ASR"
+    ],
+    "metrics_list": [
+      "WER",
+      "False reject",
+      "Latency",
+      "Model size",
+      "RTF"
+    ],
+    "source_order": 15
+  },
+  {
+    "id": "conditional-diffusion-tse",
+    "year": "2023",
+    "venue": "Interspeech 2023",
+    "tasks": "Target Speaker Extraction",
+    "paradigm": "Generative",
+    "channels": "Single-channel",
+    "scenarios": "Static;Enrollment utterance",
+    "model_family": "Conditional diffusion",
+    "realtime": "No",
+    "title": "Target Speech Extraction with Conditional Diffusion Model",
+    "keywords": "diffusion;ensemble inference;target clue",
+    "paper_url": "https://arxiv.org/abs/2308.03987",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "较早验证条件扩散可用于 TSE，并通过多次采样集成减少选错目标的风险。",
+    "architecture": "以混合语音和目标 clue 为条件反向扩散，多样本结果通过 ensemble 选择或融合。",
+    "limitations": "随机采样存在目标混淆；集成进一步放大推理成本；注册条件质量敏感。",
+    "metrics": "SI-SDR;SDRi;PESQ;STOI;Extraction error",
+    "tasks_list": [
+      "Target Speaker Extraction"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Static",
+      "Enrollment utterance"
+    ],
+    "keywords_list": [
+      "diffusion",
+      "ensemble inference",
+      "target clue"
+    ],
+    "metrics_list": [
+      "SI-SDR",
+      "SDRi",
+      "PESQ",
+      "STOI",
+      "Extraction error"
+    ],
+    "source_order": 16
+  },
+  {
+    "id": "diffspex",
+    "year": "2023",
+    "venue": "ASRU 2023",
+    "tasks": "Target Speaker Extraction",
+    "paradigm": "Generative",
+    "channels": "Single-channel",
+    "scenarios": "Static;Personalized;Enrollment utterance",
+    "model_family": "Score-based diffusion",
+    "realtime": "No",
+    "title": "Conditional Diffusion Model for Target Speaker Extraction",
+    "keywords": "diffusion;complex STFT;ECAPA-TDNN;personalization",
+    "paper_url": "https://arxiv.org/abs/2310.04791",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "在复数 STFT 域用 ECAPA 嵌入条件化 score model，并研究对特定说话人的微调。",
+    "architecture": "SDE 将目标源扩散到以混合语音为中心的高斯分布，反向过程交替注入时间与说话人嵌入。",
+    "limitations": "多步采样慢；嵌入泄漏和注册失配会导致错人；个性化微调增加维护成本。",
+    "metrics": "SI-SDR;NISQA;Speaker similarity;Extraction error",
+    "tasks_list": [
+      "Target Speaker Extraction"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Static",
+      "Personalized",
+      "Enrollment utterance"
+    ],
+    "keywords_list": [
+      "diffusion",
+      "complex STFT",
+      "ECAPA-TDNN",
+      "personalization"
+    ],
+    "metrics_list": [
+      "SI-SDR",
+      "NISQA",
+      "Speaker similarity",
+      "Extraction error"
+    ],
+    "source_order": 17
+  },
+  {
+    "id": "binaural-selective-attention",
+    "year": "2024",
+    "venue": "Interspeech 2024",
+    "tasks": "Target Speaker Extraction",
+    "paradigm": "Discriminative",
+    "channels": "Binaural",
+    "scenarios": "Binaural;Static;Enrollment utterance",
+    "model_family": "Binaural FaSNet + selective attention",
+    "realtime": "No",
+    "title": "Binaural Selective Attention Model for Target Speaker Extraction",
+    "keywords": "binaural;selective attention;FaSNet;inter-channel cues",
+    "paper_url": "https://arxiv.org/abs/2406.12236",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "以双耳线索与目标嵌入联合选择说话人，直接覆盖本库重点关注的 binaural TSE。",
+    "architecture": "时域 FaSNet 处理左右耳，multi-head selective attention 注入目标嵌入，并比较相关性与余弦双耳交互。",
+    "limitations": "当前验证以模拟和静态场景为主；头动、移动声源、个体 HRTF 与真实混响仍待扩展。",
+    "metrics": "SI-SDR;SDR;PESQ;Binaural cue preservation",
+    "tasks_list": [
+      "Target Speaker Extraction"
+    ],
+    "channels_list": [
+      "Binaural"
+    ],
+    "scenarios_list": [
+      "Binaural",
+      "Static",
+      "Enrollment utterance"
+    ],
+    "keywords_list": [
+      "binaural",
+      "selective attention",
+      "FaSNet",
+      "inter-channel cues"
+    ],
+    "metrics_list": [
+      "SI-SDR",
+      "SDR",
+      "PESQ",
+      "Binaural cue preservation"
+    ],
+    "source_order": 18
+  },
+  {
+    "id": "ineube-x",
+    "year": "2023",
+    "venue": "Clarity CEC2 / ICASSP 2023",
+    "tasks": "Target Speaker Extraction;Speech Enhancement",
+    "paradigm": "Hybrid",
+    "channels": "Multi-channel",
+    "scenarios": "Hearing aid;Streaming;Head movement",
+    "model_family": "Neural beamforming + TF-GridNet",
+    "realtime": "Yes",
+    "title": "Multi-Channel Target Speaker Extraction with Refinement: The WavLab Submission to the Second Clarity Enhancement Challenge",
+    "keywords": "multichannel;beamforming;hearing aid;5 ms latency",
+    "paper_url": "https://arxiv.org/abs/2302.07928",
+    "code_url": "",
+    "demo_url": "https://wavlab.org/activities/2022/clarity2/",
+    "summary": "面向助听器的困难噪声混响场景，把多通道 TSE、迭代波束形成与 5 ms 延迟约束放在一起。",
+    "architecture": "因果多通道 TF-GridNet 产生估计，iNeuBe 迭代神经增强与波束形成，并注入说话人条件。",
+    "limitations": "系统复杂且依赖阵列与听力图；仿真到真实房间存在明显落差。",
+    "metrics": "HASPI;HASQI;SI-SDRi;Latency;Listening test",
+    "tasks_list": [
+      "Target Speaker Extraction",
+      "Speech Enhancement"
+    ],
+    "channels_list": [
+      "Multi-channel"
+    ],
+    "scenarios_list": [
+      "Hearing aid",
+      "Streaming",
+      "Head movement"
+    ],
+    "keywords_list": [
+      "multichannel",
+      "beamforming",
+      "hearing aid",
+      "5 ms latency"
+    ],
+    "metrics_list": [
+      "HASPI",
+      "HASQI",
+      "SI-SDRi",
+      "Latency",
+      "Listening test"
+    ],
+    "source_order": 19
+  },
+  {
+    "id": "bg-tse",
+    "year": "2023",
+    "venue": "WASPAA 2023",
+    "tasks": "Target Speaker Extraction",
+    "paradigm": "Hybrid",
+    "channels": "Multi-channel",
+    "scenarios": "Static;Direction clue",
+    "model_family": "Beamformer-guided extraction",
+    "realtime": "No",
+    "title": "Beamformer-Guided Target Speaker Extraction",
+    "keywords": "beamforming;DOA;time-varying embedding",
+    "paper_url": "https://arxiv.org/abs/2303.08702",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "用目标方向波束形成结果替代或补充注册语音，展示空间 clue 如何指导单通道 TSE。",
+    "architecture": "前端波束形成器对准目标，输出形成随时间变化的辅助嵌入，再条件化单通道提取器。",
+    "limitations": "需要可靠 DOA；目标移动时波束跟踪误差会累积；相近方向说话人仍难区分。",
+    "metrics": "SI-SDR;SDRi;PESQ;DOA robustness",
+    "tasks_list": [
+      "Target Speaker Extraction"
+    ],
+    "channels_list": [
+      "Multi-channel"
+    ],
+    "scenarios_list": [
+      "Static",
+      "Direction clue"
+    ],
+    "keywords_list": [
+      "beamforming",
+      "DOA",
+      "time-varying embedding"
+    ],
+    "metrics_list": [
+      "SI-SDR",
+      "SDRi",
+      "PESQ",
+      "DOA robustness"
+    ],
+    "source_order": 20
+  },
+  {
+    "id": "speakerbeam-ss",
+    "year": "2024",
+    "venue": "Interspeech 2024",
+    "tasks": "Target Speaker Extraction",
+    "paradigm": "Discriminative",
+    "channels": "Single-channel",
+    "scenarios": "Streaming;On-device;Enrollment utterance",
+    "model_family": "Conv-TasNet + state space model",
+    "realtime": "Yes",
+    "title": "SpeakerBeam-SS: Real-time Target Speaker Extraction with Lightweight Conv-TasNet and State Space Modeling",
+    "keywords": "state space model;Conv-TasNet;causal;low complexity",
+    "paper_url": "https://arxiv.org/abs/2407.01857",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "用状态空间模型压缩因果 Conv-TasNet 的长期依赖成本，聚焦真正可部署的流式 TSE。",
+    "architecture": "加长 TasNet 前端窗口并过参数化编码器，用 SSM 替代多层空洞卷积来建模长程上下文。",
+    "limitations": "轻量化限制极端重叠下的分离能力；单通道仍缺乏空间判别线索。",
+    "metrics": "SI-SDRi;SDR;RTF;MACs;Latency",
+    "tasks_list": [
+      "Target Speaker Extraction"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Streaming",
+      "On-device",
+      "Enrollment utterance"
+    ],
+    "keywords_list": [
+      "state space model",
+      "Conv-TasNet",
+      "causal",
+      "low complexity"
+    ],
+    "metrics_list": [
+      "SI-SDRi",
+      "SDR",
+      "RTF",
+      "MACs",
+      "Latency"
+    ],
+    "source_order": 21
+  },
+  {
+    "id": "seanet",
+    "year": "2024",
+    "venue": "IEEE TMM 2024",
+    "tasks": "Target Speaker Extraction",
+    "paradigm": "Discriminative",
+    "channels": "Single-channel",
+    "scenarios": "Audio-visual;Static",
+    "model_family": "Audio-visual selective attention",
+    "realtime": "No",
+    "title": "Audio-Visual Target Speaker Extraction with Reverse Selective Auditory Attention",
+    "keywords": "audio-visual;lip motion;reverse attention;robustness",
+    "paper_url": "https://arxiv.org/abs/2404.18501",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "利用唇动在无需注册语音时锁定目标，并显式建模需要抑制的干扰成分。",
+    "architecture": "视听编码器产生目标线索，正向与反向选择注意力分别强调目标、压制干扰。",
+    "limitations": "遮脸、不同步和低帧率会使视觉条件失效；摄像头带来隐私与部署成本。",
+    "metrics": "SI-SDR;SDR;PESQ;STOI;WER",
+    "tasks_list": [
+      "Target Speaker Extraction"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Audio-visual",
+      "Static"
+    ],
+    "keywords_list": [
+      "audio-visual",
+      "lip motion",
+      "reverse attention",
+      "robustness"
+    ],
+    "metrics_list": [
+      "SI-SDR",
+      "SDR",
+      "PESQ",
+      "STOI",
+      "WER"
+    ],
+    "source_order": 22
+  },
+  {
+    "id": "binaural-hrtf-tse",
+    "year": "2025",
+    "venue": "arXiv 2025",
+    "tasks": "Target Speaker Extraction;Dereverberation",
+    "paradigm": "Discriminative",
+    "channels": "Binaural",
+    "scenarios": "Binaural;Static;HRTF clue",
+    "model_family": "Complex-valued HRTF-conditioned network",
+    "realtime": "No",
+    "title": "Binaural Target Speaker Extraction using HRTFs",
+    "keywords": "binaural;HRTF;complex neural network;cue preservation",
+    "paper_url": "https://arxiv.org/abs/2507.19369",
+    "code_url": "",
+    "demo_url": "https://bi-ctse-hrtf.github.io/",
+    "summary": "以 HRTF 而非说话人注册为条件，强调提取后仍保存目标方向的双耳线索。",
+    "architecture": "全复数网络在左右耳 STFT 上用目标 HRTF 条件化映射，并同时抑制混响。",
+    "limitations": "需要目标方向与匹配 HRTF；个体差异和移动场景会造成条件失配。",
+    "metrics": "SI-SDR;PESQ;STOI;ILD error;ITD error",
+    "tasks_list": [
+      "Target Speaker Extraction",
+      "Dereverberation"
+    ],
+    "channels_list": [
+      "Binaural"
+    ],
+    "scenarios_list": [
+      "Binaural",
+      "Static",
+      "HRTF clue"
+    ],
+    "keywords_list": [
+      "binaural",
+      "HRTF",
+      "complex neural network",
+      "cue preservation"
+    ],
+    "metrics_list": [
+      "SI-SDR",
+      "PESQ",
+      "STOI",
+      "ILD error",
+      "ITD error"
+    ],
+    "source_order": 23
+  },
+  {
+    "id": "fcp-monaural",
+    "year": "2021",
+    "venue": "IEEE/ACM TASLP 2022",
+    "tasks": "Dereverberation",
+    "paradigm": "Hybrid",
+    "channels": "Single-channel",
+    "scenarios": "Static;Noisy-reverberant",
+    "model_family": "Neural forward convolutive prediction",
+    "realtime": "No",
+    "title": "Convolutive Prediction for Monaural Speech Dereverberation and Noisy-Reverberant Speaker Separation",
+    "keywords": "FCP;linear prediction;direct path;two-stage",
+    "paper_url": "https://arxiv.org/abs/2108.07376",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "把房间卷积结构显式放回深度去混响，是纯黑盒映射之外的重要混合路线。",
+    "architecture": "DNN 先估直达声，再以逐频线性回归估计延迟衰减副本；副本被移除或送入第二个 DNN。",
+    "limitations": "线性卷积假设难覆盖时变房间；首阶段误差影响滤波器估计；离线求解有成本。",
+    "metrics": "PESQ;STOI;SRMR;WER;SI-SDR",
+    "tasks_list": [
+      "Dereverberation"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Static",
+      "Noisy-reverberant"
+    ],
+    "keywords_list": [
+      "FCP",
+      "linear prediction",
+      "direct path",
+      "two-stage"
+    ],
+    "metrics_list": [
+      "PESQ",
+      "STOI",
+      "SRMR",
+      "WER",
+      "SI-SDR"
+    ],
+    "source_order": 24
+  },
+  {
+    "id": "fcp-multichannel",
+    "year": "2021",
+    "venue": "IEEE/ACM TASLP 2022",
+    "tasks": "Dereverberation",
+    "paradigm": "Hybrid",
+    "channels": "Multi-channel",
+    "scenarios": "Static;Noisy-reverberant",
+    "model_family": "FCP + MVDR beamforming",
+    "realtime": "No",
+    "title": "Convolutive Prediction for Reverberant Speech Separation",
+    "keywords": "FCP;MVDR;multichannel;RIR estimation",
+    "paper_url": "https://arxiv.org/abs/2108.07194",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "将多通道 FCP 与 MVDR 联合，用空间滤波和房间卷积先验改善混响分离。",
+    "architecture": "每个源先由 DNN 估计直达声，FCP 估计混响副本，再把去混响结果用于 MVDR 与第二阶段网络。",
+    "limitations": "依赖多阶段估计和阵列质量；源或阵列移动会破坏固定滤波假设。",
+    "metrics": "SI-SDR;SDR;PESQ;WER",
+    "tasks_list": [
+      "Dereverberation"
+    ],
+    "channels_list": [
+      "Multi-channel"
+    ],
+    "scenarios_list": [
+      "Static",
+      "Noisy-reverberant"
+    ],
+    "keywords_list": [
+      "FCP",
+      "MVDR",
+      "multichannel",
+      "RIR estimation"
+    ],
+    "metrics_list": [
+      "SI-SDR",
+      "SDR",
+      "PESQ",
+      "WER"
+    ],
+    "source_order": 25
+  },
+  {
+    "id": "drc-net",
+    "year": "2022",
+    "venue": "ICASSP 2022",
+    "tasks": "Dereverberation",
+    "paradigm": "Discriminative",
+    "channels": "Single-channel",
+    "scenarios": "Static;Noisy-reverberant",
+    "model_family": "Dense recurrent convolutional network",
+    "realtime": "Yes",
+    "title": "DRC-Net: Densely Connected Recurrent Convolutional Neural Network for Speech Dereverberation",
+    "keywords": "dense convolution;recurrent network;complex mask",
+    "paper_url": "https://doi.org/10.1109/ICASSP43922.2022.9747111",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "用致密连接卷积和循环建模兼顾局部频谱与长程混响，是轻量频域去混响代表。",
+    "architecture": "编码器—循环瓶颈—解码器在复谱上预测复数掩码，跳连保留细节。",
+    "limitations": "监督映射受训练 RIR 覆盖限制；长混响尾与非平稳噪声容易残留。",
+    "metrics": "PESQ;STOI;SRMR;WER;RTF",
+    "tasks_list": [
+      "Dereverberation"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Static",
+      "Noisy-reverberant"
+    ],
+    "keywords_list": [
+      "dense convolution",
+      "recurrent network",
+      "complex mask"
+    ],
+    "metrics_list": [
+      "PESQ",
+      "STOI",
+      "SRMR",
+      "WER",
+      "RTF"
+    ],
+    "source_order": 26
+  },
+  {
+    "id": "usdnet",
+    "year": "2024",
+    "venue": "ICASSP 2024",
+    "tasks": "Dereverberation",
+    "paradigm": "Hybrid",
+    "channels": "Multi-channel",
+    "scenarios": "Static;Unsupervised",
+    "model_family": "Unsupervised neural forward filtering",
+    "realtime": "No",
+    "title": "USDnet: Unsupervised Speech Dereverberation via Neural Forward Filtering",
+    "keywords": "unsupervised;forward filtering;multichannel;physical constraint",
+    "paper_url": "https://arxiv.org/abs/2402.00820",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "无需干净标签，用多麦克风重构约束训练去混响网络，适合真实场景数据。",
+    "architecture": "网络估计消混响语音，再用 FCP 等线性滤波让该估计重构各通道混合，从而形成自监督约束。",
+    "limitations": "依赖过定多通道和单源假设；错误的滤波可产生退化解；不适合任意重叠说话。",
+    "metrics": "PESQ;STOI;SRMR;WER;DNSMOS",
+    "tasks_list": [
+      "Dereverberation"
+    ],
+    "channels_list": [
+      "Multi-channel"
+    ],
+    "scenarios_list": [
+      "Static",
+      "Unsupervised"
+    ],
+    "keywords_list": [
+      "unsupervised",
+      "forward filtering",
+      "multichannel",
+      "physical constraint"
+    ],
+    "metrics_list": [
+      "PESQ",
+      "STOI",
+      "SRMR",
+      "WER",
+      "DNSMOS"
+    ],
+    "source_order": 27
+  },
+  {
+    "id": "echofilter",
+    "year": "2021",
+    "venue": "Interspeech 2021",
+    "tasks": "Echo Cancellation",
+    "paradigm": "Discriminative",
+    "channels": "Single-channel",
+    "scenarios": "Double-talk;Streaming",
+    "model_family": "Time-domain TCN + LSTM",
+    "realtime": "Yes",
+    "title": "EchoFilter: End-to-End Neural Network for Acoustic Echo Cancellation",
+    "keywords": "waveform;local attention;double-talk;alignment",
+    "paper_url": "https://arxiv.org/abs/2105.14666",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "直接在波形域学习回声消除，并用局部注意力处理远端参考与麦克风的时延。",
+    "architecture": "时域卷积编码远近端信号，LSTM 建模时序，局部注意力做对齐，辅助头检测双讲。",
+    "limitations": "纯神经对未见非线性设备敏感；大时延超出注意窗口时会失败；近端音质易受损。",
+    "metrics": "ERLE;PESQ;Double-talk detection;Latency",
+    "tasks_list": [
+      "Echo Cancellation"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Double-talk",
+      "Streaming"
+    ],
+    "keywords_list": [
+      "waveform",
+      "local attention",
+      "double-talk",
+      "alignment"
+    ],
+    "metrics_list": [
+      "ERLE",
+      "PESQ",
+      "Double-talk detection",
+      "Latency"
+    ],
+    "source_order": 28
+  },
+  {
+    "id": "universal-asr-frontend",
+    "year": "2022",
+    "venue": "Interspeech 2022",
+    "tasks": "Echo Cancellation;Speech Enhancement;Target Speaker Extraction",
+    "paradigm": "Discriminative",
+    "channels": "Single-channel",
+    "scenarios": "Streaming;ASR;Missing context",
+    "model_family": "Cross-attention Conformer",
+    "realtime": "Yes",
+    "title": "A Universally-Deployable ASR Frontend for Joint Acoustic Echo Cancellation, Speech Enhancement, and Voice Separation",
+    "keywords": "cross-attention;signal dropout;ASR;unified frontend",
+    "paper_url": "https://arxiv.org/abs/2209.06410",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "用同一前端处理回声、噪声和背景说话人，并研究参考信号缺失时的稳健性。",
+    "architecture": "Cross-Attention Conformer 融合播放参考、噪声上下文和说话人嵌入；Signal Dropout 模拟条件缺失。",
+    "limitations": "针对 WER 优化不保证听感；多上下文接口复杂；缺失条件仍带来性能退化。",
+    "metrics": "WER;WAcc;PESQ;RTF;Latency",
+    "tasks_list": [
+      "Echo Cancellation",
+      "Speech Enhancement",
+      "Target Speaker Extraction"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Streaming",
+      "ASR",
+      "Missing context"
+    ],
+    "keywords_list": [
+      "cross-attention",
+      "signal dropout",
+      "ASR",
+      "unified frontend"
+    ],
+    "metrics_list": [
+      "WER",
+      "WAcc",
+      "PESQ",
+      "RTF",
+      "Latency"
+    ],
+    "source_order": 29
+  },
+  {
+    "id": "personalized-aec",
+    "year": "2022",
+    "venue": "Interspeech 2022",
+    "tasks": "Echo Cancellation;Target Speaker Extraction",
+    "paradigm": "Discriminative",
+    "channels": "Single-channel",
+    "scenarios": "Personalized;Double-talk;Enrollment utterance",
+    "model_family": "Gated temporal convolution",
+    "realtime": "Yes",
+    "title": "Personalized Acoustic Echo Cancellation for Full-duplex Communications",
+    "keywords": "speaker embedding;GTCNN;double-talk;personalization",
+    "paper_url": "https://arxiv.org/abs/2205.15195",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "把说话人条件引入 AEC，使系统不只消回声，还能在近端保留指定用户。",
+    "architecture": "GTCNN 处理麦克风与远端参考，近端或远端 d-vector 作为辅助条件调制网络。",
+    "limitations": "有限维嵌入利用不足；注册数据依赖明显；相似说话人与开放集泛化仍困难。",
+    "metrics": "ERLE;PESQ;STOI;AECMOS;Speaker similarity",
+    "tasks_list": [
+      "Echo Cancellation",
+      "Target Speaker Extraction"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Personalized",
+      "Double-talk",
+      "Enrollment utterance"
+    ],
+    "keywords_list": [
+      "speaker embedding",
+      "GTCNN",
+      "double-talk",
+      "personalization"
+    ],
+    "metrics_list": [
+      "ERLE",
+      "PESQ",
+      "STOI",
+      "AECMOS",
+      "Speaker similarity"
+    ],
+    "source_order": 30
+  },
+  {
+    "id": "deepvqe",
+    "year": "2023",
+    "venue": "Interspeech 2023",
+    "tasks": "Echo Cancellation;Speech Enhancement;Dereverberation",
+    "paradigm": "Discriminative",
+    "channels": "Single-channel",
+    "scenarios": "Streaming;Double-talk;Deployment",
+    "model_family": "Cross-attention CNN-RNN",
+    "realtime": "Yes",
+    "title": "DeepVQE: Real Time Deep Voice Quality Enhancement for Joint Acoustic Echo Cancellation, Noise Suppression and Dereverberation",
+    "keywords": "cross-attention;joint enhancement;real time;Teams",
+    "paper_url": "https://arxiv.org/abs/2306.03177",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "单一实时模型联合 AEC、降噪与去混响，并在公开挑战和实际通信平台验证。",
+    "architecture": "残差 CNN 编码近端与远端频谱，cross-attention 对齐和融合，RNN 建模时间后解码增强谱。",
+    "limitations": "多任务目标可能互相牵制；端到端模型难定位故障；设备非线性和时延漂移仍关键。",
+    "metrics": "AECMOS;DNSMOS;WAcc;ERLE;RTF",
+    "tasks_list": [
+      "Echo Cancellation",
+      "Speech Enhancement",
+      "Dereverberation"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Streaming",
+      "Double-talk",
+      "Deployment"
+    ],
+    "keywords_list": [
+      "cross-attention",
+      "joint enhancement",
+      "real time",
+      "Teams"
+    ],
+    "metrics_list": [
+      "AECMOS",
+      "DNSMOS",
+      "WAcc",
+      "ERLE",
+      "RTF"
+    ],
+    "source_order": 31
+  },
+  {
+    "id": "fadi-aec",
+    "year": "2024",
+    "venue": "ICASSP 2024",
+    "tasks": "Echo Cancellation",
+    "paradigm": "Generative",
+    "channels": "Single-channel",
+    "scenarios": "Streaming;Double-talk;Edge",
+    "model_family": "Fast score-based diffusion",
+    "realtime": "Yes",
+    "title": "FADI-AEC: Fast Score Based Diffusion Model Guided by Far-end Signal for Acoustic Echo Cancellation",
+    "keywords": "diffusion;far-end guidance;single-step;edge",
+    "paper_url": "https://arxiv.org/abs/2401.04283",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "少数专门面向 AEC 的生成式工作，以远端信号设计噪声过程并将 score 网络压到每帧一次。",
+    "architecture": "以远端和近端信号构造扩散扰动，快速版本每帧只运行一次 score model 重建近端语音。",
+    "limitations": "生成式 AEC 证据仍少；单步近似可能牺牲困难双讲；跨设备实录与因果稳定性待验证。",
+    "metrics": "AECMOS;ERLE;PESQ;STOI;RTF",
+    "tasks_list": [
+      "Echo Cancellation"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Streaming",
+      "Double-talk",
+      "Edge"
+    ],
+    "keywords_list": [
+      "diffusion",
+      "far-end guidance",
+      "single-step",
+      "edge"
+    ],
+    "metrics_list": [
+      "AECMOS",
+      "ERLE",
+      "PESQ",
+      "STOI",
+      "RTF"
+    ],
+    "source_order": 32
+  },
+  {
+    "id": "tdpf-paec",
+    "year": "2023",
+    "venue": "ICASSP 2024",
+    "tasks": "Echo Cancellation;Target Speaker Extraction",
+    "paradigm": "Hybrid",
+    "channels": "Single-channel",
+    "scenarios": "Personalized;Double-talk;Streaming",
+    "model_family": "Two-stage neural post-filter",
+    "realtime": "Yes",
+    "title": "An Exploration of Task-decoupling on Two-stage Neural Post Filter for Real-time Personalized Acoustic Echo Cancellation",
+    "keywords": "task decoupling;speaker representation;post-filter;real time",
+    "paper_url": "https://arxiv.org/abs/2310.04715",
+    "code_url": "",
+    "demo_url": "",
+    "summary": "用两阶段拆分消回声与噪声和干扰说话人抑制，说明联合任务未必适合一个网络一次完成。",
+    "architecture": "第一阶段处理回声，第二阶段基于多尺度说话人表示抑制噪声与非目标语音，并探索训练顺序。",
+    "limitations": "级联会累积失真和延迟；说话人表示与阶段划分需要按数据调参。",
+    "metrics": "AECMOS;ERLE;PESQ;STOI;RTF",
+    "tasks_list": [
+      "Echo Cancellation",
+      "Target Speaker Extraction"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Personalized",
+      "Double-talk",
+      "Streaming"
+    ],
+    "keywords_list": [
+      "task decoupling",
+      "speaker representation",
+      "post-filter",
+      "real time"
+    ],
+    "metrics_list": [
+      "AECMOS",
+      "ERLE",
+      "PESQ",
+      "STOI",
+      "RTF"
+    ],
+    "source_order": 33
+  },
+  {
+    "id": "aec-challenge-2023",
+    "year": "2023",
+    "venue": "ICASSP 2023",
+    "tasks": "Echo Cancellation",
+    "paradigm": "Benchmark",
+    "channels": "Single-channel",
+    "scenarios": "Double-talk;Personalized;20 ms latency",
+    "model_family": "Challenge benchmark",
+    "realtime": "Yes",
+    "title": "ICASSP 2023 Acoustic Echo Cancellation Challenge",
+    "keywords": "benchmark;AECMOS;real devices;latency",
+    "paper_url": "https://arxiv.org/abs/2309.12553",
+    "code_url": "https://github.com/microsoft/AEC-Challenge",
+    "demo_url": "",
+    "summary": "提供真实设备与合成数据、双讲场景、个性化赛道和 20 ms 延迟约束，是近年 AEC 比较的核心基准。",
+    "architecture": "不是单一模型；统一训练和测试数据、在线主观测试与全频 AECMOS 服务来评估系统。",
+    "limitations": "挑战排名不能替代跨设备泛化；客观指标仍需与听测和 ASR 一起解读。",
+    "metrics": "AECMOS;MOS;WAcc;ERLE;Latency",
+    "tasks_list": [
+      "Echo Cancellation"
+    ],
+    "channels_list": [
+      "Single-channel"
+    ],
+    "scenarios_list": [
+      "Double-talk",
+      "Personalized",
+      "20 ms latency"
+    ],
+    "keywords_list": [
+      "benchmark",
+      "AECMOS",
+      "real devices",
+      "latency"
+    ],
+    "metrics_list": [
+      "AECMOS",
+      "MOS",
+      "WAcc",
+      "ERLE",
+      "Latency"
+    ],
+    "source_order": 34
   }
 ]
