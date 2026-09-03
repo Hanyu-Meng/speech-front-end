@@ -241,19 +241,21 @@ h1 { margin: 0; font-size: 1.8rem; line-height: 1.15; }
 .tag-benchmark { color: var(--blue); background: var(--blue-soft); }
 .tag-2026 { margin-left: 6px; color: var(--red); background: var(--red-soft); }
 
-.table-shell { position: relative; min-height: 320px; max-height: calc(100vh - 455px); margin: 0 clamp(16px, 3vw, 42px); overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 7px; box-shadow: 0 4px 18px rgba(23, 33, 30, 0.05); }
-table { width: 100%; min-width: 1180px; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+.table-shell { position: relative; min-height: 320px; max-height: calc(100vh - 455px); margin: 0 clamp(16px, 3vw, 42px); overflow: auto; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 7px; box-shadow: 0 4px 18px rgba(23, 33, 30, 0.05); }
+table { width: 100%; min-width: 1260px; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 thead { position: sticky; top: 0; z-index: 10; }
-th { padding: 0; color: var(--ink-muted); background: #eef1ed; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line-strong); font-size: 0.68rem; font-weight: 800; text-align: left; text-transform: uppercase; }
+th { height: 43px; padding: 0; color: var(--ink-muted); background: #eef1ed; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line-strong); font-size: 0.68rem; font-weight: 800; text-align: left; text-transform: uppercase; vertical-align: middle; }
 th:last-child, td:last-child { border-right: 0; }
 th:not(:has(.sort-button)) { padding: 10px 11px; }
 .sort-button { width: 100%; min-height: 39px; padding: 7px 10px; display: flex; align-items: center; justify-content: space-between; gap: 5px; color: inherit; background: transparent; border: 0; cursor: pointer; font-size: inherit; font-weight: inherit; text-align: left; text-transform: inherit; }
 .sort-button:hover, .sort-button[data-active="true"] { color: var(--green-dark); background: var(--green-soft); }
 .sort-button svg { width: 13px; height: 13px; flex: 0 0 13px; }
-tbody tr:hover { background: #fafcf9; }
-td { padding: 12px 11px; vertical-align: top; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: 0.76rem; line-height: 1.45; overflow-wrap: anywhere; }
+tbody tr { height: 128px; }
+tbody tr:hover td { background: #fafcf9; }
+td { padding: 12px 11px; vertical-align: top; background: var(--surface); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: 0.76rem; line-height: 1.45; overflow-wrap: anywhere; }
 tbody tr:last-child td { border-bottom: 0; }
 .year-column { width: 104px; }
+.rating-column { width: 82px; text-align: center; }
 .task-column { width: 130px; }
 .paradigm-column { width: 108px; }
 .context-column { width: 146px; }
@@ -264,9 +266,12 @@ tbody tr:last-child td { border-bottom: 0; }
 
 .year-venue strong { display: inline-block; font-size: 0.94rem; font-variant-numeric: tabular-nums; }
 .year-venue > span { display: block; margin-top: 3px; color: var(--ink-muted); font-size: 0.7rem; }
-.task-list, .context-list, .link-list, .dialog-labels, .metric-list { display: flex; flex-wrap: wrap; gap: 5px; }
-.context-list { gap: 3px 5px; }
-.context-list span { color: var(--ink-muted); font-size: 0.69rem; }
+.rating-cell { text-align: center; }
+.rating { display: inline-block; color: var(--amber); font-size: 0.92rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.rating-unrated { color: #9aa49f; }
+.link-list, .dialog-labels, .metric-list { display: flex; flex-wrap: wrap; gap: 5px; }
+.task-list .tag { margin: 0 3px 5px 0; }
+.context-list span { display: inline-block; margin: 0 2px 4px 0; color: var(--ink-muted); font-size: 0.69rem; }
 .context-list span + span::before { content: "·"; margin-right: 5px; color: var(--line-strong); }
 .title-button { padding: 0; color: var(--ink); background: transparent; border: 0; cursor: pointer; font-size: 0.82rem; font-weight: 750; line-height: 1.38; text-align: left; }
 .title-button:hover { color: var(--green-dark); text-decoration: underline; text-underline-offset: 3px; }
@@ -332,7 +337,7 @@ dialog::backdrop { background: rgba(23, 33, 30, 0.35); backdrop-filter: blur(2px
   .search-control { flex-basis: 100%; }
   .filter-group { flex-basis: calc(100% - 340px); }
   .optional-wide { display: none; }
-  table { min-width: 850px; }
+  table { min-width: 930px; }
 }
 
 @media (max-width: 720px) {

@@ -1,4 +1,4 @@
-const DATA_URL = "./data/literature.json?v=20260903-catalog";
+const DATA_URL = "./data/literature.json?v=20260903-hanyu";
 
 const TASK_LABELS = {
   "Speech Enhancement": "语音增强",
@@ -26,6 +26,7 @@ const elements = {
   task: document.querySelector("#task-filter"),
   year: document.querySelector("#year-filter"),
   venue: document.querySelector("#venue-filter"),
+  hanyu: document.querySelector("#hanyu-filter"),
   paradigm: document.querySelector("#paradigm-filter"),
   channel: document.querySelector("#channel-filter"),
   scenario: document.querySelector("#scenario-filter"),
@@ -59,6 +60,7 @@ const state = {
     task: "",
     year: "",
     venue: "",
+    hanyu: "",
     paradigm: "",
     channel: "",
     scenario: ""
@@ -114,6 +116,7 @@ function syncControls() {
   elements.task.value = state.filters.task;
   elements.year.value = state.filters.year;
   elements.venue.value = state.filters.venue;
+  elements.hanyu.value = state.filters.hanyu;
   elements.channel.value = state.filters.channel;
   elements.scenario.value = state.filters.scenario;
   for (const button of elements.paradigm.querySelectorAll("button")) {
@@ -155,6 +158,8 @@ function matchesFilters(record) {
   if (filter.task && !record.tasks_list.includes(filter.task)) return false;
   if (filter.year && record.year !== filter.year) return false;
   if (filter.venue && record.venue !== filter.venue) return false;
+  if (filter.hanyu === "unrated" && record.hanyu_rating) return false;
+  if (filter.hanyu && filter.hanyu !== "unrated" && record.hanyu_rating !== filter.hanyu) return false;
   if (filter.paradigm && record.paradigm !== filter.paradigm) return false;
   if (filter.channel && !record.channels_list.includes(filter.channel)) return false;
   if (filter.scenario && !record.scenarios_list.includes(filter.scenario)) return false;
@@ -166,12 +171,17 @@ function sortValue(record, key) {
   return record[key] ?? "";
 }
 
+function ratingValue(value) {
+  return value ? Number.parseFloat(value) : -1;
+}
+
 function compareRecords(left, right) {
   const leftValue = sortValue(left, state.sort);
   const rightValue = sortValue(right, state.sort);
-  let result = state.sort === "year"
-    ? Number(leftValue) - Number(rightValue)
-    : collator.compare(leftValue, rightValue);
+  let result;
+  if (state.sort === "year") result = Number(leftValue) - Number(rightValue);
+  else if (state.sort === "hanyu_rating") result = ratingValue(leftValue) - ratingValue(rightValue);
+  else result = collator.compare(leftValue, rightValue);
   if (result === 0) return left.source_order - right.source_order;
   return state.direction === "asc" ? result : -result;
 }
@@ -179,6 +189,10 @@ function compareRecords(left, right) {
 function makeTag(value, type = "") {
   const className = value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   return el("span", `tag ${type ? `tag-${type}` : `tag-${className}`}`, value);
+}
+
+function makeRating(value) {
+  return el("span", `rating${value ? "" : " rating-unrated"}`, value || "—");
 }
 
 function resourceDefinitions(record) {
@@ -210,6 +224,9 @@ function makeRow(record) {
   if (record.year === "2026") yearCell.append(makeTag("NEW", "2026"));
   yearCell.append(el("span", "", record.venue));
 
+  const ratingCell = el("td", "rating-cell");
+  ratingCell.append(makeRating(record.hanyu_rating));
+
   const taskCell = el("td", "task-list");
   for (const task of record.tasks_list) taskCell.append(makeTag(TASK_LABELS[task] ?? task, "task"));
 
@@ -237,12 +254,12 @@ function makeRow(record) {
   const findingCell = el("td", "finding optional-wide");
   findingCell.append(el("strong", "", record.summary), el("span", "", record.limitations));
 
-  row.append(yearCell, taskCell, paradigmCell, contextCell, titleCell, keywordsCell, linksCell, findingCell);
+  row.append(yearCell, ratingCell, taskCell, paradigmCell, contextCell, titleCell, keywordsCell, linksCell, findingCell);
   return row;
 }
 
 function renderActiveFilters() {
-  const labels = { search: "搜索", task: "任务", year: "年份", venue: "Venue", paradigm: "范式", channel: "通道", scenario: "场景" };
+  const labels = { search: "搜索", task: "任务", year: "年份", venue: "Venue", hanyu: "Hanyu", paradigm: "范式", channel: "通道", scenario: "场景" };
   const valueLabels = { ...TASK_LABELS, ...PARADIGM_LABELS, ...CHANNEL_LABELS };
   elements.activeFilters.replaceChildren();
   for (const [key, value] of Object.entries(state.filters)) {
@@ -317,7 +334,7 @@ function csvEscape(value) {
 }
 
 function exportFilteredCsv() {
-  const headers = ["year", "venue", "tasks", "paradigm", "channels", "scenarios", "model_family", "title", "paper_url", "code_url", "demo_url", "summary", "architecture", "limitations", "metrics"];
+  const headers = ["year", "venue", "hanyu_rating", "tasks", "paradigm", "channels", "scenarios", "model_family", "title", "paper_url", "code_url", "demo_url", "summary", "architecture", "limitations", "metrics"];
   const rows = [headers, ...state.filtered.map((record) => headers.map((key) => record[key]))];
   const csv = rows.map((row) => row.map(csvEscape).join(",")).join("\n");
   const url = URL.createObjectURL(new Blob([`\ufeff${csv}`], { type: "text/csv;charset=utf-8" }));
@@ -343,7 +360,7 @@ function closeOnBackdrop(dialog) {
 
 function bindEvents() {
   elements.search.addEventListener("input", () => { state.filters.search = elements.search.value; render(); });
-  for (const key of ["task", "year", "venue", "channel", "scenario"]) {
+  for (const key of ["task", "year", "venue", "hanyu", "channel", "scenario"]) {
     elements[key].addEventListener("change", () => { state.filters[key] = elements[key].value; render(); });
   }
   for (const button of elements.paradigm.querySelectorAll("button")) {
