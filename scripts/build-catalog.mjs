@@ -10,7 +10,7 @@ const README_PATH = path.join(ROOT, "README.md");
 const CHECK_ONLY = process.argv.includes("--check");
 
 const EXPECTED_HEADERS = [
-  "id", "year", "venue", "tasks", "paradigm", "channels", "scenarios",
+  "id", "year", "venue", "hanyu_rating", "tasks", "paradigm", "channels", "scenarios",
   "model_family", "realtime", "title", "keywords", "paper_url", "code_url",
   "demo_url", "summary", "architecture", "limitations", "metrics"
 ];
@@ -86,6 +86,9 @@ function loadCatalog() {
     }
     if (!/^[a-z0-9][a-z0-9-]*$/.test(record.id)) errors.push(`row ${rowNumber}: id must be a lowercase ASCII slug`);
     if (!/^20\d{2}$/.test(record.year)) errors.push(`row ${rowNumber}: year must contain four digits`);
+    if (record.hanyu_rating && !/^(?:[1-4](?:\.5)?|5(?:\.0)?)\/5$/.test(record.hanyu_rating)) {
+      errors.push(`row ${rowNumber}: hanyu_rating must be blank or use 1/5 to 5/5 in 0.5 steps`);
+    }
     for (const task of record.tasks_list) if (!TASKS.has(task)) errors.push(`row ${rowNumber}: unsupported task ${task}`);
     for (const channel of record.channels_list) if (!CHANNELS.has(channel)) errors.push(`row ${rowNumber}: unsupported channel ${channel}`);
     if (!PARADIGMS.has(record.paradigm)) errors.push(`row ${rowNumber}: unsupported paradigm ${record.paradigm}`);
@@ -116,11 +119,12 @@ function links(record) {
 
 function buildMarkdownTable(catalog) {
   const header = [
-    "| 年份 / Venue | 任务 | 范式 | 通道 / 场景 | 文献 | 入口 |",
-    "|---|---|---|---|---|---|"
+    "| 年份 / Venue | Hanyu | 任务 | 范式 | 通道 / 场景 | 文献 | 入口 |",
+    "|---|---|---|---|---|---|---|"
   ];
   const rows = catalog.map((record) => `| ${[
     `${record.year}<br>${record.venue}`,
+    record.hanyu_rating || "—",
     record.tasks_list.join(" · "),
     `${record.paradigm}<br>${record.model_family}`,
     `${record.channels_list.join(" · ")}<br>${record.scenarios_list.join(" · ")}`,

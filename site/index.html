@@ -11,9 +11,9 @@
     <meta property="og:title" content="Speech Front-End Literature" />
     <meta property="og:description" content="可筛选的现代语音前端文献索引与方法地图。" />
     <title>Speech Front-End Literature</title>
-    <link rel="stylesheet" href="./assets/styles.css?v=20260903-catalog" />
+    <link rel="stylesheet" href="./assets/styles.css?v=20260903-hanyu" />
     <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-    <script type="module" src="./assets/app.js?v=20260903-catalog"></script>
+    <script type="module" src="./assets/app.js?v=20260903-hanyu"></script>
   </head>
   <body>
     <header class="app-header">
@@ -126,6 +126,22 @@
             </div>
           </div>
           <label class="select-control select-compact">
+            <span>Hanyu</span>
+            <select id="hanyu-filter" aria-label="按 Hanyu 评分筛选">
+              <option value="">全部评分</option>
+              <option value="unrated">未评分</option>
+              <option value="5/5">5/5</option>
+              <option value="4.5/5">4.5/5</option>
+              <option value="4/5">4/5</option>
+              <option value="3.5/5">3.5/5</option>
+              <option value="3/5">3/5</option>
+              <option value="2.5/5">2.5/5</option>
+              <option value="2/5">2/5</option>
+              <option value="1.5/5">1.5/5</option>
+              <option value="1/5">1/5</option>
+            </select>
+          </label>
+          <label class="select-control select-compact">
             <span>通道</span>
             <select id="channel-filter" aria-label="按通道筛选">
               <option value="">全部通道</option>
@@ -163,6 +179,11 @@
               <th class="year-column" scope="col">
                 <button class="sort-button" type="button" data-sort="year">
                   年份 / Venue <i data-lucide="chevrons-up-down" aria-hidden="true"></i>
+                </button>
+              </th>
+              <th class="rating-column" scope="col">
+                <button class="sort-button" type="button" data-sort="hanyu_rating">
+                  Hanyu <i data-lucide="chevrons-up-down" aria-hidden="true"></i>
                 </button>
               </th>
               <th class="task-column" scope="col">

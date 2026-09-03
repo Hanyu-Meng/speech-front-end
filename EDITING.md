@@ -12,6 +12,7 @@
 
 ## 字段规则
 
+- `hanyu_rating`：Hanyu 的个人评分；可留空，或填写 `1/5` 到 `5/5`，支持 `0.5` 分档（例如 `4.5/5`）。
 - `tasks`：`Speech Enhancement`、`Target Speaker Extraction`、`Dereverberation`、`Echo Cancellation`，可用 `;` 多选。
 - `paradigm`：`Generative`、`Discriminative`、`Hybrid` 或 `Benchmark`。
 - `channels`：`Single-channel`、`Multi-channel`、`Binaural`、`Flexible`，可多选。
@@ -24,6 +25,6 @@
 ## 前端使用
 
 - 按 `/` 聚焦搜索框；筛选状态会写入 URL，可直接分享。
-- 点击任务卡可跳到对应文献集合。
-- 点击论文卡查看结构、局限与评价指标。
+- 点击顶部任务统计可筛选对应文献集合。
+- 点击表格中的论文标题查看结构、局限与评价指标。
 - “导出结果”只导出当前筛选后的文献。
