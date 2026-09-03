@@ -270,6 +270,12 @@ tbody tr:last-child td { border-bottom: 0; }
 .rating { display: inline-block; color: var(--amber); font-size: 0.92rem; font-weight: 800; font-variant-numeric: tabular-nums; }
 .rating-unrated { color: #9aa49f; }
 .link-list, .dialog-labels, .metric-list { display: flex; flex-wrap: wrap; gap: 5px; }
+tbody td > .tag {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
 .task-list .tag { margin: 0 3px 5px 0; }
 .context-list span { display: inline-block; margin: 0 2px 4px 0; color: var(--ink-muted); font-size: 0.69rem; }
 .context-list span + span::before { content: "·"; margin-right: 5px; color: var(--line-strong); }
