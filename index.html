@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101716" />
+    <meta
+      name="description"
+      content="Speech front-end 研究文献库：从经典声学特征到神经增强、自监督表示与流式部署。"
+    />
+    <meta property="og:title" content="Speech Front-End 文献库" />
+    <meta
+      property="og:description"
+      content="可搜索、筛选和持续维护的 speech front-end 论文目录。"
+    />
+    <title>Speech Front-End 文献库</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <script type="module" src="./assets/app.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="返回文献库首页">
+        <span class="brand-signal" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i>
+        </span>
+        <span>
+          <strong>Speech Front-End</strong>
+          <small>Research Literature Atlas</small>
+        </span>
+      </a>
+      <nav class="top-actions" aria-label="外部操作">
+        <a class="button ghost" href="https://github.com/Hanyu-Meng/speech-front-end" target="_blank" rel="noreferrer">GitHub ↗</a>
+        <a class="button solid" href="https://app.pagescms.org/" target="_blank" rel="noreferrer">编辑目录</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">SIGNAL → REPRESENTATION → INTELLIGENCE</p>
+          <h1 id="page-title">听见模型之前，<br />先看见声音如何被表示。</h1>
+          <p class="hero-lead">
+            从 MFCC、WPE 到可学习滤波器与自监督表示：把 speech front-end 的关键路线、工程约束和阅读判断放进一个可持续维护的目录。
+          </p>
+        </div>
+        <div class="signal-card" aria-hidden="true">
+          <div class="signal-meta"><span>INPUT / 16 kHz</span><span>LIVE CATALOG</span></div>
+          <div class="waveform">
+            <i style="--h:22%"></i><i style="--h:38%"></i><i style="--h:72%"></i><i style="--h:46%"></i>
+            <i style="--h:88%"></i><i style="--h:54%"></i><i style="--h:96%"></i><i style="--h:64%"></i>
+            <i style="--h:42%"></i><i style="--h:78%"></i><i style="--h:52%"></i><i style="--h:28%"></i>
+            <i style="--h:62%"></i><i style="--h:92%"></i><i style="--h:48%"></i><i style="--h:76%"></i>
+            <i style="--h:34%"></i><i style="--h:58%"></i><i style="--h:82%"></i><i style="--h:30%"></i>
+          </div>
+          <div class="pipeline"><span>waveform</span><b>→</b><span>front-end</span><b>→</b><span>features</span></div>
+        </div>
+      </section>
+
+      <section class="stats" aria-label="目录概览">
+        <article><span id="stat-total">—</span><p>篇种子文献</p></article>
+        <article><span id="stat-domains">—</span><p>个研究领域</p></article>
+        <article><span id="stat-years">—</span><p>年知识跨度</p></article>
+        <article><span id="stat-read">—</span><p>篇已读 / 在读</p></article>
+      </section>
+
+      <section class="catalog" aria-labelledby="catalog-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">LITERATURE INDEX</p>
+            <h2 id="catalog-title">研究目录</h2>
+          </div>
+          <p class="sync-state"><span></span><b id="sync-status">正在载入数据</b></p>
+        </div>
+
+        <div class="filter-panel">
+          <label class="search-box" for="search-input">
+            <span aria-hidden="true">⌕</span>
+            <input id="search-input" type="search" autocomplete="off" placeholder="搜索标题、关键词、会议或研究价值…" />
+            <kbd>/</kbd>
+          </label>
+
+          <div class="select-grid">
+            <label><span>领域</span><select id="domain-filter"><option value="">全部领域</option></select></label>
+            <label><span>阶段</span><select id="stage-filter"><option value="">全部阶段</option></select></label>
+            <label><span>年份</span><select id="year-filter"><option value="">全部年份</option></select></label>
+            <label><span>状态</span><select id="status-filter"><option value="">全部状态</option></select></label>
+            <label><span>星级</span><select id="rating-filter"><option value="">全部星级</option><option value="unrated">未评分</option></select></label>
+            <label><span>排序</span>
+              <select id="sort-control">
+                <option value="year:desc">年份：从新到旧</option>
+                <option value="year:asc">年份：从旧到新</option>
+                <option value="rating:desc">星级：从高到低</option>
+                <option value="title:asc">标题：A → Z</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="filter-footer">
+            <div class="active-filters" id="active-filters" aria-live="polite"></div>
+            <div class="toolbar">
+              <button id="copy-view" class="text-button" type="button">复制筛选链接</button>
+              <button id="export-csv" class="text-button" type="button">导出 CSV</button>
+              <button id="clear-filters" class="text-button danger" type="button">重置</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-head">
+          <p id="result-count">正在载入目录…</p>
+          <p>点击标题查看摘要与研究价值</p>
+        </div>
+
+        <div class="table-shell" tabindex="0">
+          <table>
+            <thead>
+              <tr>
+                <th>年份 / Venue</th>
+                <th>领域 / 阶段</th>
+                <th>文献</th>
+                <th>关键词</th>
+                <th>状态</th>
+                <th>星级</th>
+                <th>入口</th>
+              </tr>
+            </thead>
+            <tbody id="catalog-body"></tbody>
+          </table>
+          <div class="table-state" id="table-state">正在读取 literature.json…</div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Built for focused reading, not paper collecting.</p>
+      <p>数据源：<code>data/literature.csv</code></p>
+    </footer>
+
+    <dialog id="detail-dialog" aria-labelledby="detail-title">
+      <div class="dialog-topline"></div>
+      <div class="dialog-head">
+        <div>
+          <p id="detail-meta" class="eyebrow"></p>
+          <h2 id="detail-title"></h2>
+        </div>
+        <button id="close-dialog" class="close-button" type="button" aria-label="关闭详情">×</button>
+      </div>
+      <div id="detail-labels" class="dialog-labels"></div>
+      <section>
+        <h3>论文定位</h3>
+        <p id="detail-summary"></p>
+      </section>
+      <section>
+        <h3>为什么值得读</h3>
+        <p id="detail-value"></p>
+      </section>
+      <section>
+        <h3>核心词</h3>
+        <p id="detail-keywords"></p>
+      </section>
+      <nav id="detail-links" class="detail-links" aria-label="论文链接"></nav>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
