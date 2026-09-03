@@ -11,7 +11,7 @@ settings:
 
 content:
   - name: literature
-    label: Speech front-end literature
+    label: Speech Front-End 研究地图
     type: file
     path: data/literature.csv
     format: datagrid
