@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f6f3" />
+    <meta
+      name="description"
+      content="A structured knowledge guide to speech enhancement, target speaker extraction, dereverberation, and acoustic echo cancellation."
+    />
+    <meta property="og:title" content="Speech Front-End Knowledge Guide" />
+    <meta property="og:description" content="Build a durable mental model of SE, TSE, dereverberation, and AEC." />
+    <title>Speech Front-End Knowledge Guide</title>
+    <link rel="stylesheet" href="./assets/styles.css?v=20260903-paradigm" />
+    <link rel="stylesheet" href="./assets/knowledge.css?v=20260904-knowledge" />
+    <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script type="module" src="./assets/knowledge.js?v=20260904-knowledge"></script>
+  </head>
+  <body class="knowledge-page">
+    <header class="app-header">
+      <a class="brand" href="./" aria-label="Speech Front-End literature home">
+        <span class="brand-mark" aria-hidden="true">SF</span>
+        <span>
+          <strong>Speech Front-End Knowledge</strong>
+          <small>Understand · Compare · Explain</small>
+        </span>
+      </a>
+      <nav class="header-actions" aria-label="Knowledge guide links">
+        <a class="button button-primary mobile-icon-button" href="./">
+          <i data-lucide="table-2" aria-hidden="true"></i><span>Paper Catalog</span>
+        </a>
+      </nav>
+    </header>
+
+    <div class="knowledge-shell">
+      <aside class="knowledge-sidebar" aria-label="Guide navigation">
+        <p class="eyebrow">STUDY MAP</p>
+        <nav>
+          <a href="#start" class="active">Start here</a>
+          <a href="#mental-model">One mental model</a>
+          <a href="#foundations">Foundations</a>
+          <a href="#paradigms">Method paradigms</a>
+          <a href="#tasks">Four tasks</a>
+          <a href="#se">Speech enhancement</a>
+          <a href="#tse">Target speaker extraction</a>
+          <a href="#dr">Dereverberation</a>
+          <a href="#aec">Echo cancellation</a>
+          <a href="#metrics">Metric map</a>
+          <a href="#answer">Answer framework</a>
+          <a href="#mastery">Mastery checklist</a>
+        </nav>
+        <div class="progress-card">
+          <div><span>Mastery progress</span><strong id="progress-label">0 / 32</strong></div>
+          <div class="progress-track" role="progressbar" aria-label="Mastery checklist progress" aria-valuemin="0" aria-valuemax="32" aria-valuenow="0"><span id="progress-bar"></span></div>
+          <button type="button" id="reset-progress">Reset checklist</button>
+        </div>
+      </aside>
+
+      <main class="knowledge-main">
+        <section class="knowledge-hero" id="start">
+          <p class="eyebrow">FROM 56 CURATED PAPERS · 2023–2026</p>
+          <h1>Know the field.<br />Explain it without fear.</h1>
+          <p class="hero-lead">
+            A compact but rigorous map of speech enhancement, target speaker extraction,
+            dereverberation, and acoustic echo cancellation—from signal assumptions to
+            architectures, metrics, failure modes, and research judgment.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#mental-model">
+              <i data-lucide="route" aria-hidden="true"></i>Build the mental model
+            </a>
+            <a class="button button-secondary" href="./">
+              <i data-lucide="library" aria-hidden="true"></i>Open the paper catalog
+            </a>
+          </div>
+          <div class="scope-strip" aria-label="Guide scope">
+            <span><strong>4</strong> core tasks</span>
+            <span><strong>56</strong> curated papers</span>
+            <span><strong>4</strong> method paradigms</span>
+            <span><strong>1</strong> reusable answer framework</span>
+          </div>
+        </section>
+
+        <section class="knowledge-section" id="mental-model">
+          <div class="section-heading">
+            <p class="eyebrow">THE ONE MENTAL MODEL</p>
+            <h2>Every task is structured signal recovery</h2>
+            <p>Start from what is observed, what side information exists, and what must be preserved.</p>
+          </div>
+          <div class="equation-card">
+            <code>observation = desired speech + interference shaped by an acoustic path</code>
+            <p>The four tasks differ mainly in the interference definition and available conditioning.</p>
+          </div>
+          <div class="reasoning-grid">
+            <article><span>01</span><h3>Define the target</h3><p>Clean speech, one enrolled speaker, anechoic speech, or near-end speech?</p></article>
+            <article><span>02</span><h3>List the evidence</h3><p>Mixture only, far-end reference, multiple microphones, enrollment audio, DOA, HRTF, vision, or text?</p></article>
+            <article><span>03</span><h3>Choose the estimator</h3><p>Signal-processing filter, discriminative mapping, generative prior, or a hybrid cascade?</p></article>
+            <article><span>04</span><h3>Protect invariants</h3><p>Words, speaker identity, spatial cues, direct path, near-end speech, latency, and causality.</p></article>
+          </div>
+        </section>
+
+        <section class="knowledge-section" id="foundations">
+          <div class="section-heading">
+            <p class="eyebrow">FOUNDATIONS</p>
+            <h2>The concepts every architecture assumes</h2>
+            <p>Master these first. Model names become much easier once you can place them on these axes.</p>
+          </div>
+          <div class="concept-grid">
+            <article><h3>Waveform vs. STFT</h3><p>Waveform models avoid explicit phase handling. STFT models expose magnitude, phase, and spatial covariance, making filtering and beamforming easier to express.</p></article>
+            <article><h3>Masking vs. mapping</h3><p>A mask scales mixture coefficients and keeps a strong observation anchor. Direct mapping predicts the target representation and is more flexible but less constrained.</p></article>
+            <article><h3>Causal vs. noncausal</h3><p>Causal systems use past and limited look-ahead. Noncausal systems can use full utterances. Always ask for algorithmic latency, RTF, memory, and target hardware.</p></article>
+            <article><h3>Single vs. multichannel</h3><p>Single-channel systems rely on spectral and learned priors. Multiple microphones add spatial covariance, phase differences, beamforming, and geometry mismatch.</p></article>
+            <article><h3>Conditioning</h3><p>TSE and AEC are defined by side information: speaker embedding, spatial cue, far-end reference, or multimodal prompt. Condition quality sets the performance ceiling.</p></article>
+            <article><h3>Loss vs. metric</h3><p>Training losses must be differentiable; evaluation metrics need not be. Optimizing a proxy can improve its score while harming words, identity, or naturalness.</p></article>
+            <article><h3>Closed-set vs. open-world</h3><p>Benchmarks control speakers, rooms, arrays, and distortions. Deployment adds unseen devices, sample rates, languages, motion, echo paths, and nonlinearities.</p></article>
+            <article><h3>Physical constraint vs. learned prior</h3><p>WPE, FCP, LAEC, and beamforming encode acoustic structure. Neural priors model speech. Strong systems often combine both instead of forcing one to do everything.</p></article>
+          </div>
+        </section>
+
+        <section class="knowledge-section" id="paradigms">
+          <div class="section-heading">
+            <p class="eyebrow">METHOD PARADIGMS</p>
+            <h2>Four ways to recover speech</h2>
+          </div>
+          <div class="comparison-scroll">
+            <table class="knowledge-table">
+              <thead><tr><th>Paradigm</th><th>Core idea</th><th>Strength</th><th>Main risk</th><th>Typical families</th></tr></thead>
+              <tbody>
+                <tr><th>Signal processing</th><td>Use an explicit acoustic or statistical model.</td><td>Interpretable, stable, efficient.</td><td>Assumptions fail under nonstationarity and mismatch.</td><td>Wiener, MMSE, WPE, FCP, AEC filters, MVDR</td></tr>
+                <tr><th>Discriminative</th><td>Learn a direct map from observations to a target or mask.</td><td>Fast single-pass inference and strong fidelity.</td><td>Over-smoothing, residual artifacts, domain mismatch.</td><td>CRN, TasNet, TF-GridNet, Mamba, deep filters</td></tr>
+                <tr><th>Generative</th><td>Use a learned speech distribution to sample or transport toward clean speech.</td><td>Naturalness and restoration under severe degradation.</td><td>Hallucination, identity drift, sampling cost.</td><td>Diffusion, score SDE, bridge, flow, codec LM</td></tr>
+                <tr><th>Hybrid</th><td>Anchor content with filtering or prediction, then refine with a learned prior.</td><td>Balances fidelity, perceptual quality, and physical structure.</td><td>Cascaded errors, training complexity, higher compute.</td><td>Predict-then-diffuse, beamformer + post-filter, mask + flow</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout"><strong>Fast rule:</strong> use physical or discriminative structure to decide <em>what should remain</em>; use a generative prior only to decide <em>how missing detail should sound</em>.</div>
+        </section>
+
+        <section class="knowledge-section" id="tasks">
+          <div class="section-heading">
+            <p class="eyebrow">THE FOUR TASKS</p>
+            <h2>Same recovery lens, different evidence</h2>
+          </div>
+          <div class="task-overview-grid">
+            <article>
+              <span class="task-code">SE</span>
+              <h3>Speech Enhancement</h3>
+              <code>y = s + n</code>
+              <p>Suppress noise and distortion while preserving linguistic content and speaker identity.</p>
+            </article>
+            <article>
+              <span class="task-code">TSE</span>
+              <h3>Target Speaker Extraction</h3>
+              <code>y = s_target + Σs_interferers + n</code>
+              <p>Recover one specified speaker using enrollment, spatial, visual, or textual cues.</p>
+            </article>
+            <article>
+              <span class="task-code">DR</span>
+              <h3>Dereverberation</h3>
+              <code>y = h * s + n</code>
+              <p>Reduce late reverberation without destroying the direct path or useful early reflections.</p>
+            </article>
+            <article>
+              <span class="task-code">AEC</span>
+              <h3>Echo Cancellation</h3>
+              <code>y = s_near + h_echo * x_far + n</code>
+              <p>Remove far-end echo while protecting near-end speech during double-talk.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="knowledge-section task-deep-dive" id="se">
+          <div class="topic-heading">
+            <div><p class="eyebrow">SE · 32 PAPERS IN THE CATALOG</p><h2>Speech Enhancement</h2></div>
+            <a class="text-link" href="./?task=Speech%20Enhancement">Browse SE papers <i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+          </div>
+          <p class="topic-thesis">SE estimates cleaner speech from a degraded observation. The real objective is not “remove everything that is not speech”; it is “remove unwanted distortion without changing the words, speaker, timing, or spatial intent.”</p>
+
+          <div class="signal-grid">
+            <article class="signal-panel"><span>Observation</span><code>y = h * s + n + d</code><p><b>h</b> is the acoustic path, <b>n</b> is additive noise, and <b>d</b> covers clipping, bandwidth loss, codec artifacts, or other distortions.</p></article>
+            <article class="signal-panel"><span>Output contract</span><p>Preserve linguistic content and speaker identity; improve quality and intelligibility; respect latency, sample rate, and channel constraints.</p></article>
+          </div>
+
+          <div class="subheading"><span>01</span><div><h3>Method map</h3><p>Know what each family predicts and what anchors it to the observation.</p></div></div>
+          <div class="method-stack">
+            <article class="method-row"><span class="family-badge physical">Physical</span><div><h4>Statistical filtering and beamforming</h4><p>Spectral subtraction, Wiener/MMSE estimators, MVDR, and multichannel filters use noise or spatial statistics. They are efficient and interpretable but depend on accurate statistics and stationarity.</p></div></article>
+            <article class="method-row"><span class="family-badge discriminative">Discriminative</span><div><h4>Masking, complex mapping, and direct waveform estimation</h4><p>CRN/UNet, TasNet, TF-GridNet, MP-SENet, SpatialNet, and Mamba variants predict masks, magnitude/phase, complex spectra, filters, or waveforms in one forward pass.</p></div></article>
+            <article class="method-row"><span class="family-badge generative">Generative</span><div><h4>Diffusion, bridges, flow, and speech language models</h4><p>SGMSE+ uses score-based reverse dynamics; SE-Bridge and SB-RF shorten the transport path; SpeechFlow and FlowSE learn continuous flows; SELM and UniPASE operate through tokens or learned representations.</p></div></article>
+            <article class="method-row"><span class="family-badge hybrid">Hybrid</span><div><h4>Predict first, regenerate carefully</h4><p>StoRM, Extract-and-Diffuse, GAP-URGENet, and URGENT systems use a discriminative estimate or representation to anchor content before generative refinement or fusion.</p></div></article>
+          </div>
+
+          <div class="topic-columns">
+            <article class="knowledge-panel"><h3>Scenario changes</h3><ul><li><b>Single-channel:</b> rely on spectral and speech priors.</li><li><b>Multichannel:</b> add SCM estimation, beamforming, geometry, and array mismatch.</li><li><b>Binaural:</b> preserve ILD/IPD/ITD and hearing-aid constraints.</li><li><b>Streaming:</b> require causal state, bounded look-ahead, stable long-form behavior, and device-level RTF.</li><li><b>Universal:</b> handle variable sample rates and multiple simultaneous distortions.</li></ul></article>
+            <article class="knowledge-panel risk"><h3>Failure modes to name</h3><ul><li>Speech deletion at low SNR or during nonstationary noise.</li><li>Musical noise, phase artifacts, or over-smoothed consonants.</li><li>Generative word hallucination and speaker/timbre drift.</li><li>Objective-score gains without human preference or ASR gains.</li><li>Offline quality that collapses under causal deployment.</li></ul></article>
+          </div>
+
+          <div class="model-strip"><span>Catalog anchors</span><a href="./?task=Speech%20Enhancement&amp;paradigm=Discriminative">MP-SENet · TF-GridNet · SpatialNet · RT-SEMamba</a><a href="./?task=Speech%20Enhancement&amp;paradigm=Generative">SGMSE+ · SE-Bridge · FlowSE · SB-RF · UniPASE</a><a href="./?task=Speech%20Enhancement&amp;paradigm=Hybrid">StoRM · GAP-URGENet · Extract-and-Diffuse</a></div>
+
+          <div class="qa-block">
+            <details><summary>Why can a generative enhancer sound better but be less trustworthy?</summary><p>A strong speech prior can replace uncertain evidence with plausible speech. That may raise naturalness scores while changing phonemes, speaker traits, or timing. Pair perceptual metrics with WER, speaker similarity, signal fidelity, and listening tests.</p></details>
+            <details><summary>Masking or mapping—which is better?</summary><p>Masking is observation-anchored and often stable; mapping is less constrained and can reconstruct missing components. The right choice depends on degradation severity, phase treatment, and whether hallucination risk is acceptable.</p></details>
+            <details><summary>What makes a real-time claim convincing?</summary><p>Look for causality, explicit look-ahead, algorithmic latency, RTF on named hardware, memory growth on long audio, and stable streaming evaluation—not only a small parameter count.</p></details>
+          </div>
+
+          <fieldset class="checklist" data-check-group="se"><legend>SE mastery check</legend>
+            <label><input type="checkbox" data-check="se-1" /><span>I can explain mask estimation, complex mapping, waveform estimation, and neural filtering.</span></label>
+            <label><input type="checkbox" data-check="se-2" /><span>I can contrast diffusion, bridge, flow, codec-LM, and hybrid restoration.</span></label>
+            <label><input type="checkbox" data-check="se-3" /><span>I can explain why phase, content fidelity, and speaker identity matter.</span></label>
+            <label><input type="checkbox" data-check="se-4" /><span>I can design a metric set for offline, streaming, multichannel, and generative SE.</span></label>
+            <label><input type="checkbox" data-check="se-5" /><span>I can name at least two failure modes that a leaderboard score can hide.</span></label>
+          </fieldset>
+        </section>
+
+        <section class="knowledge-section task-deep-dive" id="tse">
+          <div class="topic-heading">
+            <div><p class="eyebrow">TSE · 20 PAPERS IN THE CATALOG</p><h2>Target Speaker Extraction</h2></div>
+            <a class="text-link" href="./?task=Target%20Speaker%20Extraction">Browse TSE papers <i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+          </div>
+          <p class="topic-thesis">TSE is conditional separation: recover one target speaker, not merely any dominant speech. The central research question is how the system knows whom to extract and how it behaves when that evidence is unreliable.</p>
+
+          <div class="signal-grid">
+            <article class="signal-panel"><span>Observation</span><code>y = s_target + Σ s_interferers + n</code><p>The model also receives a clue <b>c</b>: enrollment speech, speaker embedding, DOA, HRTF, visual motion, text, or a combination.</p></article>
+            <article class="signal-panel"><span>Output contract</span><p>Select the correct identity; suppress competing speakers and noise; avoid leakage when the target is absent; preserve content, voice, and spatial cues.</p></article>
+          </div>
+
+          <div class="subheading"><span>02</span><div><h3>Method map</h3><p>Organize TSE by cue, fusion point, separator, and output representation.</p></div></div>
+          <div class="method-stack">
+            <article class="method-row"><span class="family-badge discriminative">Speaker cue</span><div><h4>Embedding-conditioned masking or separation</h4><p>SpeakerBeam-style systems encode enrollment speech and inject it through adaptation, attention, FiLM, or concatenation. Conv-TasNet and state-space variants support causal low-latency extraction.</p></div></article>
+            <article class="method-row"><span class="family-badge physical">Spatial cue</span><div><h4>DOA, geometry, HRTF, and beamformer guidance</h4><p>BG-TSE, iNeuBe-X, GC-SSF, and HRTF-conditioned models use direction or array evidence. They improve selection but inherit DOA, calibration, and geometry errors.</p></div></article>
+            <article class="method-row"><span class="family-badge discriminative">Multimodal</span><div><h4>Visual, text, and composable clues</h4><p>SEANet uses audio-visual attention; WeSep separates cue modules from the backbone so enrollment, spatial, visual, and textual evidence can be combined or ablated.</p></div></article>
+            <article class="method-row"><span class="family-badge generative">Generative</span><div><h4>Conditional diffusion, flow, and codec LMs</h4><p>Conditional Diffusion TSE and DiffSpEx sample a target distribution; AlphaFlowTSE targets one-step transport; StarTSE streams autoregressively; LauraTSE and Mask2Flow use discriminative front-ends to anchor speaker selection.</p></div></article>
+          </div>
+
+          <div class="topic-columns">
+            <article class="knowledge-panel"><h3>Cue questions</h3><ul><li><b>Enrollment:</b> clean or noisy; short or long; same channel and language?</li><li><b>Spatial:</b> known DOA or tracked; fixed geometry or flexible array?</li><li><b>Binaural:</b> generic or listener-specific HRTF; static or moving?</li><li><b>Visual:</b> synchronized face video; what happens under occlusion?</li><li><b>Fusion:</b> early conditioning, layer-wise modulation, cross-attention, or output selection?</li></ul></article>
+            <article class="knowledge-panel risk"><h3>Failure modes to name</h3><ul><li>Wrong-speaker extraction or identity swapping during overlap.</li><li>Target leakage when the target is silent or absent.</li><li>Enrollment mismatch, contamination, or insufficient duration.</li><li>Loss of binaural localization cues after extraction.</li><li>Tracking lag for moving speakers and cross trajectories.</li></ul></article>
+          </div>
+
+          <div class="model-strip"><span>Catalog anchors</span><a href="./?task=Target%20Speaker%20Extraction&amp;paradigm=Discriminative">SpeakerBeam-SS · LexTra · WeSep · SEANet</a><a href="./?task=Target%20Speaker%20Extraction&amp;channel=Multi-channel">iNeuBe-X · BG-TSE · GC-SSF · Moving HOA</a><a href="./?task=Target%20Speaker%20Extraction&amp;paradigm=Generative">DiffSpEx · AlphaFlowTSE · StarTSE</a></div>
+
+          <div class="qa-block">
+            <details><summary>How is TSE different from blind speech separation?</summary><p>Blind separation returns multiple anonymous sources and may suffer permutation ambiguity. TSE returns one requested source by conditioning on identity or location; its unique risks are clue mismatch, wrong-target selection, and target-absent leakage.</p></details>
+            <details><summary>Why is SI-SDR alone insufficient for TSE?</summary><p>It does not verify identity or target-absent behavior. Report speaker similarity or confusion rate, content error such as WER/TER, activity detection, leakage, and perceptual quality alongside SI-SDRi.</p></details>
+            <details><summary>What changes for a moving speaker?</summary><p>A static embedding may still identify the target, but spatial filters and DOA cues must update over time. Evaluate tracking delay, identity swaps at crossings, causal state stability, and performance across trajectory speed.</p></details>
+          </div>
+
+          <fieldset class="checklist" data-check-group="tse"><legend>TSE mastery check</legend>
+            <label><input type="checkbox" data-check="tse-1" /><span>I can distinguish blind separation, target speaker extraction, and personalized enhancement.</span></label>
+            <label><input type="checkbox" data-check="tse-2" /><span>I can compare enrollment, spatial, HRTF, visual, and text clues.</span></label>
+            <label><input type="checkbox" data-check="tse-3" /><span>I can explain early fusion, FiLM/adaptation, cross-attention, and beamformer guidance.</span></label>
+            <label><input type="checkbox" data-check="tse-4" /><span>I can evaluate wrong-speaker, target-absent, moving, and binaural cases.</span></label>
+            <label><input type="checkbox" data-check="tse-5" /><span>I can explain why hybrid generative TSE often anchors selection before restoration.</span></label>
+          </fieldset>
+        </section>
+
+        <section class="knowledge-section task-deep-dive" id="dr">
+          <div class="topic-heading">
+            <div><p class="eyebrow">DR · 11 PAPERS IN THE CATALOG</p><h2>Dereverberation</h2></div>
+            <a class="text-link" href="./?task=Dereverberation">Browse DR papers <i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+          </div>
+          <p class="topic-thesis">Dereverberation estimates speech with less late room response. It is not the same as denoising: reverberation is a convolution of the desired speech with a room impulse response, so the interference is correlated with the source.</p>
+
+          <div class="signal-grid">
+            <article class="signal-panel"><span>Observation</span><code>y[t] = Σ h[k]s[t−k] + n[t]</code><p>The direct path and early reflections may be useful; long late reflections smear phonemes and degrade ASR. The target definition must state what portion of the RIR remains.</p></article>
+            <article class="signal-panel"><span>Output contract</span><p>Reduce late reverberation while preserving direct-path speech, natural early energy, phase coherence, and spatial consistency.</p></article>
+          </div>
+
+          <div class="subheading"><span>03</span><div><h3>Method map</h3><p>Move from linear prediction to learned filters, direct mapping, and generative priors.</p></div></div>
+          <div class="method-stack">
+            <article class="method-row"><span class="family-badge physical">Physical</span><div><h4>WPE and forward convolutive prediction</h4><p>WPE predicts late reverberation from delayed past frames. FCP reconstructs microphone observations from an estimated source. Both encode room structure and benefit strongly from multiple channels.</p></div></article>
+            <article class="method-row"><span class="family-badge discriminative">Filtering</span><div><h4>Deep filter estimation and correlation modeling</h4><p>IF-CorrNet uses inter-frame STFT correlations to estimate multiframe filters. USDnet combines a neural source estimate with forward filtering to train without clean targets.</p></div></article>
+            <article class="method-row"><span class="family-badge discriminative">Mapping</span><div><h4>Complex spectral and joint spatial-spectral networks</h4><p>TF-GridNet, SpatialNet, DDNet, and DeepVQE learn dereverberation jointly with denoising or enhancement. Task-decoupled cascades reduce objective conflict but accumulate errors.</p></div></article>
+            <article class="method-row"><span class="family-badge generative">Generative</span><div><h4>Score priors and stochastic regeneration</h4><p>SGMSE+ jointly handles noise and reverberation; StoRM anchors diffusion with a predictive estimate; preference-aligned restoration improves perceived quality but still needs fidelity checks.</p></div></article>
+          </div>
+
+          <div class="topic-columns">
+            <article class="knowledge-panel"><h3>What changes by setup</h3><ul><li><b>Single-channel:</b> inverse problem is highly ambiguous; learned speech priors dominate.</li><li><b>Multichannel:</b> spatial diversity supports prediction and filter estimation.</li><li><b>Real rooms:</b> RIR mismatch, moving sources, and microphone response matter.</li><li><b>Joint denoise + dereverb:</b> order and loss balance change the error profile.</li><li><b>Unsupervised:</b> physical reconstruction prevents arbitrary outputs but can admit degenerate solutions.</li></ul></article>
+            <article class="knowledge-panel risk"><h3>Failure modes to name</h3><ul><li>Removing direct-path or useful early-reflection energy.</li><li>Dry, metallic, or phase-incoherent output.</li><li>Simulated-RIR gains that do not transfer to real rooms.</li><li>SRMR improvement without ASR or listening improvement.</li><li>Failure under time-varying rooms and overlapping speakers.</li></ul></article>
+          </div>
+
+          <div class="model-strip"><span>Catalog anchors</span><a href="./?task=Dereverberation&amp;paradigm=Discriminative">USDnet · IF-CorrNet · SpatialNet · DDNet</a><a href="./?task=Dereverberation&amp;paradigm=Generative">SGMSE+ · GenSR-Pref</a><a href="./?task=Dereverberation&amp;paradigm=Hybrid">StoRM · ARTT · DeepVQE</a></div>
+
+          <div class="qa-block">
+            <details><summary>Why is dereverberation harder than additive denoising?</summary><p>The reverberant component is a delayed, filtered copy of the speech itself. It overlaps the target in time and frequency, so separating “clean” from “reverberant” energy requires a target definition and temporal/acoustic assumptions.</p></details>
+            <details><summary>WPE, FCP, or direct neural mapping?</summary><p>WPE explicitly predicts late tails; FCP uses a source estimate to explain observations; direct mapping learns the target without an explicit filter. Hybrids gain structure and flexibility but depend on both the neural estimate and filter assumptions.</p></details>
+            <details><summary>How do you evaluate without a clean reference?</summary><p>Use SRMR or learned non-intrusive quality estimators cautiously, plus downstream far-field ASR and human listening. Report room, distance, T60, DRR, and whether the system was trained on matched RIRs.</p></details>
+          </div>
+
+          <fieldset class="checklist" data-check-group="dr"><legend>Dereverberation mastery check</legend>
+            <label><input type="checkbox" data-check="dr-1" /><span>I can separate direct path, early reflections, and late reverberation conceptually.</span></label>
+            <label><input type="checkbox" data-check="dr-2" /><span>I can explain WPE, FCP, deep filtering, and direct mapping.</span></label>
+            <label><input type="checkbox" data-check="dr-3" /><span>I can explain why multichannel and single-channel DR have different ambiguity.</span></label>
+            <label><input type="checkbox" data-check="dr-4" /><span>I can design an evaluation spanning simulated and real rooms.</span></label>
+            <label><input type="checkbox" data-check="dr-5" /><span>I can identify when generative restoration may remove room effects by inventing speech detail.</span></label>
+          </fieldset>
+        </section>
+
+        <section class="knowledge-section task-deep-dive" id="aec">
+          <div class="topic-heading">
+            <div><p class="eyebrow">AEC · 8 PAPERS IN THE CATALOG</p><h2>Acoustic Echo Cancellation</h2></div>
+            <a class="text-link" href="./?task=Echo%20Cancellation">Browse AEC papers <i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+          </div>
+          <p class="topic-thesis">AEC removes the loudspeaker echo of a known far-end reference from the microphone signal. Its hardest operating point is double-talk: near-end speech and echo are active together, so aggressive removal can destroy the desired speaker.</p>
+
+          <div class="signal-grid">
+            <article class="signal-panel"><span>Observation</span><code>y = s_near + h_echo * x_far + n</code><p><b>x_far</b> is available. The challenge is estimating a time-varying and often nonlinear echo path while preserving <b>s_near</b>.</p></article>
+            <article class="signal-panel"><span>Output contract</span><p>Suppress echo during far-end single-talk; preserve near-end speech during double-talk; recover quickly after delay or echo-path changes; remain stable in real time.</p></article>
+          </div>
+
+          <div class="subheading"><span>04</span><div><h3>Method map</h3><p>AEC architectures differ by where explicit echo-path modeling ends and learned suppression begins.</p></div></div>
+          <div class="method-stack">
+            <article class="method-row"><span class="family-badge physical">Classical</span><div><h4>Adaptive linear echo cancellation</h4><p>NLMS, frequency-domain adaptive filters, and related LAEC methods estimate the linear echo path from the far-end reference. Double-talk detectors and control logic protect adaptation.</p></div></article>
+            <article class="method-row"><span class="family-badge hybrid">Hybrid</span><div><h4>LAEC plus neural residual echo suppression</h4><p>LMPAN and EchoLite align and fuse microphone, reference, and LAEC outputs before a compact post-filter. This preserves a physical anchor while learning nonlinear residuals and noise suppression.</p></div></article>
+            <article class="method-row"><span class="family-badge discriminative">End-to-end</span><div><h4>Joint alignment and enhancement</h4><p>DeepVQE uses cross-attention and recurrent modeling; E2E-AEC transfers LAEC knowledge and adds attention alignment and VAD control. End-to-end systems simplify the pipeline but hide failure causes.</p></div></article>
+            <article class="method-row"><span class="family-badge generative">Generative</span><div><h4>Far-end-conditioned score or diffusion restoration</h4><p>FADI-AEC designs a fast score process guided by the far-end signal; DiffVQE uses conditional diffusion for joint echo and noise restoration. Fidelity and causality remain the key concerns.</p></div></article>
+          </div>
+
+          <div class="topic-columns">
+            <article class="knowledge-panel"><h3>Stress conditions</h3><ul><li><b>Far-end single-talk:</b> maximize echo attenuation without residual coloration.</li><li><b>Near-end single-talk:</b> pass desired speech transparently.</li><li><b>Double-talk:</b> suppress echo without near-end clipping or modulation.</li><li><b>Path change:</b> reconverge rapidly after device or room movement.</li><li><b>Nonlinearity and delay:</b> handle loudspeaker distortion, clock drift, and misalignment.</li></ul></article>
+            <article class="knowledge-panel risk"><h3>Failure modes to name</h3><ul><li>Near-end speech suppression during double-talk.</li><li>Residual echo after nonlinear loudspeaker distortion.</li><li>Divergence or slow reconvergence after path changes.</li><li>Reference/microphone time misalignment and long-delay drift.</li><li>Good ERLE with unpleasant near-end quality.</li></ul></article>
+          </div>
+
+          <div class="model-strip"><span>Catalog anchors</span><a href="./?task=Echo%20Cancellation&amp;paradigm=Hybrid">LMPAN · EchoLite · Personalized two-stage PF</a><a href="./?task=Echo%20Cancellation&amp;paradigm=Discriminative">DeepVQE · E2E-AEC</a><a href="./?task=Echo%20Cancellation&amp;paradigm=Generative">FADI-AEC · DiffVQE</a></div>
+
+          <div class="qa-block">
+            <details><summary>Why is the far-end reference so important?</summary><p>It identifies the signal that created the echo. Classical filters estimate its transfer path; neural systems use it for alignment and conditional suppression. Without it, the problem becomes general separation or enhancement rather than standard AEC.</p></details>
+            <details><summary>Why does high ERLE not prove good AEC?</summary><p>ERLE mainly measures echo reduction where echo is present. A system can achieve high ERLE by suppressing near-end speech or over-attenuating. Pair it with double-talk near-end quality, AECMOS, WER, and scenario-stratified listening.</p></details>
+            <details><summary>Hybrid or end-to-end?</summary><p>Hybrid systems retain LAEC interpretability and convergence behavior while learning residual suppression. End-to-end models can jointly align and enhance but require broader training data and stronger diagnostics for delay, double-talk, and nonlinear failure.</p></details>
+          </div>
+
+          <fieldset class="checklist" data-check-group="aec"><legend>AEC mastery check</legend>
+            <label><input type="checkbox" data-check="aec-1" /><span>I can explain echo path estimation and why the far-end reference changes the problem.</span></label>
+            <label><input type="checkbox" data-check="aec-2" /><span>I can compare LAEC, neural post-filtering, end-to-end AEC, and generative AEC.</span></label>
+            <label><input type="checkbox" data-check="aec-3" /><span>I can explain double-talk, path change, nonlinearity, and delay drift.</span></label>
+            <label><input type="checkbox" data-check="aec-4" /><span>I can pair ERLE with near-end quality, AECMOS, content, and latency metrics.</span></label>
+            <label><input type="checkbox" data-check="aec-5" /><span>I can diagnose whether failure comes from alignment, echo modeling, or post-filtering.</span></label>
+          </fieldset>
+        </section>
+
+        <section class="knowledge-section" id="metrics">
+          <div class="section-heading">
+            <p class="eyebrow">METRIC MAP</p>
+            <h2>Measure the claim, not just the waveform</h2>
+            <p>No single score covers fidelity, naturalness, intelligibility, identity, spatial quality, and deployment cost.</p>
+          </div>
+          <div class="comparison-scroll">
+            <table class="knowledge-table metric-table">
+              <thead><tr><th>Task</th><th>Signal fidelity</th><th>Perception</th><th>Content / identity</th><th>Task-specific</th><th>System cost</th></tr></thead>
+              <tbody>
+                <tr><th>SE</th><td>SI-SDR, SDR</td><td>POLQA, PESQ, DNSMOS, NISQA, MOS</td><td>WER; speaker similarity for generative systems</td><td>Quality across SNR, distortion, and sample rate</td><td>RTF, latency, MACs, memory</td></tr>
+                <tr><th>TSE</th><td>SI-SDRi, SDRi</td><td>PESQ, STOI, DNSMOS</td><td>WER/TER, SpkSim, confusion rate</td><td>Target-absent leakage, activity F1, ILD/IPD/ITD, tracking</td><td>RTF, look-ahead, enrollment cost</td></tr>
+                <tr><th>DR</th><td>SI-SDR, PESQ, STOI</td><td>MOS, DNSMOS</td><td>Far-field ASR WER</td><td>SRMR, T60, DRR; real vs. simulated room split</td><td>RTF, latency, channel count</td></tr>
+                <tr><th>AEC</th><td>Near-end POLQA/STOI</td><td>AECMOS Echo / Other, MOS</td><td>WER, word accuracy</td><td>ERLE; far-end, near-end, double-talk, path-change buckets</td><td>Latency, RTF, model size, reconvergence time</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="metric-laws">
+            <article><strong>01</strong><p><b>Pair intrusive and non-intrusive metrics.</b> Reference-based fidelity and learned quality estimators fail differently.</p></article>
+            <article><strong>02</strong><p><b>Add content checks for generative models.</b> Better DNSMOS does not prove correct words or identity.</p></article>
+            <article><strong>03</strong><p><b>Stratify by operating condition.</b> Average scores hide target absence, double-talk, motion, and path changes.</p></article>
+            <article><strong>04</strong><p><b>Report deployment evidence.</b> “Real time” needs named hardware, latency, RTF, memory, and causal context.</p></article>
+          </div>
+          <fieldset class="checklist compact-checklist" data-check-group="metrics"><legend>Metric mastery check</legend>
+            <label><input type="checkbox" data-check="metric-1" /><span>I can explain what SI-SDR, PESQ/POLQA, STOI, DNSMOS, and WER do—and do not—measure.</span></label>
+            <label><input type="checkbox" data-check="metric-2" /><span>I can choose task-specific metrics for TSE identity, DR reverberation, and AEC double-talk.</span></label>
+            <label><input type="checkbox" data-check="metric-3" /><span>I can detect metric gaming and ask for listening tests or downstream validation.</span></label>
+            <label><input type="checkbox" data-check="metric-4" /><span>I can define a deployment evaluation with latency, RTF, memory, and scenario buckets.</span></label>
+          </fieldset>
+        </section>
+
+        <section class="knowledge-section" id="answer">
+          <div class="section-heading">
+            <p class="eyebrow">ANSWER FRAMEWORK</p>
+            <h2>A six-move answer for almost any question</h2>
+            <p>Use this sequence in interviews, paper discussions, reviews, and research meetings.</p>
+          </div>
+          <ol class="answer-sequence">
+            <li><span>1</span><div><h3>Define the task mathematically</h3><p>Name the observation, desired signal, interference, acoustic path, and side information.</p></div></li>
+            <li><span>2</span><div><h3>State the operating assumptions</h3><p>Single or multichannel; static or moving; offline or causal; simulated or real; target present or absent.</p></div></li>
+            <li><span>3</span><div><h3>Organize the method families</h3><p>Physical/statistical, discriminative, generative, and hybrid—then say what each predicts.</p></div></li>
+            <li><span>4</span><div><h3>Name representative architectures</h3><p>Choose two or three models from the catalog and explain why their structures match the task.</p></div></li>
+            <li><span>5</span><div><h3>Match metrics to claims</h3><p>Pair fidelity, perception, content/identity, task-specific behavior, and runtime cost.</p></div></li>
+            <li><span>6</span><div><h3>End with the boundary</h3><p>Name the hardest failure case and the evidence still needed before deployment.</p></div></li>
+          </ol>
+          <div class="answer-template">
+            <p class="eyebrow">90-SECOND TEMPLATE</p>
+            <p>“<b>[Task]</b> estimates <b>[target]</b> from <b>[observation]</b> using <b>[side information]</b>. Classical methods use <b>[physical assumption]</b>; discriminative models directly predict <b>[mask/map/filter/waveform]</b>; generative models use <b>[prior or transport]</b>; hybrids anchor <b>[content/space/path]</b> before refinement. I would evaluate <b>[fidelity]</b>, <b>[perception]</b>, <b>[content/identity]</b>, and <b>[task-specific behavior]</b>, then verify <b>[latency/RTF]</b>. The main unresolved risk is <b>[failure mode]</b> under <b>[mismatch]</b>.”</p>
+          </div>
+          <fieldset class="checklist compact-checklist" data-check-group="answer"><legend>Answer practice</legend>
+            <label><input type="checkbox" data-check="answer-1" /><span>I can give a 90-second overview of each task without naming a model first.</span></label>
+            <label><input type="checkbox" data-check="answer-2" /><span>I can compare one discriminative, one generative, and one hybrid architecture per task.</span></label>
+            <label><input type="checkbox" data-check="answer-3" /><span>I can challenge a paper result by matching each claim to evidence.</span></label>
+            <label><input type="checkbox" data-check="answer-4" /><span>I can end an answer with deployment risks instead of stopping at benchmark scores.</span></label>
+          </fieldset>
+        </section>
+
+        <section class="knowledge-section mastery-section" id="mastery">
+          <div class="section-heading">
+            <p class="eyebrow">FINAL MASTERY GATE</p>
+            <h2>You are ready when you can reason, not recite</h2>
+          </div>
+          <fieldset class="checklist final-checklist" data-check-group="mastery"><legend>Field readiness</legend>
+            <label><input type="checkbox" data-check="mastery-1" /><span><b>Task reasoning:</b> I can derive what information makes each inverse problem identifiable.</span></label>
+            <label><input type="checkbox" data-check="mastery-2" /><span><b>Architecture reasoning:</b> I can predict a model’s strengths and failures from its representation, conditioning, and inference path.</span></label>
+            <label><input type="checkbox" data-check="mastery-3" /><span><b>Evaluation reasoning:</b> I can reject an incomplete metric story and propose a defensible protocol.</span></label>
+            <label><input type="checkbox" data-check="mastery-4" /><span><b>Research judgment:</b> I can separate benchmark progress from evidence of real-world reliability.</span></label>
+          </fieldset>
+          <div class="closing-card"><span>Keep this loop</span><h2>Define → Compare → Measure → Break → Improve</h2><p>Use the catalog for evidence and this guide for structure. New papers should update a branch of the map—not replace the map with another model name.</p><a class="button button-primary" href="./"><i data-lucide="library" aria-hidden="true"></i>Return to the paper catalog</a></div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
