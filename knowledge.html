@@ -12,7 +12,7 @@
     <meta property="og:description" content="Build a durable mental model of SE, TSE, dereverberation, and AEC." />
     <title>Speech Front-End Knowledge Guide</title>
     <link rel="stylesheet" href="./assets/styles.css?v=20260903-paradigm" />
-    <link rel="stylesheet" href="./assets/knowledge.css?v=20260904-knowledge" />
+    <link rel="stylesheet" href="./assets/knowledge.css?v=20260904-academic" />
     <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
     <script type="module" src="./assets/knowledge.js?v=20260904-knowledge"></script>
   </head>
@@ -59,7 +59,7 @@
       <main class="knowledge-main">
         <section class="knowledge-hero" id="start">
           <p class="eyebrow">FROM 56 CURATED PAPERS · 2023–2026</p>
-          <h1>Know the field.<br />Explain it without fear.</h1>
+          <h1>Speech Front-End<br />Knowledge Guide</h1>
           <p class="hero-lead">
             A compact but rigorous map of speech enhancement, target speaker extraction,
             dereverberation, and acoustic echo cancellation—from signal assumptions to
@@ -87,10 +87,22 @@
             <h2>Every task is structured signal recovery</h2>
             <p>Start from what is observed, what side information exists, and what must be preserved.</p>
           </div>
-          <div class="equation-card">
-            <code>observation = desired speech + interference shaped by an acoustic path</code>
-            <p>The four tasks differ mainly in the interference definition and available conditioning.</p>
-          </div>
+          <figure class="equation-card">
+            <div class="display-equation" aria-label="Observed signal equals acoustic path convolved with desired speech plus interference">
+              <var>y</var><sub>m</sub>(t) = <var>h</var><sub>m</sub>(t) ∗ <var>s</var>(t) + <var>u</var><sub>m</sub>(t)
+            </div>
+            <figcaption>General observation model. The task determines what belongs to <var>u</var>, what side information is available, and which parts of <var>h</var> should be removed.</figcaption>
+          </figure>
+          <figure class="process-figure" aria-labelledby="process-caption">
+            <div class="process-flow">
+              <div><small>Observation</small><strong><var>y</var></strong></div><span aria-hidden="true">→</span>
+              <div><small>Evidence</small><strong><var>c</var></strong></div><span aria-hidden="true">→</span>
+              <div><small>Estimator</small><strong><var>f</var><sub>θ</sub>(<var>y</var>, <var>c</var>)</strong></div><span aria-hidden="true">→</span>
+              <div><small>Estimate</small><strong>ŝ</strong></div><span aria-hidden="true">→</span>
+              <div><small>Verify</small><strong>Q · C · R</strong></div>
+            </div>
+            <figcaption id="process-caption">A reusable reasoning diagram: observe → condition → estimate → verify quality (Q), content (C), and runtime (R).</figcaption>
+          </figure>
           <div class="reasoning-grid">
             <article><span>01</span><h3>Define the target</h3><p>Clean speech, one enrolled speaker, anechoic speech, or near-end speech?</p></article>
             <article><span>02</span><h3>List the evidence</h3><p>Mixture only, far-end reference, multiple microphones, enrollment audio, DOA, HRTF, vision, or text?</p></article>
@@ -133,6 +145,12 @@
               </tbody>
             </table>
           </div>
+          <figure class="paradigm-figure">
+            <div class="paradigm-path"><b>Discriminative</b><span class="flow-node">observation <var>y</var></span><i>→</i><span class="flow-node">single-pass <var>f</var><sub>θ</sub></span><i>→</i><span class="flow-node">estimate ŝ</span></div>
+            <div class="paradigm-path"><b>Generative</b><span class="flow-node">observation <var>y</var> + prior</span><i>→</i><span class="flow-node">sample / transport</span><i>→</i><span class="flow-node">estimate ŝ</span></div>
+            <div class="paradigm-path"><b>Hybrid</b><span class="flow-node">anchored estimate s̃</span><i>→</i><span class="flow-node">constrained refinement</span><i>→</i><span class="flow-node">estimate ŝ</span></div>
+            <figcaption>Fig. 2. The main architectural difference is the inference path: direct prediction, prior-driven reconstruction, or anchored refinement.</figcaption>
+          </figure>
           <div class="callout"><strong>Fast rule:</strong> use physical or discriminative structure to decide <em>what should remain</em>; use a generative prior only to decide <em>how missing detail should sound</em>.</div>
         </section>
 
@@ -145,25 +163,25 @@
             <article>
               <span class="task-code">SE</span>
               <h3>Speech Enhancement</h3>
-              <code>y = s + n</code>
+              <div class="task-equation"><var>y</var> = <var>s</var> + <var>n</var></div>
               <p>Suppress noise and distortion while preserving linguistic content and speaker identity.</p>
             </article>
             <article>
               <span class="task-code">TSE</span>
               <h3>Target Speaker Extraction</h3>
-              <code>y = s_target + Σs_interferers + n</code>
+              <div class="task-equation"><var>y</var> = <var>s</var><sub>target</sub> + ∑<sub>j</sub><var>s</var><sub>j</sub> + <var>n</var></div>
               <p>Recover one specified speaker using enrollment, spatial, visual, or textual cues.</p>
             </article>
             <article>
               <span class="task-code">DR</span>
               <h3>Dereverberation</h3>
-              <code>y = h * s + n</code>
+              <div class="task-equation"><var>y</var> = <var>h</var> ∗ <var>s</var> + <var>n</var></div>
               <p>Reduce late reverberation without destroying the direct path or useful early reflections.</p>
             </article>
             <article>
               <span class="task-code">AEC</span>
               <h3>Echo Cancellation</h3>
-              <code>y = s_near + h_echo * x_far + n</code>
+              <div class="task-equation"><var>y</var> = <var>s</var><sub>near</sub> + <var>h</var><sub>echo</sub> ∗ <var>x</var><sub>far</sub> + <var>n</var></div>
               <p>Remove far-end echo while protecting near-end speech during double-talk.</p>
             </article>
           </div>
@@ -177,9 +195,13 @@
           <p class="topic-thesis">SE estimates cleaner speech from a degraded observation. The real objective is not “remove everything that is not speech”; it is “remove unwanted distortion without changing the words, speaker, timing, or spatial intent.”</p>
 
           <div class="signal-grid">
-            <article class="signal-panel"><span>Observation</span><code>y = h * s + n + d</code><p><b>h</b> is the acoustic path, <b>n</b> is additive noise, and <b>d</b> covers clipping, bandwidth loss, codec artifacts, or other distortions.</p></article>
+            <article class="signal-panel"><span>Observation</span><div class="task-equation"><var>y</var> = <var>h</var> ∗ <var>s</var> + <var>n</var> + <var>d</var></div><p><b>h</b> is the acoustic path, <b>n</b> is additive noise, and <b>d</b> covers clipping, bandwidth loss, codec artifacts, or other distortions.</p></article>
             <article class="signal-panel"><span>Output contract</span><p>Preserve linguistic content and speaker identity; improve quality and intelligibility; respect latency, sample rate, and channel constraints.</p></article>
           </div>
+          <figure class="task-figure">
+            <div class="linear-flow"><span class="flow-node">Noisy / distorted speech<br /><var>y</var></span><i>→</i><span class="flow-node">Waveform or STFT<br />representation</span><i>→</i><span class="flow-node emphasis">Mask · map · filter<br />or generative prior</span><i>→</i><span class="flow-node">Enhanced speech<br />ŝ</span></div>
+            <figcaption>Fig. SE. Enhancement pipeline. Multichannel systems add spatial statistics before or inside the estimator.</figcaption>
+          </figure>
 
           <div class="subheading"><span>01</span><div><h3>Method map</h3><p>Know what each family predicts and what anchors it to the observation.</p></div></div>
           <div class="method-stack">
@@ -219,9 +241,13 @@
           <p class="topic-thesis">TSE is conditional separation: recover one target speaker, not merely any dominant speech. The central research question is how the system knows whom to extract and how it behaves when that evidence is unreliable.</p>
 
           <div class="signal-grid">
-            <article class="signal-panel"><span>Observation</span><code>y = s_target + Σ s_interferers + n</code><p>The model also receives a clue <b>c</b>: enrollment speech, speaker embedding, DOA, HRTF, visual motion, text, or a combination.</p></article>
+            <article class="signal-panel"><span>Observation</span><div class="task-equation"><var>y</var> = <var>s</var><sub>target</sub> + ∑<sub>j</sub><var>s</var><sub>j</sub> + <var>n</var></div><p>The model also receives a clue <b>c</b>: enrollment speech, speaker embedding, DOA, HRTF, visual motion, text, or a combination.</p></article>
             <article class="signal-panel"><span>Output contract</span><p>Select the correct identity; suppress competing speakers and noise; avoid leakage when the target is absent; preserve content, voice, and spatial cues.</p></article>
           </div>
+          <figure class="task-figure">
+            <div class="condition-flow"><div><span class="flow-node">Mixture<br /><var>y</var></span><span class="plus">+</span><span class="flow-node">Target clue<br /><var>c</var></span></div><i>→</i><span class="flow-node emphasis">Cue encoder +<br />conditioned separator</span><i>→</i><span class="flow-node">Target speech<br />ŝ<sub>target</sub></span></div>
+            <figcaption>Fig. TSE. The target clue resolves “who” or “where”; the separator resolves overlapping acoustic evidence.</figcaption>
+          </figure>
 
           <div class="subheading"><span>02</span><div><h3>Method map</h3><p>Organize TSE by cue, fusion point, separator, and output representation.</p></div></div>
           <div class="method-stack">
@@ -261,9 +287,13 @@
           <p class="topic-thesis">Dereverberation estimates speech with less late room response. It is not the same as denoising: reverberation is a convolution of the desired speech with a room impulse response, so the interference is correlated with the source.</p>
 
           <div class="signal-grid">
-            <article class="signal-panel"><span>Observation</span><code>y[t] = Σ h[k]s[t−k] + n[t]</code><p>The direct path and early reflections may be useful; long late reflections smear phonemes and degrade ASR. The target definition must state what portion of the RIR remains.</p></article>
+            <article class="signal-panel"><span>Observation</span><div class="task-equation"><var>y</var>[t] = ∑<sub>k</sub><var>h</var>[k]<var>s</var>[t−k] + <var>n</var>[t]</div><p>The direct path and early reflections may be useful; long late reflections smear phonemes and degrade ASR. The target definition must state what portion of the RIR remains.</p></article>
             <article class="signal-panel"><span>Output contract</span><p>Reduce late reverberation while preserving direct-path speech, natural early energy, phase coherence, and spatial consistency.</p></article>
           </div>
+          <figure class="task-figure">
+            <div class="linear-flow"><span class="flow-node">Reverberant speech<br /><var>y</var></span><i>→</i><span class="flow-node">Temporal / spatial<br />context</span><i>→</i><span class="flow-node emphasis">Predict late tail r̂<br />or map directly</span><i>→</i><span class="flow-node">Early / dry target<br />ŝ = y − r̂</span></div>
+            <figcaption>Fig. DR. Prediction methods estimate the late tail explicitly; mapping and generative methods estimate the target directly.</figcaption>
+          </figure>
 
           <div class="subheading"><span>03</span><div><h3>Method map</h3><p>Move from linear prediction to learned filters, direct mapping, and generative priors.</p></div></div>
           <div class="method-stack">
@@ -303,9 +333,16 @@
           <p class="topic-thesis">AEC removes the loudspeaker echo of a known far-end reference from the microphone signal. Its hardest operating point is double-talk: near-end speech and echo are active together, so aggressive removal can destroy the desired speaker.</p>
 
           <div class="signal-grid">
-            <article class="signal-panel"><span>Observation</span><code>y = s_near + h_echo * x_far + n</code><p><b>x_far</b> is available. The challenge is estimating a time-varying and often nonlinear echo path while preserving <b>s_near</b>.</p></article>
+            <article class="signal-panel"><span>Observation</span><div class="task-equation"><var>y</var> = <var>s</var><sub>near</sub> + <var>h</var><sub>echo</sub> ∗ <var>x</var><sub>far</sub> + <var>n</var></div><p><b>x_far</b> is available. The challenge is estimating a time-varying and often nonlinear echo path while preserving <b>s_near</b>.</p></article>
             <article class="signal-panel"><span>Output contract</span><p>Suppress echo during far-end single-talk; preserve near-end speech during double-talk; recover quickly after delay or echo-path changes; remain stable in real time.</p></article>
           </div>
+          <figure class="task-figure aec-figure">
+            <div class="aec-flow">
+              <div class="aec-source"><span class="flow-node">Far-end reference<br /><var>x</var><sub>far</sub></span><i>→</i><span class="flow-node emphasis">Echo-path model<br />ĥ<sub>echo</sub></span><i>→</i><span class="flow-node">Echo estimate<br />ê</span></div>
+              <div class="aec-source"><span class="flow-node">Microphone<br /><var>y</var></span><i>→</i><span class="flow-node operation">subtract ê</span><i>→</i><span class="flow-node">Residual<br /><var>e</var> = <var>y</var> − ê</span><i>→</i><span class="flow-node emphasis">Neural post-filter</span><i>→</i><span class="flow-node">Near-end speech<br />ŝ<sub>near</sub></span></div>
+            </div>
+            <figcaption>Fig. AEC. A hybrid system estimates the echo path first and uses a post-filter for residual echo, noise, and nonlinear distortion.</figcaption>
+          </figure>
 
           <div class="subheading"><span>04</span><div><h3>Method map</h3><p>AEC architectures differ by where explicit echo-path modeling ends and learned suppression begins.</p></div></div>
           <div class="method-stack">
